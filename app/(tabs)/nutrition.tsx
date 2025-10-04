@@ -17,80 +17,97 @@ export default function NutritionScreen() {
           <Text style={styles.sectionTitle}>🌿 Ayurvedic Supplements</Text>
         </View>
 
-        {profile.gender === 'woman' && (
-          <View style={styles.supplementCard}>
-            <View style={styles.supplementHeader}>
-              <Text style={styles.supplementIcon}>🌸</Text>
-              <View style={styles.supplementInfo}>
-                <Text style={styles.supplementName}>Shatavari</Text>
-                <Text style={styles.supplementSubtitle}>For Women's Fertility</Text>
-              </View>
-            </View>
-            <Text style={styles.supplementDescription}>
-              Traditional Ayurvedic herb known as "Queen of Herbs" for women's reproductive health. 
-              Helps balance hormones, supports ovulation, and enhances fertility.
-            </Text>
-            <View style={styles.supplementBenefits}>
-              <Text style={styles.benefitItem}>✓ Supports hormonal balance</Text>
-              <Text style={styles.benefitItem}>✓ Enhances ovulation</Text>
-              <Text style={styles.benefitItem}>✓ Improves egg quality</Text>
-              <Text style={styles.benefitItem}>✓ Reduces stress and anxiety</Text>
-            </View>
-            <View style={styles.supplementDosage}>
-              <Text style={styles.dosageText}>Recommended: 500mg twice daily with meals</Text>
+        <View style={styles.supplementCard}>
+          <View style={styles.supplementHeader}>
+            <Text style={styles.supplementIcon}>🌸</Text>
+            <View style={styles.supplementInfo}>
+              <Text style={styles.supplementName}>Shatavari</Text>
+              <Text style={styles.supplementSubtitle}>For Women's Fertility</Text>
             </View>
           </View>
-        )}
+          <Text style={styles.supplementDescription}>
+            Traditional Ayurvedic herb known as "Queen of Herbs" for women's reproductive health. 
+            Helps balance hormones, supports ovulation, and enhances fertility.
+          </Text>
+          <View style={styles.supplementBenefits}>
+            <Text style={styles.benefitItem}>✓ Supports hormonal balance</Text>
+            <Text style={styles.benefitItem}>✓ Enhances ovulation</Text>
+            <Text style={styles.benefitItem}>✓ Improves egg quality</Text>
+            <Text style={styles.benefitItem}>✓ Reduces stress and anxiety</Text>
+          </View>
+          <View style={styles.supplementDosage}>
+            <Text style={styles.dosageText}>Recommended: 500mg twice daily with meals</Text>
+          </View>
+        </View>
 
-        {profile.gender === 'man' && (
-          <View style={styles.supplementCard}>
-            <View style={styles.supplementHeader}>
-              <Text style={styles.supplementIcon}>💪</Text>
-              <View style={styles.supplementInfo}>
-                <Text style={styles.supplementName}>Ashwagandha</Text>
-                <Text style={styles.supplementSubtitle}>For Men's Fertility</Text>
-              </View>
-            </View>
-            <Text style={styles.supplementDescription}>
-              Powerful adaptogenic herb that supports male reproductive health. 
-              Known to improve sperm count, motility, and overall fertility.
-            </Text>
-            <View style={styles.supplementBenefits}>
-              <Text style={styles.benefitItem}>✓ Increases sperm count</Text>
-              <Text style={styles.benefitItem}>✓ Improves sperm motility</Text>
-              <Text style={styles.benefitItem}>✓ Enhances testosterone levels</Text>
-              <Text style={styles.benefitItem}>✓ Reduces stress and cortisol</Text>
-            </View>
-            <View style={styles.supplementDosage}>
-              <Text style={styles.dosageText}>Recommended: 300-600mg once daily</Text>
+        <View style={styles.supplementCard}>
+          <View style={styles.supplementHeader}>
+            <Text style={styles.supplementIcon}>💪</Text>
+            <View style={styles.supplementInfo}>
+              <Text style={styles.supplementName}>Ashwagandha</Text>
+              <Text style={styles.supplementSubtitle}>For Men's Fertility</Text>
             </View>
           </View>
-        )}
+          <Text style={styles.supplementDescription}>
+            Powerful adaptogenic herb that supports male reproductive health. 
+            Known to improve sperm count, motility, and overall fertility.
+          </Text>
+          <View style={styles.supplementBenefits}>
+            <Text style={styles.benefitItem}>✓ Increases sperm count</Text>
+            <Text style={styles.benefitItem}>✓ Improves sperm motility</Text>
+            <Text style={styles.benefitItem}>✓ Enhances testosterone levels</Text>
+            <Text style={styles.benefitItem}>✓ Reduces stress and cortisol</Text>
+          </View>
+          <View style={styles.supplementDosage}>
+            <Text style={styles.dosageText}>Recommended: 300-600mg once daily</Text>
+          </View>
+        </View>
 
-        {profile.gender === 'couple' && (
-          <View style={styles.supplementCard}>
-            <View style={styles.supplementHeader}>
-              <Text style={styles.supplementIcon}>💑</Text>
-              <View style={styles.supplementInfo}>
-                <Text style={styles.supplementName}>Couple's Fertility Support</Text>
-                <Text style={styles.supplementSubtitle}>For Both Partners</Text>
-              </View>
-            </View>
-            <Text style={styles.supplementDescription}>
-              Comprehensive approach combining Shatavari for women and Ashwagandha for men 
-              to support both partners' reproductive health and fertility journey.
-            </Text>
-            <View style={styles.supplementBenefits}>
-              <Text style={styles.benefitItem}>✓ Shatavari for women's hormonal balance</Text>
-              <Text style={styles.benefitItem}>✓ Ashwagandha for men's sperm health</Text>
-              <Text style={styles.benefitItem}>✓ Stress reduction for both partners</Text>
-              <Text style={styles.benefitItem}>✓ Enhanced overall fertility</Text>
-            </View>
-            <View style={styles.supplementDosage}>
-              <Text style={styles.dosageText}>Women: Shatavari 500mg twice daily | Men: Ashwagandha 300-600mg daily</Text>
+        <View style={styles.supplementCard}>
+          <View style={styles.supplementHeader}>
+            <Text style={styles.supplementIcon}>🌿</Text>
+            <View style={styles.supplementInfo}>
+              <Text style={styles.supplementName}>Triphala</Text>
+              <Text style={styles.supplementSubtitle}>For Overall Health</Text>
             </View>
           </View>
-        )}
+          <Text style={styles.supplementDescription}>
+            Traditional Ayurvedic formula combining three fruits. Supports digestion, 
+            detoxification, and overall reproductive health for both men and women.
+          </Text>
+          <View style={styles.supplementBenefits}>
+            <Text style={styles.benefitItem}>✓ Improves digestion and absorption</Text>
+            <Text style={styles.benefitItem}>✓ Natural detoxification</Text>
+            <Text style={styles.benefitItem}>✓ Boosts immunity</Text>
+            <Text style={styles.benefitItem}>✓ Supports overall fertility</Text>
+          </View>
+          <View style={styles.supplementDosage}>
+            <Text style={styles.dosageText}>Recommended: 1-2 teaspoons with warm water before bed</Text>
+          </View>
+        </View>
+
+        <View style={styles.supplementCard}>
+          <View style={styles.supplementHeader}>
+            <Text style={styles.supplementIcon}>🌺</Text>
+            <View style={styles.supplementInfo}>
+              <Text style={styles.supplementName}>Gokshura</Text>
+              <Text style={styles.supplementSubtitle}>For Reproductive Health</Text>
+            </View>
+          </View>
+          <Text style={styles.supplementDescription}>
+            Ancient Ayurvedic herb known for its reproductive benefits. 
+            Supports both male and female fertility, libido, and reproductive function.
+          </Text>
+          <View style={styles.supplementBenefits}>
+            <Text style={styles.benefitItem}>✓ Enhances libido and sexual function</Text>
+            <Text style={styles.benefitItem}>✓ Supports reproductive organs</Text>
+            <Text style={styles.benefitItem}>✓ Improves sperm quality</Text>
+            <Text style={styles.benefitItem}>✓ Balances reproductive hormones</Text>
+          </View>
+          <View style={styles.supplementDosage}>
+            <Text style={styles.dosageText}>Recommended: 500mg twice daily with meals</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -194,213 +211,286 @@ export default function NutritionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fafbfc',
   },
   header: {
-    padding: 24,
+    padding: 20,
     paddingTop: 60,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: 32,
+    fontWeight: '800',
     color: '#1a1a1a',
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    color: '#6b7280',
+    fontWeight: '400',
+    lineHeight: 22,
   },
   todayCard: {
-    margin: 24,
+    margin: 20,
     marginTop: 0,
-    padding: 20,
-    backgroundColor: '#f1f8f4',
-    borderRadius: 16,
+    padding: 24,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
     borderWidth: 1,
-    borderColor: '#c8e6c9',
+    borderColor: '#f3f4f6',
   },
   todayHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 8,
+    gap: 16,
+    marginBottom: 12,
   },
   todayTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#1a1a1a',
+    letterSpacing: -0.3,
   },
   todaySubtitle: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 15,
+    color: '#6b7280',
+    fontWeight: '400',
+    lineHeight: 20,
   },
   section: {
-    padding: 24,
+    padding: 20,
     paddingTop: 0,
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
     color: '#1a1a1a',
-    marginBottom: 16,
+    letterSpacing: -0.4,
   },
   foodGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: 16,
   },
   foodItem: {
-    width: '31%',
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
+    width: '30%',
+    padding: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#f3f4f6',
   },
   foodIcon: {
-    fontSize: 40,
-    marginBottom: 8,
+    fontSize: 32,
+    marginBottom: 12,
   },
   foodName: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
     color: '#1a1a1a',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: -0.2,
   },
   foodBenefit: {
-    fontSize: 11,
-    color: '#666',
+    fontSize: 12,
+    color: '#6b7280',
     textAlign: 'center',
+    fontWeight: '400',
+    lineHeight: 16,
   },
   recipesButton: {
-    margin: 24,
+    margin: 20,
     marginTop: 0,
-    paddingVertical: 16,
-    backgroundColor: '#4caf50',
-    borderRadius: 12,
+    paddingVertical: 18,
+    backgroundColor: '#059669',
+    borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   recipesButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#ffffff',
+    letterSpacing: -0.2,
   },
   tipsCard: {
-    margin: 24,
+    margin: 20,
     marginTop: 0,
-    padding: 20,
-    backgroundColor: '#fffbf0',
-    borderRadius: 16,
+    padding: 24,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
     marginBottom: 32,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f3f4f6',
   },
   tipsTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#1a1a1a',
-    marginBottom: 16,
+    marginBottom: 20,
+    letterSpacing: -0.3,
   },
   tip: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
-    lineHeight: 21,
+    fontSize: 15,
+    color: '#6b7280',
+    marginBottom: 12,
+    lineHeight: 22,
+    fontWeight: '400',
   },
   supplementCard: {
-    marginBottom: 20,
-    padding: 20,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 16,
+    marginBottom: 24,
+    padding: 24,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
     borderWidth: 1,
-    borderColor: '#e9ecef',
+    borderColor: '#f3f4f6',
   },
   supplementHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    gap: 12,
+    marginBottom: 16,
+    gap: 16,
   },
   supplementIcon: {
-    fontSize: 32,
+    fontSize: 28,
   },
   supplementInfo: {
     flex: 1,
   },
   supplementName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: '#1a1a1a',
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: -0.3,
   },
   supplementSubtitle: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 15,
+    color: '#6b7280',
     fontWeight: '500',
   },
   supplementDescription: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 21,
-    marginBottom: 16,
+    fontSize: 15,
+    color: '#6b7280',
+    lineHeight: 22,
+    marginBottom: 20,
+    fontWeight: '400',
   },
   supplementBenefits: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   benefitItem: {
-    fontSize: 14,
-    color: '#4caf50',
-    marginBottom: 6,
+    fontSize: 15,
+    color: '#059669',
+    marginBottom: 8,
     fontWeight: '500',
+    lineHeight: 20,
   },
   supplementDosage: {
-    padding: 12,
-    backgroundColor: '#e8f5e9',
-    borderRadius: 8,
+    padding: 16,
+    backgroundColor: '#f0fdf4',
+    borderRadius: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#4caf50',
+    borderLeftColor: '#059669',
   },
   dosageText: {
-    fontSize: 13,
-    color: '#2e7d32',
+    fontSize: 14,
+    color: '#047857',
     fontWeight: '600',
+    lineHeight: 18,
   },
   traditionalFoodsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: 16,
   },
   traditionalFoodItem: {
-    width: '31%',
-    padding: 16,
-    backgroundColor: '#fff8f0',
-    borderRadius: 12,
+    width: '30%',
+    padding: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
     borderWidth: 1,
-    borderColor: '#ffe082',
+    borderColor: '#f3f4f6',
   },
   traditionalFoodIcon: {
-    fontSize: 32,
-    marginBottom: 8,
+    fontSize: 28,
+    marginBottom: 12,
   },
   traditionalFoodName: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
     color: '#1a1a1a',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: -0.2,
   },
   traditionalFoodBenefit: {
-    fontSize: 11,
-    color: '#e65100',
+    fontSize: 12,
+    color: '#6b7280',
     textAlign: 'center',
-    fontWeight: '500',
+    fontWeight: '400',
+    lineHeight: 16,
   },
 });
