@@ -2,135 +2,14 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'rea
 import { useUser } from '@/contexts/UserContext';
 import { Apple, ChefHat, Book } from 'lucide-react-native';
 
-const mealPlans = {
-  veg: [
-    {
-      name: 'Fertility Smoothie',
-      category: 'Breakfast',
-      ingredients: ['Banana', 'Spinach', 'Almonds', 'Chia seeds', 'Milk'],
-      benefits: 'Rich in folate, vitamin E, and omega-3',
-      image: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
-    },
-    {
-      name: 'Paneer & Quinoa Bowl',
-      category: 'Lunch',
-      ingredients: ['Quinoa', 'Paneer', 'Mixed vegetables', 'Turmeric', 'Cumin'],
-      benefits: 'High protein and iron for egg health',
-      image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
-    },
-    {
-      name: 'Dal with Sprouts',
-      category: 'Dinner',
-      ingredients: ['Yellow dal', 'Sprouts', 'Tomatoes', 'Ghee'],
-      benefits: 'Complete protein and zinc',
-      image: 'https://images.pexels.com/photos/5938/food-salad-healthy-lunch.jpg?auto=compress&cs=tinysrgb&w=400',
-    },
-  ],
-  'non-veg': [
-    {
-      name: 'Egg White Omelette',
-      category: 'Breakfast',
-      ingredients: ['Egg whites', 'Spinach', 'Tomatoes', 'Cheese'],
-      benefits: 'Lean protein for hormone balance',
-      image: 'https://images.pexels.com/photos/3434523/pexels-photo-3434523.jpeg?auto=compress&cs=tinysrgb&w=400',
-    },
-    {
-      name: 'Grilled Chicken Salad',
-      category: 'Lunch',
-      ingredients: ['Chicken breast', 'Mixed greens', 'Avocado', 'Walnuts'],
-      benefits: 'Rich in selenium and healthy fats',
-      image: 'https://images.pexels.com/photos/1059905/pexels-photo-1059905.jpeg?auto=compress&cs=tinysrgb&w=400',
-    },
-    {
-      name: 'Fish Curry',
-      category: 'Dinner',
-      ingredients: ['Salmon', 'Coconut milk', 'Curry leaves', 'Ginger'],
-      benefits: 'Omega-3 fatty acids for fertility',
-      image: 'https://images.pexels.com/photos/725991/pexels-photo-725991.jpeg?auto=compress&cs=tinysrgb&w=400',
-    },
-  ],
-};
-
 export default function NutritionScreen() {
   const { profile } = useUser();
-  const meals = mealPlans[profile.foodPreference] || mealPlans.veg;
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Nutrition</Text>
         <Text style={styles.subtitle}>Eat right for your fertility journey</Text>
-      </View>
-
-      <View style={styles.todayCard}>
-        <View style={styles.todayHeader}>
-          <Apple size={24} color="#4caf50" />
-          <Text style={styles.todayTitle}>Today's Meal Plan</Text>
-        </View>
-        <Text style={styles.todaySubtitle}>
-          Customized for your {profile.foodPreference} preference
-        </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Recommended Meals</Text>
-
-        {meals.map((meal, index) => (
-          <TouchableOpacity key={index} style={styles.mealCard}>
-            <Image source={{ uri: meal.image }} style={styles.mealImage} />
-            <View style={styles.mealContent}>
-              <View style={styles.mealHeader}>
-                <Text style={styles.mealCategory}>{meal.category}</Text>
-              </View>
-              <Text style={styles.mealName}>{meal.name}</Text>
-              <Text style={styles.mealBenefits}>{meal.benefits}</Text>
-              <View style={styles.ingredientsContainer}>
-                <Text style={styles.ingredientsLabel}>Key ingredients:</Text>
-                <Text style={styles.ingredients}>{meal.ingredients.join(', ')}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <ChefHat size={24} color="#1a1a1a" />
-          <Text style={styles.sectionTitle}>Fertility Boosting Foods</Text>
-        </View>
-
-        <View style={styles.foodGrid}>
-          <View style={styles.foodItem}>
-            <Text style={styles.foodIcon}>🥜</Text>
-            <Text style={styles.foodName}>Nuts & Seeds</Text>
-            <Text style={styles.foodBenefit}>Zinc & Vitamin E</Text>
-          </View>
-          <View style={styles.foodItem}>
-            <Text style={styles.foodIcon}>🥑</Text>
-            <Text style={styles.foodName}>Avocado</Text>
-            <Text style={styles.foodBenefit}>Healthy Fats</Text>
-          </View>
-          <View style={styles.foodItem}>
-            <Text style={styles.foodIcon}>🥬</Text>
-            <Text style={styles.foodName}>Leafy Greens</Text>
-            <Text style={styles.foodBenefit}>Folate & Iron</Text>
-          </View>
-          <View style={styles.foodItem}>
-            <Text style={styles.foodIcon}>🫘</Text>
-            <Text style={styles.foodName}>Lentils</Text>
-            <Text style={styles.foodBenefit}>Protein & Fiber</Text>
-          </View>
-          <View style={styles.foodItem}>
-            <Text style={styles.foodIcon}>🥛</Text>
-            <Text style={styles.foodName}>Dairy</Text>
-            <Text style={styles.foodBenefit}>Calcium & D3</Text>
-          </View>
-          <View style={styles.foodItem}>
-            <Text style={styles.foodIcon}>🍇</Text>
-            <Text style={styles.foodName}>Berries</Text>
-            <Text style={styles.foodBenefit}>Antioxidants</Text>
-          </View>
-        </View>
       </View>
 
       <View style={styles.section}>
@@ -214,18 +93,99 @@ export default function NutritionScreen() {
         )}
       </View>
 
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <ChefHat size={24} color="#1a1a1a" />
+          <Text style={styles.sectionTitle}>Fertility Boosting Foods</Text>
+        </View>
+
+        <View style={styles.foodGrid}>
+          <View style={styles.foodItem}>
+            <Text style={styles.foodIcon}>🥜</Text>
+            <Text style={styles.foodName}>Almonds & Walnuts</Text>
+            <Text style={styles.foodBenefit}>Zinc & Omega-3</Text>
+          </View>
+          <View style={styles.foodItem}>
+            <Text style={styles.foodIcon}>🥥</Text>
+            <Text style={styles.foodName}>Coconut</Text>
+            <Text style={styles.foodBenefit}>Healthy Fats</Text>
+          </View>
+          <View style={styles.foodItem}>
+            <Text style={styles.foodIcon}>🥬</Text>
+            <Text style={styles.foodName}>Palak & Methi</Text>
+            <Text style={styles.foodBenefit}>Folate & Iron</Text>
+          </View>
+          <View style={styles.foodItem}>
+            <Text style={styles.foodIcon}>🫘</Text>
+            <Text style={styles.foodName}>Dal & Rajma</Text>
+            <Text style={styles.foodBenefit}>Protein & Fiber</Text>
+          </View>
+          <View style={styles.foodItem}>
+            <Text style={styles.foodIcon}>🥛</Text>
+            <Text style={styles.foodName}>Paneer & Dahi</Text>
+            <Text style={styles.foodBenefit}>Calcium & Probiotics</Text>
+          </View>
+          <View style={styles.foodItem}>
+            <Text style={styles.foodIcon}>🥭</Text>
+            <Text style={styles.foodName}>Mango & Pomegranate</Text>
+            <Text style={styles.foodBenefit}>Vitamin C & Antioxidants</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>🍛 Traditional Indian Pregnancy Foods</Text>
+        </View>
+        
+        <View style={styles.traditionalFoodsGrid}>
+          <View style={styles.traditionalFoodItem}>
+            <Text style={styles.traditionalFoodIcon}>🥛</Text>
+            <Text style={styles.traditionalFoodName}>Golden Milk</Text>
+            <Text style={styles.traditionalFoodBenefit}>Turmeric + Milk for immunity</Text>
+          </View>
+          <View style={styles.traditionalFoodItem}>
+            <Text style={styles.traditionalFoodIcon}>🌰</Text>
+            <Text style={styles.traditionalFoodName}>Soaked Almonds</Text>
+            <Text style={styles.traditionalFoodBenefit}>Protein + Vitamin E</Text>
+          </View>
+          <View style={styles.traditionalFoodItem}>
+            <Text style={styles.traditionalFoodIcon}>🥥</Text>
+            <Text style={styles.traditionalFoodName}>Coconut Water</Text>
+            <Text style={styles.traditionalFoodBenefit}>Natural electrolytes</Text>
+          </View>
+          <View style={styles.traditionalFoodItem}>
+            <Text style={styles.traditionalFoodIcon}>🫘</Text>
+            <Text style={styles.traditionalFoodName}>Moong Dal</Text>
+            <Text style={styles.traditionalFoodBenefit}>Easy to digest protein</Text>
+          </View>
+          <View style={styles.traditionalFoodItem}>
+            <Text style={styles.traditionalFoodIcon}>🥬</Text>
+            <Text style={styles.traditionalFoodName}>Methi Paratha</Text>
+            <Text style={styles.traditionalFoodBenefit}>Iron + Folate</Text>
+          </View>
+          <View style={styles.traditionalFoodItem}>
+            <Text style={styles.traditionalFoodIcon}>🍯</Text>
+            <Text style={styles.traditionalFoodName}>Ghee + Jaggery</Text>
+            <Text style={styles.traditionalFoodBenefit}>Healthy fats + Iron</Text>
+          </View>
+        </View>
+      </View>
+
       <TouchableOpacity style={styles.recipesButton}>
         <Book size={20} color="#ffffff" />
         <Text style={styles.recipesButtonText}>View All Recipes</Text>
       </TouchableOpacity>
 
       <View style={styles.tipsCard}>
-        <Text style={styles.tipsTitle}>Nutrition Tips</Text>
-        <Text style={styles.tip}>✓ Eat within 1 hour of waking up</Text>
-        <Text style={styles.tip}>✓ Include protein in every meal</Text>
-        <Text style={styles.tip}>✓ Stay hydrated - 8-10 glasses daily</Text>
-        <Text style={styles.tip}>✓ Limit processed foods and sugar</Text>
-        <Text style={styles.tip}>✓ Add warming spices like ginger and turmeric</Text>
+        <Text style={styles.tipsTitle}>Indian Pregnancy Nutrition Tips</Text>
+        <Text style={styles.tip}>✓ Start with warm water and soaked almonds</Text>
+        <Text style={styles.tip}>✓ Include dal, rajma, or chana in every meal</Text>
+        <Text style={styles.tip}>✓ Drink coconut water and herbal teas</Text>
+        <Text style={styles.tip}>✓ Eat seasonal Indian fruits like mango, pomegranate</Text>
+        <Text style={styles.tip}>✓ Use ghee, turmeric, and ginger in cooking</Text>
+        <Text style={styles.tip}>✓ Include paneer, dahi, and milk for calcium</Text>
+        <Text style={styles.tip}>✓ Eat palak, methi, and other leafy greens daily</Text>
       </View>
     </ScrollView>
   );
@@ -289,58 +249,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1a1a1a',
     marginBottom: 16,
-  },
-  mealCard: {
-    marginBottom: 20,
-    borderRadius: 16,
-    overflow: 'hidden',
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  mealImage: {
-    width: '100%',
-    height: 180,
-    backgroundColor: '#f5f5f5',
-  },
-  mealContent: {
-    padding: 16,
-  },
-  mealHeader: {
-    marginBottom: 8,
-  },
-  mealCategory: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#4caf50',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  mealName: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 8,
-  },
-  mealBenefits: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 12,
-  },
-  ingredientsContainer: {
-    backgroundColor: '#f5f5f5',
-    padding: 12,
-    borderRadius: 8,
-  },
-  ingredientsLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  ingredients: {
-    fontSize: 14,
-    color: '#666',
   },
   foodGrid: {
     flexDirection: 'row',
@@ -463,5 +371,36 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#2e7d32',
     fontWeight: '600',
+  },
+  traditionalFoodsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  traditionalFoodItem: {
+    width: '31%',
+    padding: 16,
+    backgroundColor: '#fff8f0',
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ffe082',
+  },
+  traditionalFoodIcon: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  traditionalFoodName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  traditionalFoodBenefit: {
+    fontSize: 11,
+    color: '#e65100',
+    textAlign: 'center',
+    fontWeight: '500',
   },
 });
