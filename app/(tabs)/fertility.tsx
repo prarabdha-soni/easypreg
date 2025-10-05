@@ -21,6 +21,24 @@ const wellnessActivities = [
   { title: 'Evening Walk', duration: '20 min', icon: '🚶‍♀️', color: '#FFA07A' },
 ];
 
+const pcosSymptoms = [
+  { name: 'Irregular Periods', severity: 'High', icon: '📅', color: '#FF6B6B' },
+  { name: 'Weight Gain', severity: 'Medium', icon: '⚖️', color: '#4ECDC4' },
+  { name: 'Hair Growth', severity: 'Medium', icon: '💇‍♀️', color: '#45B7D1' },
+  { name: 'Acne', severity: 'Low', icon: '🔴', color: '#96CEB4' },
+  { name: 'Mood Swings', severity: 'High', icon: '😔', color: '#FFEAA7' },
+  { name: 'Insulin Resistance', severity: 'High', icon: '🍯', color: '#DDA0DD' },
+];
+
+const healthJourneyStages = [
+  { stage: 'First Period', age: '10-16', description: 'Understanding your cycle', icon: '🌸', color: '#FFB6C1' },
+  { stage: 'Teen Health', age: '13-19', description: 'Building healthy habits', icon: '👧', color: '#FFC0CB' },
+  { stage: 'PCOS Management', age: '15-35', description: 'Managing symptoms', icon: '🦋', color: '#DDA0DD' },
+  { stage: 'Fertility Planning', age: '20-35', description: 'Optimizing for conception', icon: '💕', color: '#FF69B4' },
+  { stage: 'Pregnancy', age: '20-40', description: 'Healthy pregnancy journey', icon: '🤱', color: '#98FB98' },
+  { stage: 'Postpartum', age: '20-40', description: 'Recovery and care', icon: '👶', color: '#87CEEB' },
+];
+
 export default function FertilityScreen() {
   const { profile } = useUser();
 
@@ -82,6 +100,146 @@ export default function FertilityScreen() {
         ovulationDate: nextOvulationDate
       };
     }
+  };
+
+  // Advanced Health Predictions based on cycle data
+  const calculatePCOSRisk = () => {
+    const cycleDay = calculateCycleDay();
+    const cycleLength = profile.cycleLength;
+    const isRegular = profile.isRegular;
+    
+    let riskScore = 0;
+    let riskLevel = 'Low';
+    let riskPercentage = 25;
+    
+    // Irregular cycles (major PCOS indicator)
+    if (!isRegular || cycleLength < 21 || cycleLength > 35) {
+      riskScore += 40;
+    }
+    
+    // Very short cycles (< 21 days)
+    if (cycleLength < 21) {
+      riskScore += 30;
+    }
+    
+    // Very long cycles (> 35 days)
+    if (cycleLength > 35) {
+      riskScore += 35;
+    }
+    
+    // Extremely long cycles (> 45 days)
+    if (cycleLength > 45) {
+      riskScore += 50;
+    }
+    
+    // Age factor (PCOS more common in reproductive age)
+    if (profile.age && profile.age >= 15 && profile.age <= 35) {
+      riskScore += 10;
+    }
+    
+    // Determine risk level
+    if (riskScore >= 70) {
+      riskLevel = 'High';
+      riskPercentage = 85;
+    } else if (riskScore >= 40) {
+      riskLevel = 'Medium';
+      riskPercentage = 60;
+    } else {
+      riskLevel = 'Low';
+      riskPercentage = 25;
+    }
+    
+    return { riskScore, riskLevel, riskPercentage };
+  };
+
+  const calculateEndometriosisRisk = () => {
+    const cycleDay = calculateCycleDay();
+    const cycleLength = profile.cycleLength;
+    
+    let riskScore = 0;
+    let riskLevel = 'Low';
+    let riskPercentage = 20;
+    
+    // Short cycles (endometriosis can cause shorter cycles)
+    if (cycleLength < 24) {
+      riskScore += 25;
+    }
+    
+    // Very heavy or painful periods (would need symptom tracking)
+    // For now, we'll use cycle length as a proxy
+    if (cycleLength < 26) {
+      riskScore += 20;
+    }
+    
+    // Age factor (endometriosis often develops in 20s-30s)
+    if (profile.age && profile.age >= 20 && profile.age <= 40) {
+      riskScore += 15;
+    }
+    
+    // Family history would increase risk (not available in current data)
+    
+    if (riskScore >= 50) {
+      riskLevel = 'High';
+      riskPercentage = 75;
+    } else if (riskScore >= 30) {
+      riskLevel = 'Medium';
+      riskPercentage = 45;
+    } else {
+      riskLevel = 'Low';
+      riskPercentage = 20;
+    }
+    
+    return { riskScore, riskLevel, riskPercentage };
+  };
+
+  const calculateFertilityScore = () => {
+    const cycleDay = calculateCycleDay();
+    const cycleLength = profile.cycleLength;
+    const isRegular = profile.isRegular;
+    const age = profile.age || 25;
+    
+    let fertilityScore = 0;
+    let scorePercentage = 0;
+    
+    // Regular cycles (excellent for fertility)
+    if (isRegular && cycleLength >= 26 && cycleLength <= 32) {
+      fertilityScore += 40;
+    }
+    
+    // Optimal cycle length (28-30 days)
+    if (cycleLength >= 28 && cycleLength <= 30) {
+      fertilityScore += 30;
+    }
+    
+    // Age factor (peak fertility 20-30)
+    if (age >= 20 && age <= 30) {
+      fertilityScore += 25;
+    } else if (age >= 31 && age <= 35) {
+      fertilityScore += 15;
+    } else if (age >= 36 && age <= 40) {
+      fertilityScore += 5;
+    }
+    
+    // Cycle regularity bonus
+    if (isRegular) {
+      fertilityScore += 20;
+    }
+    
+    // Calculate percentage
+    scorePercentage = Math.min(fertilityScore, 100);
+    
+    let scoreLevel = 'Good';
+    if (scorePercentage >= 80) {
+      scoreLevel = 'Excellent';
+    } else if (scorePercentage >= 60) {
+      scoreLevel = 'Good';
+    } else if (scorePercentage >= 40) {
+      scoreLevel = 'Fair';
+    } else {
+      scoreLevel = 'Needs Attention';
+    }
+    
+    return { fertilityScore, scorePercentage, scoreLevel };
   };
 
   const renderCalendar = () => {
@@ -218,46 +376,202 @@ export default function FertilityScreen() {
         </View>
       </View>
 
-      {/* Fertility-Boosting Foods */}
-      <View style={styles.foodsSection}>
+
+
+      {/* Smart Notification System */}
+      <View style={styles.notificationSection}>
         <View style={styles.sectionHeader}>
-          <Apple size={24} color="#EC4899" />
-          <Text style={styles.sectionTitle}>Fertility-Boosting Foods</Text>
+          <Zap size={24} color="#EC4899" />
+          <Text style={styles.sectionTitle}>Smart Notifications</Text>
         </View>
+        <Text style={styles.sectionSubtitle}>AI-powered daily guidance and reminders</Text>
         
-        <View style={styles.foodsGrid}>
-          {fertilityFoods.map((food, index) => (
-            <TouchableOpacity key={index} style={styles.foodCard}>
-              <View style={[styles.foodIcon, { backgroundColor: food.color }]}>
-                <Text style={styles.foodEmoji}>{food.icon}</Text>
-              </View>
-              <Text style={styles.foodName}>{food.name}</Text>
-              <Text style={styles.foodBenefit}>{food.benefit}</Text>
-            </TouchableOpacity>
-          ))}
+        <View style={styles.notificationCards}>
+          <TouchableOpacity style={styles.notificationCard}>
+            <View style={styles.notificationIcon}>
+              <Clock size={20} color="#EC4899" />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Period Reminder</Text>
+              <Text style={styles.notificationSubtitle}>Expected in 3 days</Text>
+              <Text style={styles.notificationTime}>Tomorrow at 8:00 AM</Text>
+            </View>
+            <View style={styles.notificationStatus}>
+              <Text style={styles.statusText}>Active</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.notificationCard}>
+            <View style={styles.notificationIcon}>
+              <Heart size={20} color="#EC4899" />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Fertile Window</Text>
+              <Text style={styles.notificationSubtitle}>Peak fertility days</Text>
+              <Text style={styles.notificationTime}>Daily at 9:00 AM</Text>
+            </View>
+            <View style={styles.notificationStatus}>
+              <Text style={styles.statusText}>Active</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.notificationCard}>
+            <View style={styles.notificationIcon}>
+              <Brain size={20} color="#EC4899" />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Health Check-in</Text>
+              <Text style={styles.notificationSubtitle}>Log symptoms & mood</Text>
+              <Text style={styles.notificationTime}>Daily at 7:00 PM</Text>
+            </View>
+            <View style={styles.notificationStatus}>
+              <Text style={styles.statusText}>Active</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Wellness Activities */}
-      <View style={styles.wellnessSection}>
+      {/* Psychological Engagement System */}
+      <View style={styles.engagementSection}>
         <View style={styles.sectionHeader}>
-          <Heart size={24} color="#EC4899" />
-          <Text style={styles.sectionTitle}>Daily Wellness</Text>
+          <TrendingUp size={24} color="#EC4899" />
+          <Text style={styles.sectionTitle}>Your Health Journey</Text>
         </View>
+        <Text style={styles.sectionSubtitle}>Join 50,000+ women tracking their health</Text>
         
-        <View style={styles.activitiesGrid}>
-          {wellnessActivities.map((activity, index) => (
-            <TouchableOpacity key={index} style={styles.activityCard}>
-              <LinearGradient
-                colors={[activity.color, `${activity.color}80`]}
-                style={styles.activityGradient}
-              >
-                <Text style={styles.activityIcon}>{activity.icon}</Text>
-                <Text style={styles.activityTitle}>{activity.title}</Text>
-                <Text style={styles.activityDuration}>{activity.duration}</Text>
-              </LinearGradient>
+        {/* Social Proof & Community */}
+        <View style={styles.socialProofSection}>
+          <View style={styles.socialProofCard}>
+            <View style={styles.socialProofHeader}>
+              <Text style={styles.socialProofTitle}>🔥 Trending Now</Text>
+              <Text style={styles.socialProofSubtitle}>50,247 women active today</Text>
+            </View>
+            <View style={styles.socialProofStats}>
+              <View style={styles.socialStat}>
+                <Text style={styles.socialStatNumber}>2.3K</Text>
+                <Text style={styles.socialStatLabel}>logged symptoms</Text>
+              </View>
+              <View style={styles.socialStat}>
+                <Text style={styles.socialStatNumber}>847</Text>
+                <Text style={styles.socialStatLabel}>achieved goals</Text>
+              </View>
+              <View style={styles.socialStat}>
+                <Text style={styles.socialStatNumber}>156</Text>
+                <Text style={styles.socialStatLabel}>new streaks</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Scarcity & Urgency */}
+        <View style={styles.urgencySection}>
+          <View style={styles.urgencyCard}>
+            <LinearGradient
+              colors={['#FF6B6B', '#FF8E8E']}
+              style={styles.urgencyGradient}
+            >
+              <Text style={styles.urgencyEmoji}>⏰</Text>
+              <Text style={styles.urgencyTitle}>Limited Time!</Text>
+              <Text style={styles.urgencySubtitle}>Premium insights expire in 2 days</Text>
+              <View style={styles.urgencyTimer}>
+                <Text style={styles.timerText}>47:23:15</Text>
+              </View>
+            </LinearGradient>
+          </View>
+        </View>
+
+        {/* Variable Reward System */}
+        <View style={styles.rewardsSection}>
+          <Text style={styles.rewardsTitle}>🎁 Daily Rewards</Text>
+          <View style={styles.rewardsGrid}>
+            <TouchableOpacity style={styles.rewardCard}>
+              <View style={styles.rewardIcon}>
+                <Text style={styles.rewardEmoji}>🎯</Text>
+              </View>
+              <Text style={styles.rewardTitle}>Mystery Reward</Text>
+              <Text style={styles.rewardSubtitle}>Log symptoms to unlock!</Text>
+              <View style={styles.rewardProgress}>
+                <View style={[styles.rewardProgressFill, { width: '75%' }]} />
+              </View>
             </TouchableOpacity>
-          ))}
+
+            <TouchableOpacity style={styles.rewardCard}>
+              <View style={styles.rewardIcon}>
+                <Text style={styles.rewardEmoji}>💎</Text>
+              </View>
+              <Text style={styles.rewardTitle}>Rare Achievement</Text>
+              <Text style={styles.rewardSubtitle}>Only 2% unlock this!</Text>
+              <View style={styles.rewardProgress}>
+                <View style={[styles.rewardProgressFill, { width: '90%' }]} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Loss Aversion */}
+        <View style={styles.lossAversionSection}>
+          <View style={styles.lossCard}>
+            <Text style={styles.lossTitle}>⚠️ Don't Lose Your Streak!</Text>
+            <Text style={styles.lossSubtitle}>You're 2 days away from your longest streak ever</Text>
+            <View style={styles.lossStats}>
+              <View style={styles.lossStat}>
+                <Text style={styles.lossStatNumber}>23</Text>
+                <Text style={styles.lossStatLabel}>Current Streak</Text>
+              </View>
+              <View style={styles.lossStat}>
+                <Text style={styles.lossStatNumber}>25</Text>
+                <Text style={styles.lossStatLabel}>Personal Best</Text>
+              </View>
+            </View>
+            <TouchableOpacity style={styles.lossButton}>
+              <Text style={styles.lossButtonText}>Continue Streak Now</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Social Comparison */}
+        <View style={styles.comparisonSection}>
+          <Text style={styles.comparisonTitle}>🏆 Leaderboard</Text>
+          <View style={styles.leaderboard}>
+            <View style={styles.leaderboardItem}>
+              <View style={styles.leaderboardRank}>
+                <Text style={styles.rankNumber}>1</Text>
+              </View>
+              <View style={styles.leaderboardInfo}>
+                <Text style={styles.leaderboardName}>Sarah M.</Text>
+                <Text style={styles.leaderboardScore}>98/100 Health Score</Text>
+              </View>
+              <View style={styles.leaderboardBadge}>
+                <Text style={styles.badgeText}>👑</Text>
+              </View>
+            </View>
+            
+            <View style={styles.leaderboardItem}>
+              <View style={styles.leaderboardRank}>
+                <Text style={styles.rankNumber}>2</Text>
+              </View>
+              <View style={styles.leaderboardInfo}>
+                <Text style={styles.leaderboardName}>Priya K.</Text>
+                <Text style={styles.leaderboardScore}>95/100 Health Score</Text>
+              </View>
+              <View style={styles.leaderboardBadge}>
+                <Text style={styles.badgeText}>🥈</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.leaderboardItem, styles.currentUserItem]}>
+              <View style={styles.leaderboardRank}>
+                <Text style={styles.rankNumber}>3</Text>
+              </View>
+              <View style={styles.leaderboardInfo}>
+                <Text style={styles.leaderboardName}>You</Text>
+                <Text style={styles.leaderboardScore}>85/100 Health Score</Text>
+              </View>
+              <View style={styles.leaderboardBadge}>
+                <Text style={styles.badgeText}>🥉</Text>
+              </View>
+            </View>
+          </View>
         </View>
       </View>
 
@@ -270,50 +584,77 @@ export default function FertilityScreen() {
           </View>
           
           <View style={styles.healthRisks}>
-            <View style={styles.riskItem}>
-              <View style={styles.riskHeader}>
-                <Text style={styles.riskName}>PCOS Risk Assessment</Text>
-                <View style={styles.riskLevel}>
-                  <Text style={styles.riskLevelText}>Low Risk</Text>
-                </View>
-              </View>
-              <View style={styles.riskProgress}>
-                <View style={[styles.riskProgressFill, { width: '25%', backgroundColor: '#10B981' }]} />
-              </View>
-              <Text style={styles.riskDescription}>
-                Based on your cycle patterns, you show low risk for PCOS. Continue monitoring.
-              </Text>
-            </View>
+            {(() => {
+              const pcosRisk = calculatePCOSRisk();
+              const endometriosisRisk = calculateEndometriosisRisk();
+              const fertilityScore = calculateFertilityScore();
+              
+              return (
+                <>
+                  <View style={styles.riskItem}>
+                    <View style={styles.riskHeader}>
+                      <Text style={styles.riskName}>PCOS Risk Assessment</Text>
+                      <View style={[styles.riskLevel, { backgroundColor: pcosRisk.riskLevel === 'High' ? '#FF6B6B' : pcosRisk.riskLevel === 'Medium' ? '#F59E0B' : '#10B981' }]}>
+                        <Text style={styles.riskLevelText}>{pcosRisk.riskLevel} Risk</Text>
+                      </View>
+                    </View>
+                    <View style={styles.riskProgress}>
+                      <View style={[styles.riskProgressFill, { width: `${pcosRisk.riskPercentage}%`, backgroundColor: pcosRisk.riskLevel === 'High' ? '#FF6B6B' : pcosRisk.riskLevel === 'Medium' ? '#F59E0B' : '#10B981' }]} />
+                    </View>
+                    <Text style={styles.riskDescription}>
+                      {pcosRisk.riskLevel === 'High' 
+                        ? `High risk detected based on cycle patterns (${profile.cycleLength} days). Consider consulting a specialist.`
+                        : pcosRisk.riskLevel === 'Medium'
+                        ? `Medium risk based on cycle patterns (${profile.cycleLength} days). Monitor symptoms closely.`
+                        : `Based on your cycle patterns (${profile.cycleLength} days), you show low risk for PCOS. Continue monitoring.`
+                      }
+                    </Text>
+                  </View>
 
-            <View style={styles.riskItem}>
-              <View style={styles.riskHeader}>
-                <Text style={styles.riskName}>Endometriosis Detection</Text>
-                <View style={styles.riskLevel}>
-                  <Text style={styles.riskLevelText}>Monitor</Text>
-                </View>
-              </View>
-              <View style={styles.riskProgress}>
-                <View style={[styles.riskProgressFill, { width: '40%', backgroundColor: '#F59E0B' }]} />
-              </View>
-              <Text style={styles.riskDescription}>
-                Some symptoms detected. Consider consulting a specialist for evaluation.
-              </Text>
-            </View>
+                  <View style={styles.riskItem}>
+                    <View style={styles.riskHeader}>
+                      <Text style={styles.riskName}>Endometriosis Detection</Text>
+                      <View style={[styles.riskLevel, { backgroundColor: endometriosisRisk.riskLevel === 'High' ? '#FF6B6B' : endometriosisRisk.riskLevel === 'Medium' ? '#F59E0B' : '#10B981' }]}>
+                        <Text style={styles.riskLevelText}>{endometriosisRisk.riskLevel} Risk</Text>
+                      </View>
+                    </View>
+                    <View style={styles.riskProgress}>
+                      <View style={[styles.riskProgressFill, { width: `${endometriosisRisk.riskPercentage}%`, backgroundColor: endometriosisRisk.riskLevel === 'High' ? '#FF6B6B' : endometriosisRisk.riskLevel === 'Medium' ? '#F59E0B' : '#10B981' }]} />
+                    </View>
+                    <Text style={styles.riskDescription}>
+                      {endometriosisRisk.riskLevel === 'High' 
+                        ? `High risk detected. Consider consulting a specialist for evaluation.`
+                        : endometriosisRisk.riskLevel === 'Medium'
+                        ? `Medium risk detected. Monitor for symptoms like severe cramps and heavy bleeding.`
+                        : `Low risk based on current cycle patterns. Continue monitoring.`
+                      }
+                    </Text>
+                  </View>
 
-            <View style={styles.riskItem}>
-              <View style={styles.riskHeader}>
-                <Text style={styles.riskName}>Fertility Health Score</Text>
-                <View style={styles.riskLevel}>
-                  <Text style={styles.riskLevelText}>Good</Text>
-                </View>
-              </View>
-              <View style={styles.riskProgress}>
-                <View style={[styles.riskProgressFill, { width: '75%', backgroundColor: '#EC4899' }]} />
-              </View>
-              <Text style={styles.riskDescription}>
-                Your fertility indicators are positive. Maintain healthy lifestyle habits.
-              </Text>
-            </View>
+                  <View style={styles.riskItem}>
+                    <View style={styles.riskHeader}>
+                      <Text style={styles.riskName}>Fertility Health Score</Text>
+                      <View style={[styles.riskLevel, { backgroundColor: fertilityScore.scoreLevel === 'Excellent' ? '#10B981' : fertilityScore.scoreLevel === 'Good' ? '#22C55E' : fertilityScore.scoreLevel === 'Fair' ? '#F59E0B' : '#FF6B6B' }]}>
+                        <Text style={styles.riskLevelText}>{fertilityScore.scoreLevel}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.riskProgress}>
+                      <View style={[styles.riskProgressFill, { width: `${fertilityScore.scorePercentage}%`, backgroundColor: fertilityScore.scoreLevel === 'Excellent' ? '#10B981' : fertilityScore.scoreLevel === 'Good' ? '#22C55E' : fertilityScore.scoreLevel === 'Fair' ? '#F59E0B' : '#FF6B6B' }]} />
+                    </View>
+                    <Text style={styles.riskDescription}>
+                      {fertilityScore.scoreLevel === 'Excellent' 
+                        ? `Excellent fertility indicators! Your cycle patterns (${profile.cycleLength} days) and age (${profile.age || 'N/A'}) are optimal.`
+                        : fertilityScore.scoreLevel === 'Good'
+                        ? `Good fertility indicators. Your cycle patterns are healthy. Maintain current lifestyle habits.`
+                        : fertilityScore.scoreLevel === 'Fair'
+                        ? `Fair fertility indicators. Consider lifestyle improvements and cycle optimization.`
+                        : `Fertility indicators need attention. Consider consulting a specialist for personalized guidance.`
+                      }
+                    </Text>
+                  </View>
+                </>
+              );
+            })()}
           </View>
 
           <TouchableOpacity style={styles.detailedAnalysisButton}>
@@ -795,5 +1136,518 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  journeySection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  journeyScroll: {
+    marginBottom: 16,
+  },
+  journeyCard: {
+    width: 140,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    marginRight: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  journeyIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  journeyEmoji: {
+    fontSize: 24,
+  },
+  journeyStage: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  journeyAge: {
+    fontSize: 12,
+    color: '#EC4899',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  journeyDescription: {
+    fontSize: 11,
+    color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  pcosSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  pcosGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 16,
+  },
+  pcosCard: {
+    width: (width - 64) / 2,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  pcosIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f8f9fa',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  pcosEmoji: {
+    fontSize: 20,
+  },
+  pcosName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  severityBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  severityText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  pcosActionButton: {
+    backgroundColor: '#EC4899',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
+  pcosActionText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  notificationSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  notificationCards: {
+    gap: 12,
+  },
+  notificationCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  notificationIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FCE7F3',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 2,
+  },
+  notificationSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 2,
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: '#EC4899',
+    fontWeight: '500',
+  },
+  notificationStatus: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  engagementSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  engagementGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  engagementCard: {
+    width: (width - 64) / 2,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  engagementGradient: {
+    padding: 16,
+    alignItems: 'center',
+    minHeight: 120,
+    justifyContent: 'center',
+  },
+  engagementEmoji: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  engagementTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  engagementSubtitle: {
+    fontSize: 14,
+    color: '#ffffff',
+    opacity: 0.9,
+    textAlign: 'center',
+  },
+  socialProofSection: {
+    marginBottom: 20,
+  },
+  socialProofCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  socialProofHeader: {
+    marginBottom: 16,
+  },
+  socialProofTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  socialProofSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  socialProofStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  socialStat: {
+    alignItems: 'center',
+  },
+  socialStatNumber: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#EC4899',
+    marginBottom: 4,
+  },
+  socialStatLabel: {
+    fontSize: 12,
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  urgencySection: {
+    marginBottom: 20,
+  },
+  urgencyCard: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  urgencyGradient: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  urgencyEmoji: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  urgencyTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 4,
+  },
+  urgencySubtitle: {
+    fontSize: 14,
+    color: '#ffffff',
+    opacity: 0.9,
+    marginBottom: 12,
+  },
+  urgencyTimer: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  timerText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  rewardsSection: {
+    marginBottom: 20,
+  },
+  rewardsTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 12,
+  },
+  rewardsGrid: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  rewardCard: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  rewardIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FCE7F3',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  rewardEmoji: {
+    fontSize: 20,
+  },
+  rewardTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  rewardSubtitle: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginBottom: 8,
+  },
+  rewardProgress: {
+    height: 4,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  rewardProgressFill: {
+    height: '100%',
+    backgroundColor: '#EC4899',
+    borderRadius: 2,
+  },
+  lossAversionSection: {
+    marginBottom: 20,
+  },
+  lossCard: {
+    backgroundColor: '#FFF3CD',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#F59E0B',
+  },
+  lossTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#92400E',
+    marginBottom: 4,
+  },
+  lossSubtitle: {
+    fontSize: 14,
+    color: '#92400E',
+    marginBottom: 12,
+  },
+  lossStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 16,
+  },
+  lossStat: {
+    alignItems: 'center',
+  },
+  lossStatNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#92400E',
+    marginBottom: 4,
+  },
+  lossStatLabel: {
+    fontSize: 12,
+    color: '#92400E',
+  },
+  lossButton: {
+    backgroundColor: '#F59E0B',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
+  lossButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  comparisonSection: {
+    marginBottom: 20,
+  },
+  comparisonTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 12,
+  },
+  leaderboard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  leaderboardItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  currentUserItem: {
+    backgroundColor: '#FCE7F3',
+    borderRadius: 8,
+    marginHorizontal: -8,
+    paddingHorizontal: 8,
+  },
+  leaderboardRank: {
+    width: 30,
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  rankNumber: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1a1a1a',
+  },
+  leaderboardInfo: {
+    flex: 1,
+  },
+  leaderboardName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 2,
+  },
+  leaderboardScore: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  leaderboardBadge: {
+    width: 30,
+    alignItems: 'center',
+  },
+  badgeText: {
+    fontSize: 20,
   },
 });

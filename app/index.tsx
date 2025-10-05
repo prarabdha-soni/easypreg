@@ -17,7 +17,8 @@ export default function WelcomeScreen() {
         </View>
 
         <Text style={styles.logo}>EasyPreg</Text>
-        <Text style={styles.tagline}>Your fertility friend, the Indian way.</Text>
+        <Text style={styles.tagline}>Your complete women's health companion</Text>
+        <Text style={styles.subtagline}>From first periods to motherhood - we guide you every step of the way</Text>
 
         <View style={styles.illustrationContainer}>
           <Text style={styles.illustration}>🌸</Text>
@@ -61,7 +62,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtagline: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
     marginBottom: 60,
+    lineHeight: 20,
   },
   illustrationContainer: {
     marginBottom: 60,
