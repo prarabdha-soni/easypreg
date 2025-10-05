@@ -9,25 +9,58 @@ const months = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+const generateMonths = () => {
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  
+  // Generate months from current month to next 12 months (descending order)
+  const monthList = [];
+  for (let i = 0; i < 12; i++) {
+    const monthIndex = (currentMonth + i) % 12;
+    const year = currentYear + Math.floor((currentMonth + i) / 12);
+    monthList.push({
+      name: months[monthIndex],
+      index: monthIndex,
+      year: year
+    });
+  }
+  return monthList;
+};
+
 const generateDays = (month: number, year: number) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentDay = today.getDate();
+  
+  // If it's the current year and month, only show days from today onwards
+  if (year === currentYear && month === currentMonth) {
+    return Array.from({ length: daysInMonth - currentDay + 1 }, (_, i) => currentDay + i);
+  }
+  
+  // For future months, show all days
   return Array.from({ length: daysInMonth }, (_, i) => i + 1);
 };
 
 const generateYears = () => {
   const currentYear = new Date().getFullYear();
-  return Array.from({ length: 10 }, (_, i) => currentYear - 5 + i);
+  // Generate years from current year to next 5 years (descending order)
+  return Array.from({ length: 6 }, (_, i) => currentYear + (5 - i));
 };
 
 export default function PeriodDateScreen() {
   const router = useRouter();
   const { updateProfile } = useUser();
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   
-  const [selectedMonth, setSelectedMonth] = useState(selectedDate.getMonth());
-  const [selectedDay, setSelectedDay] = useState(selectedDate.getDate());
-  const [selectedYear, setSelectedYear] = useState(selectedDate.getFullYear());
+  const today = new Date();
+  const [selectedDate, setSelectedDate] = useState(today);
+  
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
+  const [selectedDay, setSelectedDay] = useState(today.getDate());
+  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
   const handleDateSelect = () => {
     const date = new Date(selectedYear, selectedMonth, selectedDay);
@@ -54,6 +87,7 @@ export default function PeriodDateScreen() {
 
   const days = generateDays(selectedMonth, selectedYear);
   const years = generateYears();
+  const monthList = generateMonths();
 
   return (
     <View style={styles.container}>
@@ -62,9 +96,9 @@ export default function PeriodDateScreen() {
           <Calendar size={48} color="#e91e63" />
         </View>
         
-        <Text style={styles.title}>When was your last period?</Text>
+        <Text style={styles.title}>When is your next period?</Text>
         <Text style={styles.subtitle}>
-          This helps us track your fertile window and provide personalized insights
+          Select a future date to help us track your cycle and provide personalized insights
         </Text>
 
         <TouchableOpacity 
@@ -105,22 +139,25 @@ export default function PeriodDateScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.pickerContent}
               >
-                {months.map((month, index) => (
+                {monthList.map((month, index) => (
                   <TouchableOpacity
                     key={index}
                     style={[
                       styles.pickerItem,
-                      selectedMonth === index && styles.pickerItemSelected
+                      selectedMonth === month.index && selectedYear === month.year && styles.pickerItemSelected
                     ]}
-                    onPress={() => setSelectedMonth(index)}
+                    onPress={() => {
+                      setSelectedMonth(month.index);
+                      setSelectedYear(month.year);
+                    }}
                   >
                     <Text style={[
                       styles.pickerItemText,
-                      selectedMonth === index && styles.pickerItemTextSelected
+                      selectedMonth === month.index && selectedYear === month.year && styles.pickerItemTextSelected
                     ]}>
-                      {month}
+                      {month.name} {month.year}
                     </Text>
-                    {selectedMonth === index && <View style={styles.selectionLine} />}
+                    {selectedMonth === month.index && selectedYear === month.year && <View style={styles.selectionLine} />}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -146,31 +183,6 @@ export default function PeriodDateScreen() {
                       {day}
                     </Text>
                     {selectedDay === day && <View style={styles.selectionLine} />}
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-
-              <ScrollView 
-                style={styles.pickerColumn}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.pickerContent}
-              >
-                {years.map((year) => (
-                  <TouchableOpacity
-                    key={year}
-                    style={[
-                      styles.pickerItem,
-                      selectedYear === year && styles.pickerItemSelected
-                    ]}
-                    onPress={() => setSelectedYear(year)}
-                  >
-                    <Text style={[
-                      styles.pickerItemText,
-                      selectedYear === year && styles.pickerItemTextSelected
-                    ]}>
-                      {year}
-                    </Text>
-                    {selectedYear === year && <View style={styles.selectionLine} />}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
