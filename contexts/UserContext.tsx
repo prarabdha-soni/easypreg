@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { NotificationService } from '@/services/NotificationService';
 
 interface UserProfile {
   gender: 'woman' | 'man' | 'couple' | null;
@@ -41,9 +42,28 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  const [notificationService] = useState(() => NotificationService.getInstance());
 
-  const updateProfile = (updates: Partial<UserProfile>) => {
+  useEffect(() => {
+    // Initialize notification service when app starts
+    notificationService.initialize();
+  }, [notificationService]);
+
+  const updateProfile = async (updates: Partial<UserProfile>) => {
     setProfile(prev => ({ ...prev, ...updates }));
+    
+    // Update notification service when cycle data changes
+    if (updates.lastPeriodDate && updates.cycleLength) {
+      try {
+        await notificationService.updateCycleData(
+          updates.lastPeriodDate,
+          updates.cycleLength,
+          5 // Default period length
+        );
+      } catch (error) {
+        console.error('Error updating notification service:', error);
+      }
+    }
   };
 
   return (

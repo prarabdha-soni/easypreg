@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
-import { Baby, Calendar, Heart, AlertTriangle, CheckCircle, XCircle, Info } from 'lucide-react-native';
+import { Baby, Calendar, Heart, AlertTriangle, CheckCircle, XCircle, Info, Settings, Plus, ChevronRight, Play, BookOpen, Users, MessageCircle } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 
@@ -8,393 +8,202 @@ const { width } = Dimensions.get('window');
 
 const pregnancyData = {
   1: {
-    month: 'Month 1 (Weeks 1-4)',
-    week: '4 weeks',
+    week: 'Week 4',
+    month: 'Month 1',
     fruitSize: 'Poppy Seed',
     fruitEmoji: '🌱',
     babySize: '2-4mm',
     babyImage: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Missed period',
-      'Nausea and morning sickness',
-      'Fatigue and tiredness',
-      'Breast tenderness',
-      'Frequent urination',
-      'Mood swings'
-    ],
-    foodsToEat: [
-      'Folic acid rich foods (leafy greens, citrus fruits)',
-      'Iron-rich foods (lean meats, beans)',
-      'Whole grains and complex carbohydrates',
-      'Fresh fruits and vegetables',
-      'Dairy products for calcium',
-      'Plenty of water'
-    ],
-    foodsToAvoid: [
-      'Raw or undercooked meat',
-      'Unpasteurized dairy products',
-      'High-mercury fish (shark, swordfish)',
-      'Excessive caffeine (limit to 200mg/day)',
-      'Alcohol',
-      'Raw eggs'
-    ],
-    tips: [
-      'Start taking prenatal vitamins',
-      'Get plenty of rest',
-      'Eat small, frequent meals',
-      'Stay hydrated',
-      'Begin gentle exercise routine'
-    ]
+    symptoms: ['Missed period', 'Nausea', 'Fatigue', 'Breast tenderness'],
+    tips: ['Start prenatal vitamins', 'Get plenty of rest', 'Eat small frequent meals'],
+    milestones: ['First prenatal visit', 'Blood tests', 'Ultrasound scan']
   },
   2: {
-    month: 'Month 2 (Weeks 5-8)',
-    week: '8 weeks',
+    week: 'Week 8',
+    month: 'Month 2',
     fruitSize: 'Blueberry',
     fruitEmoji: '🫐',
     babySize: '1.6cm',
     babyImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Continued morning sickness',
-      'Increased fatigue',
-      'Breast changes and tenderness',
-      'Food aversions and cravings',
-      'Mood swings and emotional changes',
-      'Bloating and gas'
-    ],
-    foodsToEat: [
-      'Ginger tea for nausea relief',
-      'Bland foods (crackers, rice)',
-      'Protein-rich snacks',
-      'Vitamin B6 rich foods (bananas, nuts)',
-      'Small, frequent meals',
-      'Herbal teas (peppermint, chamomile)'
-    ],
-    foodsToAvoid: [
-      'Spicy and greasy foods',
-      'Strong-smelling foods',
-      'Large meals',
-      'Foods that trigger nausea',
-      'Raw fish and sushi',
-      'Excessive sugar'
-    ],
-    tips: [
-      'Keep crackers by your bedside',
-      'Eat before getting out of bed',
-      'Stay well-hydrated',
-      'Get fresh air and light exercise',
-      'Consider acupuncture for nausea'
-    ]
+    symptoms: ['Morning sickness', 'Increased fatigue', 'Food aversions', 'Mood swings'],
+    tips: ['Keep crackers by bedside', 'Stay hydrated', 'Get fresh air'],
+    milestones: ['Heartbeat detection', 'Organ development', 'Limb buds forming']
   },
   3: {
-    month: 'Month 3 (Weeks 9-12)',
-    week: '12 weeks',
+    week: 'Week 12',
+    month: 'Month 3',
     fruitSize: 'Lime',
     fruitEmoji: '🍋',
     babySize: '5.4cm',
     babyImage: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Nausea may start to improve',
-      'Increased energy levels',
-      'Breast tenderness continues',
-      'Frequent urination',
-      'Constipation',
-      'Mood swings'
-    ],
-    foodsToEat: [
-      'High-fiber foods (whole grains, fruits)',
-      'Iron-rich foods (spinach, lean meat)',
-      'Omega-3 rich foods (salmon, walnuts)',
-      'Calcium-rich foods (dairy, leafy greens)',
-      'Vitamin C foods (citrus, berries)',
-      'Plenty of water and fluids'
-    ],
-    foodsToAvoid: [
-      'Processed foods high in sodium',
-      'Excessive caffeine',
-      'Raw or undercooked foods',
-      'High-mercury fish',
-      'Unpasteurized cheeses',
-      'Artificial sweeteners'
-    ],
-    tips: [
-      'Focus on nutrient-dense foods',
-      'Stay active with gentle exercise',
-      'Get adequate sleep',
-      'Manage stress with relaxation techniques',
-      'Continue prenatal vitamins'
-    ]
+    symptoms: ['Nausea improving', 'Energy returning', 'Frequent urination', 'Constipation'],
+    tips: ['Focus on nutrient-dense foods', 'Stay active', 'Get adequate sleep'],
+    milestones: ['First trimester screening', 'NT scan', 'Genetic testing']
   },
   4: {
-    month: 'Month 4 (Weeks 13-16)',
-    week: '16 weeks',
+    week: 'Week 16',
+    month: 'Month 4',
     fruitSize: 'Avocado',
     fruitEmoji: '🥑',
     babySize: '11.6cm',
     babyImage: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Energy levels improve',
-      'Nausea typically subsides',
-      'Appetite increases',
-      'Breast changes continue',
-      'Possible round ligament pain',
-      'Glowing skin'
-    ],
-    foodsToEat: [
-      'Lean proteins (chicken, fish, beans)',
-      'Complex carbohydrates',
-      'Healthy fats (avocado, nuts)',
-      'Colorful fruits and vegetables',
-      'Whole grains',
-      'Dairy products'
-    ],
-    foodsToAvoid: [
-      'High-sodium processed foods',
-      'Excessive caffeine',
-      'Raw or undercooked foods',
-      'High-mercury fish',
-      'Alcohol',
-      'Excessive sugar'
-    ],
-    tips: [
-      'Enjoy increased energy',
-      'Focus on balanced nutrition',
-      'Stay hydrated',
-      'Continue regular exercise',
-      'Plan for second trimester'
-    ]
+    symptoms: ['Energy boost', 'Appetite increase', 'Glowing skin', 'Round ligament pain'],
+    tips: ['Enjoy increased energy', 'Focus on balanced nutrition', 'Stay hydrated'],
+    milestones: ['Gender reveal possible', 'Baby movements felt', 'Second trimester begins']
   },
   5: {
-    month: 'Month 5 (Weeks 17-20)',
-    week: '20 weeks',
+    week: 'Week 20',
+    month: 'Month 5',
     fruitSize: 'Banana',
     fruitEmoji: '🍌',
     babySize: '16.4cm',
     babyImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Baby bump becomes visible',
-      'Increased appetite',
-      'Possible heartburn',
-      'Round ligament pain',
-      'Nasal congestion',
-      'Skin changes'
-    ],
-    foodsToEat: [
-      'Calcium-rich foods (dairy, leafy greens)',
-      'Iron-rich foods (lean meat, spinach)',
-      'Protein sources (fish, poultry, beans)',
-      'Healthy fats (nuts, avocado)',
-      'Fiber-rich foods',
-      'Plenty of water'
-    ],
-    foodsToAvoid: [
-      'Spicy foods that trigger heartburn',
-      'Large meals',
-      'High-sodium foods',
-      'Raw or undercooked foods',
-      'Excessive caffeine',
-      'Processed foods'
-    ],
-    tips: [
-      'Eat smaller, frequent meals',
-      'Sleep with head elevated',
-      'Stay active with pregnancy-safe exercises',
-      'Focus on nutrient density',
-      'Stay well-hydrated'
-    ]
+    symptoms: ['Baby bump visible', 'Heartburn', 'Nasal congestion', 'Skin changes'],
+    tips: ['Eat smaller meals', 'Sleep with head elevated', 'Stay active'],
+    milestones: ['Anatomy scan', 'Baby kicks', 'Belly button changes']
   },
   6: {
-    month: 'Month 6 (Weeks 21-24)',
-    week: '24 weeks',
+    week: 'Week 24',
+    month: 'Month 6',
     fruitSize: 'Corn',
     fruitEmoji: '🌽',
     babySize: '21cm',
     babyImage: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Increased energy',
-      'Growing belly',
-      'Possible back pain',
-      'Leg cramps',
-      'Increased appetite',
-      'Baby movements felt'
-    ],
-    foodsToEat: [
-      'Magnesium-rich foods (nuts, seeds)',
-      'Calcium sources (dairy, leafy greens)',
-      'Iron-rich foods (lean meat, beans)',
-      'Omega-3 foods (fish, flaxseeds)',
-      'Complex carbohydrates',
-      'Fresh fruits and vegetables'
-    ],
-    foodsToAvoid: [
-      'High-sodium foods',
-      'Processed meats',
-      'Raw or undercooked foods',
-      'Excessive caffeine',
-      'High-mercury fish',
-      'Artificial additives'
-    ],
-    tips: [
-      'Focus on bone and brain development nutrients',
-      'Stay active with pregnancy exercises',
-      'Get adequate rest',
-      'Stay hydrated',
-      'Consider prenatal massage'
-    ]
+    symptoms: ['Growing belly', 'Back pain', 'Leg cramps', 'Baby movements'],
+    tips: ['Focus on bone development nutrients', 'Stay active', 'Consider prenatal massage'],
+    milestones: ['Viability milestone', 'Glucose test', 'Iron levels check']
   },
   7: {
-    month: 'Month 7 (Weeks 25-28)',
-    week: '28 weeks',
+    week: 'Week 28',
+    month: 'Month 7',
     fruitSize: 'Eggplant',
     fruitEmoji: '🍆',
     babySize: '25.6cm',
     babyImage: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Increased fatigue',
-      'Back pain and discomfort',
-      'Swelling in feet and ankles',
-      'Shortness of breath',
-      'Heartburn and indigestion',
-      'Braxton Hicks contractions'
-    ],
-    foodsToEat: [
-      'High-fiber foods for digestion',
-      'Iron-rich foods (lean meat, spinach)',
-      'Calcium sources (dairy, leafy greens)',
-      'Protein-rich foods',
-      'Healthy fats',
-      'Plenty of water'
-    ],
-    foodsToAvoid: [
-      'High-sodium foods that cause swelling',
-      'Large meals that trigger heartburn',
-      'Spicy foods',
-      'Processed foods',
-      'Excessive caffeine',
-      'Raw or undercooked foods'
-    ],
-    tips: [
-      'Eat smaller, frequent meals',
-      'Elevate feet when resting',
-      'Stay hydrated but limit evening fluids',
-      'Focus on comfort foods',
-      'Get adequate rest'
-    ]
+    symptoms: ['Increased fatigue', 'Back pain', 'Swelling', 'Braxton Hicks'],
+    tips: ['Eat smaller frequent meals', 'Elevate feet when resting', 'Stay hydrated'],
+    milestones: ['Third trimester begins', 'Rhogam shot', 'Gestational diabetes test']
   },
   8: {
-    month: 'Month 8 (Weeks 29-32)',
-    week: '32 weeks',
+    week: 'Week 32',
+    month: 'Month 8',
     fruitSize: 'Coconut',
     fruitEmoji: '🥥',
     babySize: '28.2cm',
     babyImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Increased discomfort',
-      'Frequent urination',
-      'Back pain',
-      'Swelling in extremities',
-      'Shortness of breath',
-      'Difficulty sleeping'
-    ],
-    foodsToEat: [
-      'Nutrient-dense foods',
-      'Iron-rich sources',
-      'Calcium for bone development',
-      'Protein for growth',
-      'Healthy fats',
-      'Fiber-rich foods'
-    ],
-    foodsToAvoid: [
-      'High-sodium foods',
-      'Large meals',
-      'Spicy foods',
-      'Processed foods',
-      'Excessive caffeine',
-      'Raw foods'
-    ],
-    tips: [
-      'Focus on comfort and nutrition',
-      'Stay hydrated',
-      'Get adequate rest',
-      'Prepare for labor',
-      'Continue prenatal care'
-    ]
+    symptoms: ['Increased discomfort', 'Frequent urination', 'Shortness of breath', 'Difficulty sleeping'],
+    tips: ['Focus on comfort', 'Stay hydrated', 'Get adequate rest'],
+    milestones: ['Growth scan', 'Group B strep test', 'Birth plan discussion']
   },
   9: {
-    month: 'Month 9 (Weeks 33-36)',
-    week: '36 weeks',
+    week: 'Week 36',
+    month: 'Month 9',
     fruitSize: 'Watermelon',
     fruitEmoji: '🍉',
     babySize: '30.5cm',
     babyImage: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center',
-    symptoms: [
-      'Increased fatigue',
-      'Nesting instincts',
-      'Braxton Hicks contractions',
-      'Pelvic pressure',
-      'Difficulty sleeping',
-      'Anxiety about labor'
-    ],
-    foodsToEat: [
-      'Energy-boosting foods',
-      'Iron-rich foods',
-      'Calcium sources',
-      'Protein for strength',
-      'Complex carbohydrates',
-      'Hydrating foods'
-    ],
-    foodsToAvoid: [
-      'Heavy, greasy foods',
-      'Large meals',
-      'High-sodium foods',
-      'Spicy foods',
-      'Excessive caffeine',
-      'Raw foods'
-    ],
-    tips: [
-      'Focus on energy and strength',
-      'Prepare for labor nutrition',
-      'Stay hydrated',
-      'Get adequate rest',
-      'Final preparations'
-    ]
+    symptoms: ['Nesting instincts', 'Pelvic pressure', 'Anxiety about labor', 'Final preparations'],
+    tips: ['Focus on energy', 'Prepare for labor', 'Final preparations'],
+    milestones: ['Full term', 'Labor preparation', 'Hospital bag ready']
   }
 };
 
+const dailyTips = [
+  "Stay hydrated with 8-10 glasses of water daily",
+  "Take your prenatal vitamins with breakfast",
+  "Practice gentle stretching or prenatal yoga",
+  "Get 7-9 hours of quality sleep each night",
+  "Eat small, frequent meals to manage nausea",
+  "Practice deep breathing exercises for relaxation",
+  "Avoid standing for long periods to prevent swelling",
+  "Wear comfortable, supportive shoes",
+  "Keep healthy snacks nearby for energy",
+  "Listen to your body and rest when needed"
+];
+
+const educationalContent = [
+  {
+    title: "Prenatal Nutrition Guide",
+    type: "Article",
+    duration: "5 min read",
+    icon: "🥗"
+  },
+  {
+    title: "Safe Exercise During Pregnancy",
+    type: "Video",
+    duration: "12 min",
+    icon: "🏃‍♀️"
+  },
+  {
+    title: "Managing Morning Sickness",
+    type: "Article",
+    duration: "3 min read",
+    icon: "🤢"
+  },
+  {
+    title: "Prenatal Yoga Flow",
+    type: "Video",
+    duration: "20 min",
+    icon: "🧘‍♀️"
+  }
+];
+
+const upcomingAppointments = [
+  {
+    date: "Dec 15, 2024",
+    time: "10:00 AM",
+    type: "Prenatal Checkup",
+    doctor: "Dr. Sarah Johnson"
+  },
+  {
+    date: "Dec 22, 2024",
+    time: "2:00 PM",
+    type: "Ultrasound Scan",
+    doctor: "Dr. Sarah Johnson"
+  },
+  {
+    date: "Jan 5, 2025",
+    time: "11:30 AM",
+    type: "Glucose Test",
+    doctor: "Dr. Sarah Johnson"
+  }
+];
+
 export default function PregnancyScreen() {
   const { profile, updateProfile } = useUser();
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+  const [selectedSymptom, setSelectedSymptom] = useState<string | null>(null);
   
-  // Calculate current pregnancy month based on pregnancy start date
-  const calculatePregnancyMonth = () => {
-    if (!profile.isPregnant || !profile.pregnancyStartDate) return 1;
+  // Calculate current pregnancy week based on pregnancy start date
+  const calculatePregnancyWeek = () => {
+    if (!profile.isPregnant || !profile.pregnancyStartDate) return 4;
     
     const today = new Date();
     const startDate = new Date(profile.pregnancyStartDate);
     const diffTime = today.getTime() - startDate.getTime();
     const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
     
-    // Convert weeks to months (approximately 4.33 weeks per month)
-    const month = Math.floor(diffWeeks / 4.33) + 1;
-    return Math.min(month, 9); // Cap at 9 months
+    return Math.min(diffWeeks + 4, 40); // Start from week 4, cap at 40
   };
   
-  const actualCurrentMonth = profile.isPregnant ? calculatePregnancyMonth() : 1;
-  const currentMonth = selectedMonth || actualCurrentMonth;
-  const currentData = pregnancyData[currentMonth as keyof typeof pregnancyData];
+  const currentWeek = calculatePregnancyWeek();
+  const currentMonth = Math.ceil(currentWeek / 4);
+  const currentData = pregnancyData[currentMonth as keyof typeof pregnancyData] || pregnancyData[1];
+  const progressPercentage = (currentWeek / 40) * 100;
+  const daysRemaining = 280 - (currentWeek * 7);
 
   if (!profile.isPregnant) {
     return (
       <ScrollView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Pregnancy Journey</Text>
-          <Text style={styles.subtitle}>Month-by-month guidance for a healthy pregnancy</Text>
+          <Text style={styles.subtitle}>Track your pregnancy progress and get personalized guidance</Text>
         </View>
 
         <View style={styles.notPregnantCard}>
-          <Baby size={48} color="#e91e63" />
+          <Baby size={48} color="#EC4899" />
           <Text style={styles.notPregnantTitle}>Ready to Start Your Journey?</Text>
           <Text style={styles.notPregnantSubtitle}>
-            Track your pregnancy progress and get personalized guidance for each month of your pregnancy journey.
+            Track your pregnancy progress and get personalized guidance for each week of your pregnancy journey.
           </Text>
           
           <TouchableOpacity 
@@ -409,8 +218,6 @@ export default function PregnancyScreen() {
           >
             <Text style={styles.confirmPregnancyButtonText}>I'm Pregnant!</Text>
           </TouchableOpacity>
-          
-          <Text style={styles.exploreText}>Or explore what to expect during pregnancy:</Text>
         </View>
       </ScrollView>
     );
@@ -418,322 +225,157 @@ export default function PregnancyScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header with Logo & Tagline */}
+      {/* Header */}
       <View style={styles.header}>
-        <View style={styles.logoSection}>
-          <Text style={styles.logoText}>EasyPreg</Text>
-          <Text style={styles.taglineText}>Your journey to motherhood, simplified</Text>
+        <View style={styles.headerTop}>
+          <Text style={styles.headerTitle}>Pregnancy</Text>
+          <TouchableOpacity style={styles.settingsButton}>
+            <Settings size={20} color="#EC4899" />
+          </TouchableOpacity>
         </View>
-        <View style={styles.illustrationContainer}>
-          <Text style={styles.illustrationEmoji}>🌸</Text>
-        </View>
+        <Text style={styles.headerSubtitle}>Week {currentWeek} of 40</Text>
       </View>
 
-      {/* Today's Cycle Status */}
-      <View style={styles.cycleStatusCard}>
-        <Text style={styles.cycleStatusTitle}>Today's Cycle Status</Text>
-        <View style={styles.cycleStatusContent}>
-          <View style={styles.statusItem}>
-            <View style={[styles.statusDot, styles.periodDot]} />
-            <Text style={styles.statusText}>Period Day 3</Text>
-          </View>
-          <View style={styles.statusItem}>
-            <View style={[styles.statusDot, styles.fertileDot]} />
-            <Text style={styles.statusText}>Fertile in 8 days</Text>
-          </View>
-          <View style={styles.statusItem}>
-            <View style={[styles.statusDot, styles.ovulationDot]} />
-            <Text style={styles.statusText}>Ovulation in 12 days</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Quick Health Insights */}
-      <View style={styles.healthInsightsSection}>
-        <Text style={styles.insightsTitle}>Quick Health Insights</Text>
-        <View style={styles.insightsGrid}>
-          <TouchableOpacity style={styles.insightCard}>
-            <View style={styles.insightIcon}>
-              <Text style={styles.insightEmoji}>💊</Text>
-            </View>
-            <Text style={styles.insightTitle}>Supplements</Text>
-            <Text style={styles.insightSubtitle}>Take your vitamins</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.insightCard}>
-            <View style={styles.insightIcon}>
-              <Text style={styles.insightEmoji}>🧘‍♀️</Text>
-            </View>
-            <Text style={styles.insightTitle}>Wellness</Text>
-            <Text style={styles.insightSubtitle}>Meditation time</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.insightCard}>
-            <View style={styles.insightIcon}>
-              <Text style={styles.insightEmoji}>🛒</Text>
-            </View>
-            <Text style={styles.insightTitle}>Store</Text>
-            <Text style={styles.insightSubtitle}>Shop essentials</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.insightCard}>
-            <View style={styles.insightIcon}>
-              <Text style={styles.insightEmoji}>👩‍⚕️</Text>
-            </View>
-            <Text style={styles.insightTitle}>Experts</Text>
-            <Text style={styles.insightSubtitle}>Book consultation</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Navigation Tabs */}
-      <View style={styles.navigationSection}>
-        <Text style={styles.navigationTitle}>Navigate</Text>
-        <View style={styles.navigationTabs}>
-          <TouchableOpacity style={styles.navTab}>
-            <Text style={styles.navTabIcon}>📊</Text>
-            <Text style={styles.navTabText}>Track</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.navTab}>
-            <Text style={styles.navTabIcon}>🧘‍♀️</Text>
-            <Text style={styles.navTabText}>Wellness</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.navTab}>
-            <Text style={styles.navTabIcon}>🛒</Text>
-            <Text style={styles.navTabText}>Store</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.navTab}>
-            <Text style={styles.navTabIcon}>👩‍⚕️</Text>
-            <Text style={styles.navTabText}>Experts</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.navTab}>
-            <Text style={styles.navTabIcon}>👤</Text>
-            <Text style={styles.navTabText}>Profile</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Cycle Tracking Preview */}
-      <View style={styles.cycleTrackingSection}>
-        <Text style={styles.sectionTitle}>Cycle Tracking</Text>
-        <View style={styles.calendarPreview}>
-          <View style={styles.calendarHeader}>
-            <Text style={styles.calendarMonth}>December 2024</Text>
-          </View>
-          <View style={styles.calendarGrid}>
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-              <Text key={index} style={styles.calendarDayLabel}>{day}</Text>
-            ))}
-            {Array.from({ length: 31 }, (_, i) => (
-              <View key={i} style={[
-                styles.calendarDay,
-                i === 2 && styles.currentDay,
-                i >= 0 && i <= 4 && styles.periodDay
-              ]}>
-                <Text style={[
-                  styles.calendarDayText,
-                  i === 2 && styles.currentDayText,
-                  i >= 0 && i <= 4 && styles.periodDayText
-                ]}>
-                  {i + 1}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
-        <Text style={styles.aiPredictionText}>AI Prediction: Next period in 25 days</Text>
-      </View>
-
-      {/* Wellness & Mental Health */}
-      <View style={styles.wellnessSection}>
-        <Text style={styles.sectionTitle}>Wellness & Mental Health</Text>
-        <View style={styles.wellnessCards}>
-          <TouchableOpacity style={styles.wellnessCard}>
-            <Text style={styles.wellnessIcon}>😊</Text>
-            <Text style={styles.wellnessTitle}>Mood Tracker</Text>
-            <Text style={styles.wellnessSubtitle}>How are you feeling today?</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.wellnessCard}>
-            <Text style={styles.wellnessIcon}>🧘‍♀️</Text>
-            <Text style={styles.wellnessTitle}>Yoga & Meditation</Text>
-            <Text style={styles.wellnessSubtitle}>Audio-guided sessions</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.wellnessCard}>
-            <Text style={styles.wellnessIcon}>🥗</Text>
-            <Text style={styles.wellnessTitle}>Indian Nutrition</Text>
-            <Text style={styles.wellnessSubtitle}>Traditional diet tips</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Health Store Preview */}
-      <View style={styles.storeSection}>
-        <Text style={styles.sectionTitle}>Health Store</Text>
-        <View style={styles.storeItems}>
-          <TouchableOpacity style={styles.storeItem}>
-            <Text style={styles.storeItemIcon}>🧴</Text>
-            <Text style={styles.storeItemTitle}>Hygiene Products</Text>
-            <Text style={styles.storeItemPrice}>₹299</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.storeItem}>
-            <Text style={styles.storeItemIcon}>💊</Text>
-            <Text style={styles.storeItemTitle}>Supplements</Text>
-            <Text style={styles.storeItemPrice}>₹599</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.storeItem}>
-            <Text style={styles.storeItemIcon}>🏃‍♀️</Text>
-            <Text style={styles.storeItemTitle}>Fitness Gear</Text>
-            <Text style={styles.storeItemPrice}>₹1,299</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.viewAllButton}>
-          <Text style={styles.viewAllButtonText}>View All Products</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Experts Section */}
-      <View style={styles.expertsSection}>
-        <Text style={styles.sectionTitle}>Book Expert Consultation</Text>
-        <View style={styles.expertCards}>
-          <TouchableOpacity style={styles.expertCard}>
-            <Text style={styles.expertIcon}>👩‍⚕️</Text>
-            <Text style={styles.expertTitle}>Gynecologists</Text>
-            <Text style={styles.expertSubtitle}>Specialized care</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.expertCard}>
-            <Text style={styles.expertIcon}>🥗</Text>
-            <Text style={styles.expertTitle}>Nutritionists</Text>
-            <Text style={styles.expertSubtitle}>Diet planning</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.expertCard}>
-            <Text style={styles.expertIcon}>🧠</Text>
-            <Text style={styles.expertTitle}>Therapists</Text>
-            <Text style={styles.expertSubtitle}>Mental health</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.workshopText}>Workshops & Sessions Available</Text>
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Heart size={24} color="#e91e63" />
-          <Text style={styles.sectionTitle}>Common Symptoms</Text>
+      {/* Main Progress Card */}
+      <View style={styles.mainCard}>
+        <View style={styles.weekDisplay}>
+          <Text style={styles.weekNumber}>{currentWeek}</Text>
+          <Text style={styles.weekLabel}>WEEKS</Text>
         </View>
         
+        <View style={styles.babyInfo}>
+          <Text style={styles.babySizeText}>Your baby is the size of a</Text>
+          <Text style={styles.fruitText}>{currentData.fruitSize}</Text>
+          <Text style={styles.measurementText}>{currentData.babySize}</Text>
+        </View>
+
+        <View style={styles.progressBar}>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${progressPercentage}%` }]} />
+          </View>
+          <Text style={styles.progressText}>{daysRemaining} days until due date</Text>
+        </View>
+      </View>
+
+      {/* Daily Health Tip */}
+      <View style={styles.dailyTipCard}>
+        <View style={styles.tipHeader}>
+          <Info size={20} color="#EC4899" />
+          <Text style={styles.tipTitle}>Today's Health Tip</Text>
+        </View>
+        <Text style={styles.tipText}>
+          {dailyTips[currentWeek % dailyTips.length]}
+        </Text>
+      </View>
+
+      {/* Baby Development Visual */}
+      <View style={styles.babyDevelopmentCard}>
+        <View style={styles.babyImageContainer}>
+          <Image source={{ uri: currentData.babyImage }} style={styles.babyImage} />
+          <View style={styles.fruitComparisonOverlay}>
+            <Text style={styles.fruitEmoji}>{currentData.fruitEmoji}</Text>
+          </View>
+        </View>
+        <View style={styles.babyInfo}>
+          <Text style={styles.babySizeText}>Your baby is the size of a</Text>
+          <Text style={styles.fruitText}>{currentData.fruitSize}</Text>
+          <Text style={styles.measurementText}>{currentData.babySize}</Text>
+        </View>
+      </View>
+
+      {/* Symptom Tracker */}
+      <View style={styles.symptomTrackerCard}>
+        <Text style={styles.sectionTitle}>Log Your Symptoms</Text>
         <View style={styles.symptomsGrid}>
           {currentData.symptoms.map((symptom, index) => (
-            <View key={index} style={styles.symptomItem}>
-              <Text style={styles.symptomIcon}>🤰</Text>
-              <Text style={styles.symptomText}>{symptom}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <CheckCircle size={24} color="#4caf50" />
-          <Text style={styles.sectionTitle}>Foods to Eat</Text>
-        </View>
-        
-        <View style={styles.foodsGrid}>
-          {currentData.foodsToEat.map((food, index) => (
-            <View key={index} style={styles.foodItem}>
-              <Text style={styles.foodIcon}>✅</Text>
-              <Text style={styles.foodText}>{food}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <XCircle size={24} color="#f44336" />
-          <Text style={styles.sectionTitle}>Foods to Avoid</Text>
-        </View>
-        
-        <View style={styles.foodsGrid}>
-          {currentData.foodsToAvoid.map((food, index) => (
-            <View key={index} style={styles.foodItem}>
-              <Text style={styles.foodIcon}>❌</Text>
-              <Text style={styles.foodText}>{food}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Calendar size={24} color="#ff9800" />
-          <Text style={styles.sectionTitle}>Monthly Tips</Text>
-        </View>
-        
-        <View style={styles.tipsCard}>
-          {currentData.tips.map((tip, index) => (
-            <View key={index} style={styles.tipItem}>
-              <Text style={styles.tipIcon}>💡</Text>
-              <Text style={styles.tipText}>{tip}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.alertCard}>
-        <AlertTriangle size={24} color="#ff9800" />
-        <View style={styles.alertContent}>
-          <Text style={styles.alertTitle}>Important Reminder</Text>
-          <Text style={styles.alertText}>
-            Always consult with your healthcare provider before making significant dietary changes during pregnancy. 
-            Individual needs may vary based on your health condition and pregnancy progress.
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.monthSelector}>
-        <View style={styles.monthSelectorHeader}>
-          <Text style={styles.monthSelectorTitle}>Explore Other Months</Text>
-          {profile.isPregnant && selectedMonth && (
-            <TouchableOpacity 
-              style={styles.resetButton}
-              onPress={() => setSelectedMonth(null)}
-            >
-              <Text style={styles.resetButtonText}>Current Month</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <View style={styles.monthButtons}>
-          {Object.keys(pregnancyData).map((month) => (
-            <TouchableOpacity 
-              key={month} 
+            <TouchableOpacity
+              key={index}
               style={[
-                styles.monthButton, 
-                currentMonth === parseInt(month) && styles.activeMonthButton
+                styles.symptomButton,
+                selectedSymptom === symptom && styles.selectedSymptomButton
               ]}
-              onPress={() => {
-                const monthNum = parseInt(month);
-                setSelectedMonth(monthNum);
-              }}
+              onPress={() => setSelectedSymptom(selectedSymptom === symptom ? null : symptom)}
             >
+              <Text style={styles.symptomEmoji}>🤰</Text>
               <Text style={[
-                styles.monthButtonText,
-                currentMonth === parseInt(month) && styles.activeMonthButtonText
+                styles.symptomText,
+                selectedSymptom === symptom && styles.selectedSymptomText
               ]}>
-                {month}
+                {symptom}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
+        <TouchableOpacity style={styles.addSymptomButton}>
+          <Plus size={16} color="#EC4899" />
+          <Text style={styles.addSymptomText}>Add Custom Symptom</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* Upcoming Milestones & Reminders */}
+      <View style={styles.milestonesCard}>
+        <Text style={styles.sectionTitle}>Upcoming Appointments</Text>
+        {upcomingAppointments.map((appointment, index) => (
+          <View key={index} style={styles.appointmentItem}>
+            <View style={styles.appointmentDate}>
+              <Text style={styles.appointmentDay}>{appointment.date.split(' ')[1]}</Text>
+              <Text style={styles.appointmentMonth}>{appointment.date.split(' ')[0]}</Text>
+            </View>
+            <View style={styles.appointmentDetails}>
+              <Text style={styles.appointmentType}>{appointment.type}</Text>
+              <Text style={styles.appointmentTime}>{appointment.time}</Text>
+              <Text style={styles.appointmentDoctor}>{appointment.doctor}</Text>
+            </View>
+            <TouchableOpacity style={styles.appointmentButton}>
+              <ChevronRight size={16} color="#EC4899" />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+
+      {/* Educational Articles & Videos */}
+      <View style={styles.educationalCard}>
+        <Text style={styles.sectionTitle}>Educational Content</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.educationalScroll}>
+          {educationalContent.map((content, index) => (
+            <TouchableOpacity key={index} style={styles.educationalItem}>
+              <View style={styles.educationalIcon}>
+                <Text style={styles.educationalEmoji}>{content.icon}</Text>
+              </View>
+              <Text style={styles.educationalTitle}>{content.title}</Text>
+              <Text style={styles.educationalType}>{content.type}</Text>
+              <Text style={styles.educationalDuration}>{content.duration}</Text>
+              <TouchableOpacity style={styles.playButton}>
+                <Play size={16} color="#EC4899" />
+              </TouchableOpacity>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Community & Support Access */}
+      <View style={styles.communityCard}>
+        <Text style={styles.sectionTitle}>Community & Support</Text>
+        <View style={styles.communityButtons}>
+          <TouchableOpacity style={styles.communityButton}>
+            <Users size={20} color="#EC4899" />
+            <Text style={styles.communityButtonText}>Join Community</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.communityButton}>
+            <MessageCircle size={20} color="#EC4899" />
+            <Text style={styles.communityButtonText}>Expert Chat</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.communityButton}>
+            <BookOpen size={20} color="#EC4899" />
+            <Text style={styles.communityButtonText}>Resources</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Quick Add Button */}
+      <TouchableOpacity style={styles.quickAddButton}>
+        <Plus size={24} color="#ffffff" />
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -746,395 +388,49 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: 60,
     paddingHorizontal: 20,
-    paddingBottom: 30,
+    paddingBottom: 20,
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#FCE7F3',
   },
-  logoSection: {
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 8,
   },
-  logoText: {
-    fontSize: 32,
+  headerTitle: {
+    fontSize: 28,
     fontWeight: '800',
     color: '#EC4899',
-    marginBottom: 8,
     letterSpacing: -0.5,
   },
-  taglineText: {
+  headerSubtitle: {
     fontSize: 16,
     color: '#6b7280',
     fontWeight: '500',
-    textAlign: 'center',
   },
-  illustrationContainer: {
-    alignItems: 'center',
-  },
-  illustrationEmoji: {
-    fontSize: 48,
-  },
-  cycleStatusCard: {
-    margin: 20,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  cycleStatusTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  cycleStatusContent: {
-    gap: 12,
-  },
-  statusItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statusDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 12,
-  },
-  periodDot: {
-    backgroundColor: '#EF4444',
-  },
-  fertileDot: {
-    backgroundColor: '#10B981',
-  },
-  ovulationDot: {
-    backgroundColor: '#3B82F6',
-  },
-  statusText: {
-    fontSize: 16,
-    color: '#1a1a1a',
-    fontWeight: '500',
-  },
-  healthInsightsSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  insightsTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  insightsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  insightCard: {
-    width: (width - 52) / 2,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  insightIcon: {
+  settingsButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: '#f8f9fa',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
-  },
-  insightEmoji: {
-    fontSize: 20,
-  },
-  insightTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  insightSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-    lineHeight: 20,
-  },
-  navigationSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  navigationTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  navigationTabs: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  navTab: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  navTabIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  navTabText: {
-    fontSize: 12,
-    color: '#6b7280',
-    fontWeight: '500',
-  },
-  cycleTrackingSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  calendarPreview: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  calendarHeader: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  calendarMonth: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1a1a1a',
-  },
-  calendarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-  },
-  calendarDayLabel: {
-    width: (width - 88) / 7,
-    textAlign: 'center',
-    fontSize: 12,
-    color: '#6b7280',
-    fontWeight: '500',
-    marginBottom: 8,
-  },
-  calendarDay: {
-    width: (width - 88) / 7,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-  },
-  currentDay: {
-    backgroundColor: '#8B5CF6',
-  },
-  periodDay: {
-    backgroundColor: '#FEE2E2',
-  },
-  calendarDayText: {
-    fontSize: 14,
-    color: '#6b7280',
-    fontWeight: '500',
-  },
-  currentDayText: {
-    color: '#ffffff',
-    fontWeight: '600',
-  },
-  periodDayText: {
-    color: '#EF4444',
-    fontWeight: '600',
-  },
-  aiPredictionText: {
-    fontSize: 14,
-    color: '#EC4899',
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: 12,
-  },
-  wellnessSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  wellnessCards: {
-    gap: 12,
-  },
-  wellnessCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  wellnessIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  wellnessTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  wellnessSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
-  storeSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  storeItems: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
-  },
-  storeItem: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  storeItemIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  storeItemTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  storeItemPrice: {
-    fontSize: 12,
-    color: '#EC4899',
-    fontWeight: '600',
-  },
-  viewAllButton: {
-    backgroundColor: '#8B5CF6',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 20,
-    alignSelf: 'center',
-  },
-  viewAllButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  expertsSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  expertCards: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
-  },
-  expertCard: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  expertIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  expertTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  expertSubtitle: {
-    fontSize: 12,
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  workshopText: {
-    fontSize: 14,
-    color: '#EC4899',
-    fontWeight: '600',
-    textAlign: 'center',
   },
   mainCard: {
     margin: 20,
     backgroundColor: '#ffffff',
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 24,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
@@ -1143,17 +439,17 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   weekNumber: {
-    fontSize: 48,
+    fontSize: 64,
     fontWeight: '800',
     color: '#EC4899',
-    lineHeight: 56,
+    lineHeight: 72,
   },
   weekLabel: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#6b7280',
-    fontWeight: '500',
+    fontWeight: '600',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 2,
   },
   babyInfo: {
     alignItems: 'center',
@@ -1166,13 +462,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   fruitText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
     color: '#1a1a1a',
     marginBottom: 4,
   },
   measurementText: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#6b7280',
     fontWeight: '500',
   },
@@ -1180,83 +476,55 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   progressTrack: {
-    height: 6,
+    height: 8,
     backgroundColor: '#f0f0f0',
-    borderRadius: 3,
+    borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#8B5CF6',
-    borderRadius: 3,
+    backgroundColor: '#EC4899',
+    borderRadius: 4,
   },
   progressText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#6b7280',
     textAlign: 'center',
     fontWeight: '500',
   },
-  insightsSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  insightsTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-    letterSpacing: -0.3,
-  },
-  insightsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  insightCard: {
-    width: (width - 52) / 2,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
+  dailyTipCard: {
+    margin: 20,
+    marginTop: 0,
+    backgroundColor: '#fff8f0',
+    borderRadius: 16,
+    padding: 20,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: '#ffe082',
   },
-  insightIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f8f9fa',
+  tipHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 12,
   },
-  insightTitle: {
+  tipTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#1a1a1a',
-    marginBottom: 4,
+    marginLeft: 8,
   },
-  insightSubtitle: {
+  tipText: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#1a1a1a',
     lineHeight: 20,
   },
-  insightEmoji: {
-    fontSize: 20,
-  },
-  fertilityScoreCard: {
+  babyDevelopmentCard: {
     margin: 20,
+    marginTop: 0,
     backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -1267,546 +535,6 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderWidth: 1,
     borderColor: '#f0f0f0',
-  },
-  scoreHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  scoreTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1a1a1a',
-  },
-  scoreValue: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#EC4899',
-  },
-  scoreProgress: {
-    marginTop: 8,
-  },
-  scoreTrack: {
-    height: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  scoreFill: {
-    height: '100%',
-    backgroundColor: '#8B5CF6',
-    borderRadius: 4,
-  },
-  scoreDescription: {
-    fontSize: 12,
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  recommendationsSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  recommendationsTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  recommendationCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  recommendationHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  recommendationIcon: {
-    fontSize: 20,
-    marginRight: 12,
-  },
-  recommendationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-  },
-  recommendationText: {
-    fontSize: 14,
-    color: '#6b7280',
-    lineHeight: 20,
-  },
-  partnerSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  partnerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  partnerCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  partnerTip: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 8,
-  },
-  partnerSubtext: {
-    fontSize: 14,
-    color: '#6b7280',
-    marginBottom: 16,
-  },
-  partnerButton: {
-    backgroundColor: '#8B5CF6',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 20,
-    alignSelf: 'flex-start',
-  },
-  partnerButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  cycleSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  cycleTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  cycleGraph: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  cyclePhases: {
-    flexDirection: 'row',
-    height: 20,
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginBottom: 12,
-  },
-  phaseBar: {
-    flex: 1,
-  },
-  periodPhase: {
-    backgroundColor: '#EF4444',
-  },
-  fertilePhase: {
-    backgroundColor: '#10B981',
-  },
-  ovulationPhase: {
-    backgroundColor: '#3B82F6',
-  },
-  lutealPhase: {
-    backgroundColor: '#F59E0B',
-  },
-  cycleLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  phaseLabel: {
-    fontSize: 12,
-    color: '#6b7280',
-    fontWeight: '500',
-  },
-  currentDayIndicator: {
-    alignItems: 'center',
-  },
-  currentDayDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#8B5CF6',
-    marginBottom: 4,
-  },
-  currentDayText: {
-    fontSize: 12,
-    color: '#EC4899',
-    fontWeight: '600',
-  },
-  motivationCard: {
-    margin: 20,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
-  },
-  motivationText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  motivationSubtext: {
-    fontSize: 14,
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  quickAddButton: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#8B5CF6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  quickAddIcon: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#ffffff',
-  },
-  durationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  durationText: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginRight: 8,
-  },
-  infoButton: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  settingsButton: {
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 20,
-    alignSelf: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  settingsButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-  },
-  bottomSection: {
-    backgroundColor: '#ffffff',
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-  },
-  cardsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  mainCard: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-    minHeight: 100,
-    justifyContent: 'center',
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  cardSubtitle: {
-    fontSize: 14,
-    color: '#666',
-  },
-  insightsHeader: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  insightsScroll: {
-    marginBottom: 20,
-  },
-  insightsContent: {
-    paddingRight: 20,
-  },
-  insightCard: {
-    width: 160,
-    height: 140,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 16,
-    marginRight: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  insightCardTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  insightCardSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 12,
-  },
-  plusIcon: {
-    position: 'absolute',
-    bottom: 16,
-    left: 16,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#ff6b35',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  plusText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#ffffff',
-  },
-  bodyIllustration: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    width: 60,
-    height: 80,
-  },
-  bodyShape: {
-    width: 40,
-    height: 60,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    position: 'absolute',
-    top: 10,
-    left: 10,
-  },
-  breastArea: {
-    width: 20,
-    height: 15,
-    backgroundColor: '#ffb3ba',
-    borderRadius: 10,
-    position: 'absolute',
-    top: 5,
-    left: 20,
-  },
-  uterusArea: {
-    width: 30,
-    height: 25,
-    backgroundColor: '#ff9a9e',
-    borderRadius: 15,
-    position: 'absolute',
-    bottom: 5,
-    left: 15,
-  },
-  babyIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#20b2aa',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-  },
-  nutritionIcon: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#90EE90',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  nutritionEmoji: {
-    fontSize: 20,
-  },
-  exerciseIcon: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#87CEEB',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  exerciseEmoji: {
-    fontSize: 20,
-  },
-  weekCalendar: {
-    padding: 20,
-    backgroundColor: '#ffffff',
-    marginHorizontal: 20,
-    marginTop: 20,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  weekLabel: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 16,
-    letterSpacing: -0.3,
-  },
-  weekRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dayColumn: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  dayLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6b7280',
-    marginBottom: 8,
-  },
-  dayCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f3f4f6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  currentDay: {
-    backgroundColor: '#ff6b35',
-  },
-  dayNumber: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#6b7280',
-  },
-  currentDayText: {
-    color: '#ffffff',
-  },
-  babySizeCard: {
-    margin: 20,
-    padding: 32,
-    backgroundColor: '#ff6b35',
-    borderRadius: 24,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  babySizeHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-  },
-  weekText: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#ffffff',
-    letterSpacing: -0.5,
-  },
-  dayText: {
-    fontSize: 16,
-    color: '#ffffff',
-    opacity: 0.9,
-    marginBottom: 24,
-  },
-  babyDevelopment: {
-    alignItems: 'center',
-    marginBottom: 24,
   },
   babyImageContainer: {
     position: 'relative',
@@ -1815,9 +543,9 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     overflow: 'hidden',
     marginBottom: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: '#f8f9fa',
     borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: '#EC4899',
   },
   babyImage: {
     width: '100%',
@@ -1835,73 +563,11 @@ const styles = StyleSheet.create({
   fruitEmoji: {
     fontSize: 20,
   },
-  babyInfo: {
-    alignItems: 'center',
-  },
-  fruitSizeText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 4,
-  },
-  babySizeText: {
-    fontSize: 16,
-    color: '#ffffff',
-    opacity: 0.9,
-  },
-  detailsButton: {
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ffffff',
-  },
-  detailsButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ff6b35',
-  },
-  activityStats: {
-    flexDirection: 'row',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    gap: 16,
-  },
-  statItem: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    padding: 20,
-    borderRadius: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  statIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#6b7280',
-    fontWeight: '500',
-  },
-  monthSelector: {
+  symptomTrackerCard: {
     margin: 20,
+    marginTop: 0,
     backgroundColor: '#ffffff',
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -1911,261 +577,255 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
-  monthSelectorTitle: {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: '#1a1a1a',
     marginBottom: 16,
-    letterSpacing: -0.3,
   },
-  monthGrid: {
+  symptomsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
     marginBottom: 16,
   },
-  monthCard: {
-    width: (width - 80) / 3,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 16,
-    padding: 12,
+  symptomButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
   },
-  activeMonthCard: {
-    backgroundColor: '#fff3e0',
-    borderColor: '#ff6b35',
+  selectedSymptomButton: {
+    backgroundColor: '#EC4899',
+    borderColor: '#EC4899',
   },
-  monthCardImage: {
-    position: 'relative',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    overflow: 'hidden',
-    marginBottom: 8,
-    backgroundColor: '#e9ecef',
-  },
-  monthCardBabyImage: {
-    width: '100%',
-    height: '100%',
-  },
-  monthCardFruit: {
-    position: 'absolute',
-    bottom: -2,
-    right: -2,
+  symptomEmoji: {
     fontSize: 16,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
+    marginRight: 8,
   },
-  monthCardWeek: {
+  symptomText: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '500',
+  },
+  selectedSymptomText: {
+    color: '#ffffff',
+  },
+  addSymptomButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#EC4899',
+    borderStyle: 'dashed',
+  },
+  addSymptomText: {
+    fontSize: 14,
+    color: '#EC4899',
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+  milestonesCard: {
+    margin: 20,
+    marginTop: 0,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  appointmentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  appointmentDate: {
+    alignItems: 'center',
+    marginRight: 16,
+    minWidth: 60,
+  },
+  appointmentDay: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#EC4899',
+  },
+  appointmentMonth: {
     fontSize: 12,
+    color: '#6b7280',
+    fontWeight: '500',
+  },
+  appointmentDetails: {
+    flex: 1,
+  },
+  appointmentType: {
+    fontSize: 16,
     fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  appointmentTime: {
+    fontSize: 14,
     color: '#6b7280',
     marginBottom: 2,
   },
-  monthCardSize: {
-    fontSize: 10,
+  appointmentDoctor: {
+    fontSize: 12,
     color: '#9ca3af',
-    textAlign: 'center',
   },
-  activeMonthCardText: {
-    color: '#ff6b35',
+  appointmentButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#f8f9fa',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  resetButton: {
-    backgroundColor: '#ff6b35',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+  educationalCard: {
+    margin: 20,
+    marginTop: 0,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  educationalScroll: {
+    marginBottom: 16,
+  },
+  educationalItem: {
+    width: 160,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+    alignItems: 'center',
+    position: 'relative',
+  },
+  educationalIcon: {
+    width: 40,
+    height: 40,
     borderRadius: 20,
-    alignSelf: 'center',
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
   },
-  resetButtonText: {
-    color: '#ffffff',
+  educationalEmoji: {
+    fontSize: 20,
+  },
+  educationalTitle: {
     fontSize: 14,
     fontWeight: '600',
-  },
-  currentMonthCard: {
-    margin: 24,
-    marginTop: 0,
-    padding: 24,
-    borderRadius: 20,
-  },
-  monthHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  monthInfo: {
-    flex: 1,
-  },
-  currentMonthTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#ffffff',
+    color: '#1a1a1a',
+    textAlign: 'center',
     marginBottom: 4,
   },
-  currentMonthSubtitle: {
-    fontSize: 16,
-    color: '#ffffff',
-    opacity: 0.9,
+  educationalType: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginBottom: 2,
   },
-  section: {
-    padding: 24,
-    paddingTop: 0,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-  },
-  symptomsGrid: {
-    gap: 12,
-  },
-  symptomItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    gap: 12,
-  },
-  symptomIcon: {
-    fontSize: 24,
-  },
-  symptomText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#1a1a1a',
-    fontWeight: '500',
-  },
-  foodsGrid: {
-    gap: 12,
-  },
-  foodItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    gap: 12,
-  },
-  foodIcon: {
-    fontSize: 20,
-  },
-  foodText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#1a1a1a',
-    lineHeight: 20,
-  },
-  tipsCard: {
-    backgroundColor: '#fff8f0',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: '#ffe082',
-  },
-  tipItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+  educationalDuration: {
+    fontSize: 12,
+    color: '#9ca3af',
     marginBottom: 12,
-    gap: 12,
   },
-  tipIcon: {
-    fontSize: 20,
-    marginTop: 2,
+  playButton: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#EC4899',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  tipText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#1a1a1a',
-    lineHeight: 20,
-  },
-  alertCard: {
-    margin: 24,
+  communityCard: {
+    margin: 20,
     marginTop: 0,
-    padding: 20,
-    backgroundColor: '#fff8f0',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
     borderWidth: 1,
-    borderColor: '#ffe082',
-    flexDirection: 'row',
-    gap: 16,
+    borderColor: '#f0f0f0',
   },
-  alertContent: {
-    flex: 1,
-  },
-  alertTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 8,
-  },
-  alertText: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 21,
-  },
-  monthSelector: {
-    padding: 24,
-    paddingTop: 0,
-    marginBottom: 32,
-  },
-  monthSelectorHeader: {
+  communityButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
   },
-  monthSelectorTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1a1a1a',
-  },
-  resetButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: '#e91e63',
-    borderRadius: 20,
-  },
-  resetButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#ffffff',
-  },
-  monthButtons: {
+  communityButton: {
+    flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    marginHorizontal: 4,
   },
-  monthButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  activeMonthButton: {
-    backgroundColor: '#e91e63',
-    borderColor: '#e91e63',
-  },
-  monthButtonText: {
+  communityButtonText: {
     fontSize: 14,
+    color: '#EC4899',
     fontWeight: '600',
-    color: '#666',
+    marginLeft: 8,
   },
-  activeMonthButtonText: {
-    color: '#ffffff',
+  quickAddButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#EC4899',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   notPregnantCard: {
     margin: 24,
@@ -2193,7 +853,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   confirmPregnancyButton: {
-    backgroundColor: '#e91e63',
+    backgroundColor: '#EC4899',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
@@ -2203,10 +863,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#ffffff',
-  },
-  exploreText: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
   },
 });
