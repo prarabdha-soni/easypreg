@@ -1,16 +1,16 @@
 import { Tabs } from 'expo-router';
-import { Hop as Home, Activity, Apple, Heart, BookOpen, User, Baby } from 'lucide-react-native';
+import { Hop as Home, Activity, Apple, Heart, BookOpen, User, Baby, GraduationCap } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#e91e63',
+        tabBarActiveTintColor: '#EC4899',
         tabBarInactiveTintColor: '#999',
         tabBarStyle: {
           borderTopWidth: 1,
-          borderTopColor: '#e0e0e0',
+          borderTopColor: '#FCE7F3',
           paddingTop: 8,
           paddingBottom: 8,
           height: 65,
@@ -33,18 +33,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="fertility"
         options={{
-          title: 'Fertility',
+          title: 'Health',
           tabBarIcon: ({ size, color }) => (
-            <Activity size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="nutrition"
-        options={{
-          title: 'Nutrition',
-          tabBarIcon: ({ size, color }) => (
-            <Apple size={size} color={color} />
+            <Heart size={size} color={color} />
           ),
         }}
       />
@@ -69,9 +60,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="expert"
         options={{
-          title: 'Learn',
+          title: 'Experts',
           tabBarIcon: ({ size, color }) => (
             <BookOpen size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="adolescent"
+        options={{
+          title: 'Teens',
+          tabBarIcon: ({ size, color }) => (
+            <GraduationCap size={size} color={color} />
           ),
         }}
       />

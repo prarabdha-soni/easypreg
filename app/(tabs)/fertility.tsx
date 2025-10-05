@@ -1,7 +1,25 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
-import { Calendar, TrendingUp, CircleAlert as AlertCircle } from 'lucide-react-native';
+import { Calendar, TrendingUp, CircleAlert as AlertCircle, Brain, Activity, Zap, Heart, Shield, Apple, ChefHat, Star, Clock, Users, Moon, Sun } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
+
+const fertilityFoods = [
+  { name: 'Shatavari', benefit: 'Hormonal Balance', icon: '🌸', color: '#FFB6C1' },
+  { name: 'Ashwagandha', benefit: 'Stress Relief', icon: '🌿', color: '#98FB98' },
+  { name: 'Golden Milk', benefit: 'Anti-inflammatory', icon: '🥛', color: '#FFD700' },
+  { name: 'Soaked Almonds', benefit: 'Vitamin E', icon: '🥜', color: '#DEB887' },
+  { name: 'Coconut Water', benefit: 'Electrolytes', icon: '🥥', color: '#F0E68C' },
+  { name: 'Moong Dal', benefit: 'Protein', icon: '🫘', color: '#90EE90' },
+];
+
+const wellnessActivities = [
+  { title: 'Morning Yoga', duration: '15 min', icon: '🧘‍♀️', color: '#FF69B4' },
+  { title: 'Meditation', duration: '10 min', icon: '🕯️', color: '#9370DB' },
+  { title: 'Breathing Exercise', duration: '5 min', icon: '🌬️', color: '#87CEEB' },
+  { title: 'Evening Walk', duration: '20 min', icon: '🚶‍♀️', color: '#FFA07A' },
+];
 
 export default function FertilityScreen() {
   const { profile } = useUser();
@@ -11,24 +29,19 @@ export default function FertilityScreen() {
     const today = new Date();
     const lastPeriod = new Date(profile.lastPeriodDate);
     
-    // Calculate days since last period
     const diffTime = today.getTime() - lastPeriod.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
-    // Calculate current cycle day
     const cycleDay = (diffDays % profile.cycleLength) + 1;
     return cycleDay;
   };
 
   const getFertileWindow = () => {
     const cycleDay = calculateCycleDay();
+    const ovulationDay = profile.cycleLength - 14;
+    const fertileStart = ovulationDay - 5;
+    const fertileEnd = ovulationDay + 1;
     
-    // More accurate ovulation calculation based on cycle length
-    const ovulationDay = profile.cycleLength - 14; // Ovulation typically occurs 14 days before next period
-    const fertileStart = ovulationDay - 5; // 5 days before ovulation
-    const fertileEnd = ovulationDay + 1; // 1 day after ovulation
-    
-    // Calculate next fertile window dates
     const nextPeriodDate = new Date(profile.lastPeriodDate);
     nextPeriodDate.setDate(nextPeriodDate.getDate() + profile.cycleLength);
     
@@ -76,35 +89,29 @@ export default function FertilityScreen() {
     const today = calculateCycleDay();
     const fertile = getFertileWindow();
     
-    // Calculate fertile window based on actual cycle length
     const ovulationDay = profile.cycleLength - 14;
     const fertileStart = ovulationDay - 5;
     const fertileEnd = ovulationDay + 1;
 
     for (let i = 1; i <= profile.cycleLength; i++) {
-      let color = '#f5f5f5';
-      let textColor = '#666';
+      let color = '#F8F9FA';
+      let textColor = '#6B7280';
 
-      // Period days (first 5 days)
       if (i <= 5) {
-        color = '#ffebee';
-        textColor = '#e91e63';
-      } 
-      // Fertile window
-      else if (i >= fertileStart && i <= fertileEnd) {
-        color = '#e8f5e9';
-        textColor = '#4caf50';
-      } 
-      // Ovulation day
-      else if (i === ovulationDay) {
-        color = '#4caf50';
-        textColor = '#ffffff';
+        color = '#FEE2E2';
+        textColor = '#EF4444';
+      } else if (i >= fertileStart && i <= fertileEnd) {
+        color = '#DCFCE7';
+        textColor = '#16A34A';
+      } else if (i === ovulationDay) {
+        color = '#FECACA';
+        textColor = '#DC2626';
       }
 
       if (i === today) {
         days.push(
-          <View key={i} style={[styles.calendarDay, { backgroundColor: '#2196f3' }]}>
-            <Text style={[styles.calendarDayText, { color: '#ffffff', fontWeight: '700' }]}>{i}</Text>
+          <View key={i} style={[styles.calendarDay, { backgroundColor: '#EC4899' }]}>
+            <Text style={[styles.calendarDayText, { color: '#FFFFFF', fontWeight: '700' }]}>{i}</Text>
           </View>
         );
       } else {
@@ -123,116 +130,189 @@ export default function FertilityScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Fertility Insights</Text>
-        <Text style={styles.subtitle}>Track your fertile window</Text>
-      </View>
-
+      {/* Header with Soft Gradient */}
       <LinearGradient
-        colors={
-          fertile.status === 'high'
-            ? ['#4caf50', '#66bb6a']
-            : fertile.status === 'medium'
-            ? ['#ff9800', '#ffb74d']
-            : ['#9e9e9e', '#bdbdbd']
-        }
-        style={styles.ovulationCard}
+        colors={['#FFB6C1', '#FFC0CB', '#FFE4E1']}
+        style={styles.header}
       >
-        <Text style={styles.ovulationTitle}>
-          {fertile.status === 'high' ? 'High Fertility' : fertile.status === 'medium' ? 'Approaching Fertile Window' : 'Low Fertility'}
-        </Text>
-        <Text style={styles.ovulationSubtitle}>
-          {fertile.status === 'high'
-            ? `You're in your fertile window! ${fertile.daysLeft} day${fertile.daysLeft !== 1 ? 's' : ''} remaining.`
-            : fertile.status === 'medium'
-            ? `Your fertile window starts in ${fertile.daysLeft} day${fertile.daysLeft !== 1 ? 's' : ''}.`
-            : `Next fertile window in ${fertile.daysLeft} day${fertile.daysLeft !== 1 ? 's' : ''}.`}
-        </Text>
-
-        {fertile.nextFertileStart && (
-          <View style={styles.dateInfo}>
-            <Text style={styles.dateInfoText}>
-              Next fertile window: {fertile.nextFertileStart.toLocaleDateString()} - {fertile.nextFertileEnd.toLocaleDateString()}
-            </Text>
-            <Text style={styles.dateInfoText}>
-              Expected ovulation: {fertile.ovulationDate.toLocaleDateString()}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.probabilityMeter}>
-          <View style={styles.meterBar}>
-            <View
-              style={[
-                styles.meterFill,
-                {
-                  width: fertile.status === 'high' ? '100%' : fertile.status === 'medium' ? '60%' : '20%',
-                }
-              ]}
-            />
-          </View>
-          <View style={styles.meterLabels}>
-            <Text style={styles.meterLabel}>Low</Text>
-            <Text style={styles.meterLabel}>Medium</Text>
-            <Text style={styles.meterLabel}>High</Text>
-          </View>
-        </View>
+        <Text style={styles.title}>Your Health Journey</Text>
+        <Text style={styles.subtitle}>Track your cycle and nourish your body</Text>
       </LinearGradient>
 
-      <View style={styles.section}>
+      {/* Today's Status Card */}
+      <View style={styles.statusCard}>
+        <LinearGradient
+          colors={
+            fertile.status === 'high'
+              ? ['#FF69B4', '#FFB6C1']
+              : fertile.status === 'medium'
+              ? ['#FFA500', '#FFD700']
+              : ['#9370DB', '#DDA0DD']
+          }
+          style={styles.statusGradient}
+        >
+          <View style={styles.statusHeader}>
+            <Text style={styles.statusEmoji}>
+              {fertile.status === 'high' ? '🌸' : fertile.status === 'medium' ? '🌺' : '🌙'}
+            </Text>
+            <View style={styles.statusInfo}>
+              <Text style={styles.statusTitle}>
+                {fertile.status === 'high' ? 'High Fertility' : fertile.status === 'medium' ? 'Approaching Fertile Window' : 'Low Fertility'}
+              </Text>
+              <Text style={styles.statusSubtitle}>
+                {fertile.status === 'high'
+                  ? `You're in your fertile window! ${fertile.daysLeft} day${fertile.daysLeft !== 1 ? 's' : ''} remaining.`
+                  : fertile.status === 'medium'
+                  ? `Your fertile window starts in ${fertile.daysLeft} day${fertile.daysLeft !== 1 ? 's' : ''}.`
+                  : `Next fertile window in ${fertile.daysLeft} day${fertile.daysLeft !== 1 ? 's' : ''}.`}
+              </Text>
+            </View>
+          </View>
+          
+          <View style={styles.fertilityMeter}>
+            <View style={styles.meterTrack}>
+              <View
+                style={[
+                  styles.meterFill,
+                  {
+                    width: fertile.status === 'high' ? '100%' : fertile.status === 'medium' ? '60%' : '20%',
+                  }
+                ]}
+              />
+            </View>
+            <View style={styles.meterLabels}>
+              <Text style={styles.meterLabel}>Low</Text>
+              <Text style={styles.meterLabel}>Medium</Text>
+              <Text style={styles.meterLabel}>High</Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </View>
+
+      {/* Cycle Calendar */}
+      <View style={styles.calendarSection}>
         <View style={styles.sectionHeader}>
-          <Calendar size={24} color="#1a1a1a" />
-          <Text style={styles.sectionTitle}>Cycle Calendar</Text>
+          <Calendar size={24} color="#EC4899" />
+          <Text style={styles.sectionTitle}>Your Cycle</Text>
         </View>
-
-        <View style={styles.calendarGrid}>
-          {renderCalendar()}
-        </View>
-
-        <View style={styles.legend}>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: '#e91e63' }]} />
-            <Text style={styles.legendText}>Period</Text>
+        
+        <View style={styles.calendarContainer}>
+          <View style={styles.calendarGrid}>
+            {renderCalendar()}
           </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: '#4caf50' }]} />
-            <Text style={styles.legendText}>Fertile</Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: '#2196f3' }]} />
-            <Text style={styles.legendText}>Today</Text>
+          
+          <View style={styles.legend}>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: '#EF4444' }]} />
+              <Text style={styles.legendText}>Period</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: '#16A34A' }]} />
+              <Text style={styles.legendText}>Fertile</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: '#EC4899' }]} />
+              <Text style={styles.legendText}>Today</Text>
+            </View>
           </View>
         </View>
       </View>
 
-      {!profile.isRegular && (
-        <View style={styles.alertCard}>
-          <AlertCircle size={24} color="#ff9800" />
-          <View style={styles.alertContent}>
-            <Text style={styles.alertTitle}>Irregular Cycle Detected</Text>
-            <Text style={styles.alertText}>
-              Consider tracking more data points or consulting with a healthcare provider. We can help you understand patterns.
-            </Text>
-            <TouchableOpacity style={styles.alertButton}>
-              <Text style={styles.alertButtonText}>Learn More</Text>
+      {/* Fertility-Boosting Foods */}
+      <View style={styles.foodsSection}>
+        <View style={styles.sectionHeader}>
+          <Apple size={24} color="#EC4899" />
+          <Text style={styles.sectionTitle}>Fertility-Boosting Foods</Text>
+        </View>
+        
+        <View style={styles.foodsGrid}>
+          {fertilityFoods.map((food, index) => (
+            <TouchableOpacity key={index} style={styles.foodCard}>
+              <View style={[styles.foodIcon, { backgroundColor: food.color }]}>
+                <Text style={styles.foodEmoji}>{food.icon}</Text>
+              </View>
+              <Text style={styles.foodName}>{food.name}</Text>
+              <Text style={styles.foodBenefit}>{food.benefit}</Text>
             </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Wellness Activities */}
+      <View style={styles.wellnessSection}>
+        <View style={styles.sectionHeader}>
+          <Heart size={24} color="#EC4899" />
+          <Text style={styles.sectionTitle}>Daily Wellness</Text>
+        </View>
+        
+        <View style={styles.activitiesGrid}>
+          {wellnessActivities.map((activity, index) => (
+            <TouchableOpacity key={index} style={styles.activityCard}>
+              <LinearGradient
+                colors={[activity.color, `${activity.color}80`]}
+                style={styles.activityGradient}
+              >
+                <Text style={styles.activityIcon}>{activity.icon}</Text>
+                <Text style={styles.activityTitle}>{activity.title}</Text>
+                <Text style={styles.activityDuration}>{activity.duration}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* AI Insights */}
+      <View style={styles.aiSection}>
+        <View style={styles.aiCard}>
+          <View style={styles.aiHeader}>
+            <Brain size={24} color="#EC4899" />
+            <Text style={styles.aiTitle}>AI Health Insights</Text>
+          </View>
+          
+          <View style={styles.aiInsight}>
+            <Text style={styles.aiInsightTitle}>Today's Recommendation</Text>
+            <Text style={styles.aiInsightText}>
+              Based on your cycle, try gentle yoga and include more leafy greens in your meals today.
+            </Text>
+          </View>
+          
+          <View style={styles.aiFeatures}>
+            <View style={styles.aiFeature}>
+              <Zap size={16} color="#EC4899" />
+              <Text style={styles.aiFeatureText}>Smart predictions</Text>
+            </View>
+            <View style={styles.aiFeature}>
+              <TrendingUp size={16} color="#EC4899" />
+              <Text style={styles.aiFeatureText}>Pattern analysis</Text>
+            </View>
+            <View style={styles.aiFeature}>
+              <Heart size={16} color="#EC4899" />
+              <Text style={styles.aiFeatureText}>Personalized tips</Text>
+            </View>
           </View>
         </View>
-      )}
+      </View>
 
-      <View style={styles.tipsCard}>
-        <Text style={styles.tipsTitle}>Fertility Tips for Today</Text>
-        <View style={styles.tip}>
-          <Text style={styles.tipIcon}>💧</Text>
-          <Text style={styles.tipText}>Stay hydrated - drink 8-10 glasses of water</Text>
-        </View>
-        <View style={styles.tip}>
-          <Text style={styles.tipIcon}>🥜</Text>
-          <Text style={styles.tipText}>Include zinc-rich foods like nuts and seeds</Text>
-        </View>
-        <View style={styles.tip}>
-          <Text style={styles.tipIcon}>😌</Text>
-          <Text style={styles.tipText}>Practice stress reduction for 10-15 minutes</Text>
+      {/* Quick Tips */}
+      <View style={styles.tipsSection}>
+        <Text style={styles.tipsTitle}>💖 Daily Health Tips</Text>
+        <View style={styles.tipsList}>
+          <View style={styles.tipItem}>
+            <Text style={styles.tipIcon}>💧</Text>
+            <Text style={styles.tipText}>Stay hydrated - drink 8-10 glasses of water</Text>
+          </View>
+          <View style={styles.tipItem}>
+            <Text style={styles.tipIcon}>🥗</Text>
+            <Text style={styles.tipText}>Include leafy greens in every meal</Text>
+          </View>
+          <View style={styles.tipItem}>
+            <Text style={styles.tipIcon}>😌</Text>
+            <Text style={styles.tipText}>Practice 10 minutes of meditation</Text>
+          </View>
+          <View style={styles.tipItem}>
+            <Text style={styles.tipIcon}>🌙</Text>
+            <Text style={styles.tipText}>Get 7-8 hours of quality sleep</Text>
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -242,53 +322,80 @@ export default function FertilityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FEF7F7',
   },
   header: {
     padding: 24,
     paddingTop: 60,
+    paddingBottom: 32,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666',
-  },
-  ovulationCard: {
-    margin: 24,
-    marginTop: 0,
-    padding: 24,
-    borderRadius: 20,
-  },
-  ovulationTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#ffffff',
-    marginBottom: 8,
-  },
-  ovulationSubtitle: {
     fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 24,
+    color: '#FFFFFF',
+    fontWeight: '500',
     opacity: 0.9,
   },
-  probabilityMeter: {
+  statusCard: {
+    margin: 20,
+    marginTop: -16,
+    borderRadius: 24,
+    overflow: 'hidden',
+    shadowColor: '#EC4899',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  statusGradient: {
+    padding: 24,
+  },
+  statusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  statusEmoji: {
+    fontSize: 32,
+    marginRight: 16,
+  },
+  statusInfo: {
+    flex: 1,
+  },
+  statusTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  statusSubtitle: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    opacity: 0.9,
+    lineHeight: 20,
+  },
+  fertilityMeter: {
     marginTop: 8,
   },
-  meterBar: {
+  meterTrack: {
     height: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   meterFill: {
     height: '100%',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
     borderRadius: 4,
   },
   meterLabels: {
@@ -297,12 +404,13 @@ const styles = StyleSheet.create({
   },
   meterLabel: {
     fontSize: 12,
-    color: '#ffffff',
+    color: '#FFFFFF',
     opacity: 0.8,
+    fontWeight: '500',
   },
-  section: {
-    padding: 24,
-    paddingTop: 0,
+  calendarSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -313,7 +421,20 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#1F2937',
+  },
+  calendarContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#EC4899',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
   calendarGrid: {
     flexDirection: 'row',
@@ -322,21 +443,20 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   calendarDay: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
   calendarDayText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   legend: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 20,
-    marginTop: 8,
   },
   legendItem: {
     flexDirection: 'row',
@@ -350,84 +470,185 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
+    fontWeight: '500',
   },
-  alertCard: {
-    margin: 24,
-    marginTop: 0,
-    padding: 20,
-    backgroundColor: '#fff8f0',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#ffe082',
+  foodsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  foodsGrid: {
     flexDirection: 'row',
-    gap: 16,
+    flexWrap: 'wrap',
+    gap: 12,
   },
-  alertContent: {
-    flex: 1,
+  foodCard: {
+    width: (width - 64) / 3,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#EC4899',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  alertTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
+  foodIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 8,
   },
-  alertText: {
+  foodEmoji: {
+    fontSize: 24,
+  },
+  foodName: {
     fontSize: 14,
-    color: '#666',
-    lineHeight: 21,
+    fontWeight: '600',
+    color: '#1F2937',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  foodBenefit: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+  },
+  wellnessSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  activitiesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  activityCard: {
+    width: (width - 64) / 2,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  activityGradient: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  activityIcon: {
+    fontSize: 32,
     marginBottom: 12,
   },
-  alertButton: {
-    alignSelf: 'flex-start',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: '#ff9800',
-    borderRadius: 8,
+  activityTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+    textAlign: 'center',
   },
-  alertButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#ffffff',
+  activityDuration: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    opacity: 0.9,
   },
-  tipsCard: {
-    margin: 24,
-    marginTop: 0,
+  aiSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  aiCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     padding: 20,
-    backgroundColor: '#f3f9ff',
-    borderRadius: 16,
-    marginBottom: 32,
+    shadowColor: '#EC4899',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
-  tipsTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  tip: {
+  aiHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
+    gap: 12,
+  },
+  aiTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  aiInsight: {
+    backgroundColor: '#FEF7F7',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  aiInsightTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  aiInsightText: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+  },
+  aiFeatures: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  aiFeature: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  aiFeatureText: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  tipsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 40,
+  },
+  tipsTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 16,
+  },
+  tipsList: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#EC4899',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  tipItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
     gap: 12,
   },
   tipIcon: {
-    fontSize: 24,
+    fontSize: 20,
   },
   tipText: {
     flex: 1,
     fontSize: 14,
-    color: '#666',
-  },
-  dateInfo: {
-    marginTop: 16,
-    padding: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 8,
-  },
-  dateInfoText: {
-    fontSize: 13,
-    color: '#ffffff',
-    marginBottom: 4,
-    opacity: 0.9,
+    color: '#6B7280',
+    lineHeight: 20,
   },
 });

@@ -418,72 +418,210 @@ export default function PregnancyScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
+      {/* Header with Logo & Tagline */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Pregnancy</Text>
-        <Text style={styles.headerSubtitle}>Week {currentData.week.replace(' weeks', '')} of 40</Text>
+        <View style={styles.logoSection}>
+          <Text style={styles.logoText}>EasyPreg</Text>
+          <Text style={styles.taglineText}>Your journey to motherhood, simplified</Text>
+        </View>
+        <View style={styles.illustrationContainer}>
+          <Text style={styles.illustrationEmoji}>🌸</Text>
+        </View>
       </View>
 
-      {/* Main Content Card */}
-      <View style={styles.mainCard}>
-        <View style={styles.weekDisplay}>
-          <Text style={styles.weekNumber}>{currentData.week.replace(' weeks', '')}</Text>
-          <Text style={styles.weekLabel}>weeks</Text>
-        </View>
-        
-        <View style={styles.babyInfo}>
-          <Text style={styles.babySizeText}>Your baby is the size of</Text>
-          <Text style={styles.fruitText}>{currentData.fruitSize}</Text>
-          <Text style={styles.measurementText}>{currentData.babySize}</Text>
-        </View>
-
-        <View style={styles.progressBar}>
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${(parseInt(currentData.week.replace(' weeks', '')) / 40) * 100}%` }]} />
+      {/* Today's Cycle Status */}
+      <View style={styles.cycleStatusCard}>
+        <Text style={styles.cycleStatusTitle}>Today's Cycle Status</Text>
+        <View style={styles.cycleStatusContent}>
+          <View style={styles.statusItem}>
+            <View style={[styles.statusDot, styles.periodDot]} />
+            <Text style={styles.statusText}>Period Day 3</Text>
           </View>
-          <Text style={styles.progressText}>
-            {Math.round((parseInt(currentData.week.replace(' weeks', '')) / 40) * 100)}% complete
-          </Text>
+          <View style={styles.statusItem}>
+            <View style={[styles.statusDot, styles.fertileDot]} />
+            <Text style={styles.statusText}>Fertile in 8 days</Text>
+          </View>
+          <View style={styles.statusItem}>
+            <View style={[styles.statusDot, styles.ovulationDot]} />
+            <Text style={styles.statusText}>Ovulation in 12 days</Text>
+          </View>
         </View>
       </View>
 
-      {/* Insights Section */}
-      <View style={styles.insightsSection}>
-        <Text style={styles.insightsTitle}>Today's insights</Text>
-        
+      {/* Quick Health Insights */}
+      <View style={styles.healthInsightsSection}>
+        <Text style={styles.insightsTitle}>Quick Health Insights</Text>
         <View style={styles.insightsGrid}>
           <TouchableOpacity style={styles.insightCard}>
             <View style={styles.insightIcon}>
-              <Heart size={20} color="#DC2626" />
+              <Text style={styles.insightEmoji}>💊</Text>
             </View>
-            <Text style={styles.insightTitle}>Symptoms</Text>
-            <Text style={styles.insightSubtitle}>Track how you feel</Text>
+            <Text style={styles.insightTitle}>Supplements</Text>
+            <Text style={styles.insightSubtitle}>Take your vitamins</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.insightCard}>
             <View style={styles.insightIcon}>
-              <Baby size={20} color="#059669" />
+              <Text style={styles.insightEmoji}>🧘‍♀️</Text>
             </View>
-            <Text style={styles.insightTitle}>Development</Text>
-            <Text style={styles.insightSubtitle}>Baby's growth</Text>
+            <Text style={styles.insightTitle}>Wellness</Text>
+            <Text style={styles.insightSubtitle}>Meditation time</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.insightCard}>
             <View style={styles.insightIcon}>
-              <Calendar size={20} color="#6366F1" />
+              <Text style={styles.insightEmoji}>🛒</Text>
             </View>
-            <Text style={styles.insightTitle}>Appointments</Text>
-            <Text style={styles.insightSubtitle}>Upcoming visits</Text>
+            <Text style={styles.insightTitle}>Store</Text>
+            <Text style={styles.insightSubtitle}>Shop essentials</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.insightCard}>
             <View style={styles.insightIcon}>
-              <AlertTriangle size={20} color="#7C3AED" />
+              <Text style={styles.insightEmoji}>👩‍⚕️</Text>
             </View>
-            <Text style={styles.insightTitle}>Health Tips</Text>
-            <Text style={styles.insightSubtitle}>Stay healthy</Text>
+            <Text style={styles.insightTitle}>Experts</Text>
+            <Text style={styles.insightSubtitle}>Book consultation</Text>
           </TouchableOpacity>
         </View>
+      </View>
+
+      {/* Navigation Tabs */}
+      <View style={styles.navigationSection}>
+        <Text style={styles.navigationTitle}>Navigate</Text>
+        <View style={styles.navigationTabs}>
+          <TouchableOpacity style={styles.navTab}>
+            <Text style={styles.navTabIcon}>📊</Text>
+            <Text style={styles.navTabText}>Track</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navTab}>
+            <Text style={styles.navTabIcon}>🧘‍♀️</Text>
+            <Text style={styles.navTabText}>Wellness</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navTab}>
+            <Text style={styles.navTabIcon}>🛒</Text>
+            <Text style={styles.navTabText}>Store</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navTab}>
+            <Text style={styles.navTabIcon}>👩‍⚕️</Text>
+            <Text style={styles.navTabText}>Experts</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navTab}>
+            <Text style={styles.navTabIcon}>👤</Text>
+            <Text style={styles.navTabText}>Profile</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Cycle Tracking Preview */}
+      <View style={styles.cycleTrackingSection}>
+        <Text style={styles.sectionTitle}>Cycle Tracking</Text>
+        <View style={styles.calendarPreview}>
+          <View style={styles.calendarHeader}>
+            <Text style={styles.calendarMonth}>December 2024</Text>
+          </View>
+          <View style={styles.calendarGrid}>
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+              <Text key={index} style={styles.calendarDayLabel}>{day}</Text>
+            ))}
+            {Array.from({ length: 31 }, (_, i) => (
+              <View key={i} style={[
+                styles.calendarDay,
+                i === 2 && styles.currentDay,
+                i >= 0 && i <= 4 && styles.periodDay
+              ]}>
+                <Text style={[
+                  styles.calendarDayText,
+                  i === 2 && styles.currentDayText,
+                  i >= 0 && i <= 4 && styles.periodDayText
+                ]}>
+                  {i + 1}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+        <Text style={styles.aiPredictionText}>AI Prediction: Next period in 25 days</Text>
+      </View>
+
+      {/* Wellness & Mental Health */}
+      <View style={styles.wellnessSection}>
+        <Text style={styles.sectionTitle}>Wellness & Mental Health</Text>
+        <View style={styles.wellnessCards}>
+          <TouchableOpacity style={styles.wellnessCard}>
+            <Text style={styles.wellnessIcon}>😊</Text>
+            <Text style={styles.wellnessTitle}>Mood Tracker</Text>
+            <Text style={styles.wellnessSubtitle}>How are you feeling today?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.wellnessCard}>
+            <Text style={styles.wellnessIcon}>🧘‍♀️</Text>
+            <Text style={styles.wellnessTitle}>Yoga & Meditation</Text>
+            <Text style={styles.wellnessSubtitle}>Audio-guided sessions</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.wellnessCard}>
+            <Text style={styles.wellnessIcon}>🥗</Text>
+            <Text style={styles.wellnessTitle}>Indian Nutrition</Text>
+            <Text style={styles.wellnessSubtitle}>Traditional diet tips</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Health Store Preview */}
+      <View style={styles.storeSection}>
+        <Text style={styles.sectionTitle}>Health Store</Text>
+        <View style={styles.storeItems}>
+          <TouchableOpacity style={styles.storeItem}>
+            <Text style={styles.storeItemIcon}>🧴</Text>
+            <Text style={styles.storeItemTitle}>Hygiene Products</Text>
+            <Text style={styles.storeItemPrice}>₹299</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.storeItem}>
+            <Text style={styles.storeItemIcon}>💊</Text>
+            <Text style={styles.storeItemTitle}>Supplements</Text>
+            <Text style={styles.storeItemPrice}>₹599</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.storeItem}>
+            <Text style={styles.storeItemIcon}>🏃‍♀️</Text>
+            <Text style={styles.storeItemTitle}>Fitness Gear</Text>
+            <Text style={styles.storeItemPrice}>₹1,299</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.viewAllButton}>
+          <Text style={styles.viewAllButtonText}>View All Products</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Experts Section */}
+      <View style={styles.expertsSection}>
+        <Text style={styles.sectionTitle}>Book Expert Consultation</Text>
+        <View style={styles.expertCards}>
+          <TouchableOpacity style={styles.expertCard}>
+            <Text style={styles.expertIcon}>👩‍⚕️</Text>
+            <Text style={styles.expertTitle}>Gynecologists</Text>
+            <Text style={styles.expertSubtitle}>Specialized care</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.expertCard}>
+            <Text style={styles.expertIcon}>🥗</Text>
+            <Text style={styles.expertTitle}>Nutritionists</Text>
+            <Text style={styles.expertSubtitle}>Diet planning</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.expertCard}>
+            <Text style={styles.expertIcon}>🧠</Text>
+            <Text style={styles.expertTitle}>Therapists</Text>
+            <Text style={styles.expertSubtitle}>Mental health</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.workshopText}>Workshops & Sessions Available</Text>
       </View>
 
       <View style={styles.section}>
@@ -603,27 +741,386 @@ export default function PregnancyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafbfc',
+    backgroundColor: '#FEF7F7',
   },
   header: {
     paddingTop: 60,
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 30,
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#FCE7F3',
   },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
+  logoSection: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logoText: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#EC4899',
+    marginBottom: 8,
     letterSpacing: -0.5,
   },
-  headerSubtitle: {
+  taglineText: {
     fontSize: 16,
     color: '#6b7280',
     fontWeight: '500',
+    textAlign: 'center',
+  },
+  illustrationContainer: {
+    alignItems: 'center',
+  },
+  illustrationEmoji: {
+    fontSize: 48,
+  },
+  cycleStatusCard: {
+    margin: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  cycleStatusTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  cycleStatusContent: {
+    gap: 12,
+  },
+  statusItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 12,
+  },
+  periodDot: {
+    backgroundColor: '#EF4444',
+  },
+  fertileDot: {
+    backgroundColor: '#10B981',
+  },
+  ovulationDot: {
+    backgroundColor: '#3B82F6',
+  },
+  statusText: {
+    fontSize: 16,
+    color: '#1a1a1a',
+    fontWeight: '500',
+  },
+  healthInsightsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  insightsTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  insightsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  insightCard: {
+    width: (width - 52) / 2,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  insightIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f8f9fa',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  insightEmoji: {
+    fontSize: 20,
+  },
+  insightTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  insightSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    lineHeight: 20,
+  },
+  navigationSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  navigationTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  navigationTabs: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  navTab: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  navTabIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  navTabText: {
+    fontSize: 12,
+    color: '#6b7280',
+    fontWeight: '500',
+  },
+  cycleTrackingSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  calendarPreview: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  calendarHeader: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  calendarMonth: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+  },
+  calendarDayLabel: {
+    width: (width - 88) / 7,
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#6b7280',
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  calendarDay: {
+    width: (width - 88) / 7,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+  },
+  currentDay: {
+    backgroundColor: '#8B5CF6',
+  },
+  periodDay: {
+    backgroundColor: '#FEE2E2',
+  },
+  calendarDayText: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '500',
+  },
+  currentDayText: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  periodDayText: {
+    color: '#EF4444',
+    fontWeight: '600',
+  },
+  aiPredictionText: {
+    fontSize: 14,
+    color: '#EC4899',
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 12,
+  },
+  wellnessSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  wellnessCards: {
+    gap: 12,
+  },
+  wellnessCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  wellnessIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  wellnessTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  wellnessSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  storeSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  storeItems: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  storeItem: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  storeItemIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  storeItemTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  storeItemPrice: {
+    fontSize: 12,
+    color: '#EC4899',
+    fontWeight: '600',
+  },
+  viewAllButton: {
+    backgroundColor: '#8B5CF6',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
+  viewAllButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  expertsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  expertCards: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  expertCard: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  expertIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  expertTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  expertSubtitle: {
+    fontSize: 12,
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  workshopText: {
+    fontSize: 14,
+    color: '#EC4899',
+    fontWeight: '600',
+    textAlign: 'center',
   },
   mainCard: {
     margin: 20,
@@ -648,7 +1145,7 @@ const styles = StyleSheet.create({
   weekNumber: {
     fontSize: 48,
     fontWeight: '800',
-    color: '#8B5CF6',
+    color: '#EC4899',
     lineHeight: 56,
   },
   weekLabel: {
@@ -751,6 +1248,270 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6b7280',
     lineHeight: 20,
+  },
+  insightEmoji: {
+    fontSize: 20,
+  },
+  fertilityScoreCard: {
+    margin: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  scoreHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  scoreTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1a1a1a',
+  },
+  scoreValue: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#EC4899',
+  },
+  scoreProgress: {
+    marginTop: 8,
+  },
+  scoreTrack: {
+    height: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  scoreFill: {
+    height: '100%',
+    backgroundColor: '#8B5CF6',
+    borderRadius: 4,
+  },
+  scoreDescription: {
+    fontSize: 12,
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  recommendationsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  recommendationsTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  recommendationCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  recommendationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  recommendationIcon: {
+    fontSize: 20,
+    marginRight: 12,
+  },
+  recommendationTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  recommendationText: {
+    fontSize: 14,
+    color: '#6b7280',
+    lineHeight: 20,
+  },
+  partnerSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  partnerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  partnerCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  partnerTip: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 8,
+  },
+  partnerSubtext: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 16,
+  },
+  partnerButton: {
+    backgroundColor: '#8B5CF6',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+  },
+  partnerButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  cycleSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  cycleTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  cycleGraph: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  cyclePhases: {
+    flexDirection: 'row',
+    height: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 12,
+  },
+  phaseBar: {
+    flex: 1,
+  },
+  periodPhase: {
+    backgroundColor: '#EF4444',
+  },
+  fertilePhase: {
+    backgroundColor: '#10B981',
+  },
+  ovulationPhase: {
+    backgroundColor: '#3B82F6',
+  },
+  lutealPhase: {
+    backgroundColor: '#F59E0B',
+  },
+  cycleLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  phaseLabel: {
+    fontSize: 12,
+    color: '#6b7280',
+    fontWeight: '500',
+  },
+  currentDayIndicator: {
+    alignItems: 'center',
+  },
+  currentDayDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#8B5CF6',
+    marginBottom: 4,
+  },
+  currentDayText: {
+    fontSize: 12,
+    color: '#EC4899',
+    fontWeight: '600',
+  },
+  motivationCard: {
+    margin: 20,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  motivationText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  motivationSubtext: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  quickAddButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#8B5CF6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  quickAddIcon: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#ffffff',
   },
   durationContainer: {
     flexDirection: 'row',

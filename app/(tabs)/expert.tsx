@@ -1,162 +1,163 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { BookOpen, Video, Users, Stethoscope, FlaskConical, Building2, ShoppingBag } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { Star, User, Calendar, Clock } from 'lucide-react-native';
 
-const articles = [
+const { width } = Dimensions.get('window');
+
+const doctors = [
   {
-    title: 'Myths vs Facts: Fertility Edition',
-    category: 'myths',
-    author: 'Dr. Priya Sharma',
-    readTime: '5 min read',
-    image: 'https://images.pexels.com/photos/4506109/pexels-photo-4506109.jpeg?auto=compress&cs=tinysrgb&w=400',
+    id: 1,
+    name: 'Dr. Priya Sharma',
+    specialization: 'Gynecologist',
+    experience: '15 years',
+    rating: 4.9,
+    consultations: '2500+',
+    availability: 'Today, 4:00 PM',
+    price: '₹800',
+    image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop&crop=face',
+    status: 'Available'
   },
   {
-    title: 'Understanding Your Ovulation Cycle',
-    category: 'doctor_tips',
-    author: 'Dr. Anjali Mehta',
-    readTime: '7 min read',
-    image: 'https://images.pexels.com/photos/7659564/pexels-photo-7659564.jpeg?auto=compress&cs=tinysrgb&w=400',
+    id: 2,
+    name: 'Dr. Anjali Mehta',
+    specialization: 'Nutritionist',
+    experience: '10 years',
+    rating: 4.8,
+    consultations: '1800+',
+    availability: 'Tomorrow, 10:00 AM',
+    price: '₹500',
+    image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop&crop=face',
+    status: 'Available'
   },
   {
-    title: 'Stress and Fertility: What You Need to Know',
-    category: 'lifestyle',
-    author: 'Dr. Rahul Desai',
-    readTime: '6 min read',
-    image: 'https://images.pexels.com/photos/3759657/pexels-photo-3759657.jpeg?auto=compress&cs=tinysrgb&w=400',
+    id: 3,
+    name: 'Dr. Rahul Desai',
+    specialization: 'Therapist',
+    experience: '12 years',
+    rating: 4.7,
+    consultations: '1200+',
+    availability: 'Today, 6:00 PM',
+    price: '₹600',
+    image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=100&h=100&fit=crop&crop=face',
+    status: 'Available'
   },
+  {
+    id: 4,
+    name: 'Dr. Sunita Patel',
+    specialization: 'Yoga Expert',
+    experience: '8 years',
+    rating: 4.9,
+    consultations: '900+',
+    availability: 'Tomorrow, 2:00 PM',
+    price: '₹400',
+    image: 'https://images.unsplash.com/photo-1594824388852-8a7b4b4b4b4b?w=100&h=100&fit=crop&crop=face',
+    status: 'Available'
+  }
 ];
 
+const categories = ['All', 'Gynecologist', 'Nutritionist', 'Therapist', 'Yoga Expert'];
+
 export default function ExpertScreen() {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
   return (
     <ScrollView style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Expert Content</Text>
-        <Text style={styles.subtitle}>Learn from the best</Text>
+        <Text style={styles.title}>Expert Consultations</Text>
+        <Text style={styles.subtitle}>Connect with certified specialists</Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Featured Articles</Text>
-
-        {articles.map((article, index) => (
-          <TouchableOpacity key={index} style={styles.articleCard}>
-            <Image source={{ uri: article.image }} style={styles.articleImage} />
-            <View style={styles.articleContent}>
-              <View style={styles.categoryBadge}>
-                <Text style={styles.categoryText}>{article.category.replace('_', ' ')}</Text>
-              </View>
-              <Text style={styles.articleTitle}>{article.title}</Text>
-              <View style={styles.articleMeta}>
-                <Text style={styles.author}>{article.author}</Text>
-                <Text style={styles.readTime}>{article.readTime}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Video size={24} color="#1a1a1a" />
-          <Text style={styles.sectionTitle}>Video Library</Text>
+      {/* Special Offer Banner */}
+      <View style={styles.offerBanner}>
+        <View style={styles.offerBadge}>
+          <Text style={styles.offerBadgeText}>SPECIAL OFFER</Text>
         </View>
+        <Text style={styles.offerTitle}>First Consultation Free!</Text>
+        <Text style={styles.offerDescription}>Book your first expert consultation at no cost</Text>
+        <TouchableOpacity style={styles.claimButton}>
+          <Text style={styles.claimButtonText}>Claim Offer</Text>
+        </TouchableOpacity>
+      </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.videoScroll}>
-          <TouchableOpacity style={styles.videoCard}>
-            <Image
-              source={{ uri: 'https://images.pexels.com/photos/3958464/pexels-photo-3958464.jpeg?auto=compress&cs=tinysrgb&w=400' }}
-              style={styles.videoThumbnail}
-            />
-            <View style={styles.playButton}>
-              <Text style={styles.playIcon}>▶</Text>
-            </View>
-            <Text style={styles.videoTitle}>Fertility Yoga Series</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.videoCard}>
-            <Image
-              source={{ uri: 'https://images.pexels.com/photos/6798953/pexels-photo-6798953.jpeg?auto=compress&cs=tinysrgb&w=400' }}
-              style={styles.videoThumbnail}
-            />
-            <View style={styles.playButton}>
-              <Text style={styles.playIcon}>▶</Text>
-            </View>
-            <Text style={styles.videoTitle}>Nutrition Basics</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.videoCard}>
-            <Image
-              source={{ uri: 'https://images.pexels.com/photos/5473182/pexels-photo-5473182.jpeg?auto=compress&cs=tinysrgb&w=400' }}
-              style={styles.videoThumbnail}
-            />
-            <View style={styles.playButton}>
-              <Text style={styles.playIcon}>▶</Text>
-            </View>
-            <Text style={styles.videoTitle}>Stress Management</Text>
-          </TouchableOpacity>
+      {/* Book Consultation Section */}
+      <View style={styles.consultationSection}>
+        <Text style={styles.sectionTitle}>Book Consultation</Text>
+        
+        {/* Category Filters */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoryScroll}
+          contentContainerStyle={styles.categoryContainer}
+        >
+          {categories.map((category, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.categoryButton,
+                selectedCategory === category && styles.selectedCategoryButton
+              ]}
+              onPress={() => setSelectedCategory(category)}
+            >
+              <Text style={[
+                styles.categoryButtonText,
+                selectedCategory === category && styles.selectedCategoryButtonText
+              ]}>
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
 
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Users size={24} color="#1a1a1a" />
-          <Text style={styles.sectionTitle}>Community</Text>
-        </View>
+      {/* Doctor Cards */}
+      <View style={styles.doctorsSection}>
+        {doctors
+          .filter(doctor => selectedCategory === 'All' || doctor.specialization === selectedCategory)
+          .map((doctor) => (
+            <View key={doctor.id} style={styles.doctorCard}>
+              <View style={styles.doctorHeader}>
+                <Image source={{ uri: doctor.image }} style={styles.doctorImage} />
+                <View style={styles.doctorInfo}>
+                  <Text style={styles.doctorName}>{doctor.name}</Text>
+                  <Text style={styles.doctorSpecialization}>{doctor.specialization}</Text>
+                </View>
+                <View style={styles.availableTag}>
+                  <Text style={styles.availableTagText}>{doctor.status}</Text>
+                </View>
+              </View>
 
-        <View style={styles.communityCard}>
-          <Text style={styles.communityTitle}>Anonymous Q&A</Text>
-          <Text style={styles.communityText}>
-            Connect with others on the same journey. Ask questions and share experiences anonymously.
-          </Text>
-          <TouchableOpacity style={styles.communityButton}>
-            <Text style={styles.communityButtonText}>Join Community</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+              <View style={styles.doctorStats}>
+                <View style={styles.statItem}>
+                  <User size={16} color="#6b7280" />
+                  <Text style={styles.statText}>{doctor.experience}</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Star size={16} color="#6b7280" />
+                  <Text style={styles.statText}>{doctor.rating}</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Calendar size={16} color="#6b7280" />
+                  <Text style={styles.statText}>{doctor.consultations}</Text>
+                </View>
+              </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Partner Services</Text>
+              <View style={styles.availabilitySection}>
+                <Text style={styles.availabilityLabel}>Next Available</Text>
+                <Text style={styles.availabilityTime}>{doctor.availability}</Text>
+              </View>
 
-        <View style={styles.servicesGrid}>
-          <TouchableOpacity style={styles.serviceCard}>
-            <FlaskConical size={32} color="#e91e63" />
-            <Text style={styles.serviceName}>Lab Tests</Text>
-            <Text style={styles.serviceDesc}>Book diagnostic tests</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.serviceCard}>
-            <Stethoscope size={32} color="#2196f3" />
-            <Text style={styles.serviceName}>Consultations</Text>
-            <Text style={styles.serviceDesc}>Talk to specialists</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.serviceCard}>
-            <Building2 size={32} color="#4caf50" />
-            <Text style={styles.serviceName}>IVF Clinics</Text>
-            <Text style={styles.serviceDesc}>Find nearby clinics</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.serviceCard}>
-            <ShoppingBag size={32} color="#ff9800" />
-            <Text style={styles.serviceName}>Supplements</Text>
-            <Text style={styles.serviceDesc}>Fertility vitamins</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.premiumCard}>
-        <Text style={styles.premiumBadge}>PREMIUM</Text>
-        <Text style={styles.premiumTitle}>Unlock Expert Access</Text>
-        <Text style={styles.premiumText}>
-          Get personalized insights, AI-based predictions, and direct access to gynecologists.
-        </Text>
-        <View style={styles.premiumFeatures}>
-          <Text style={styles.premiumFeature}>✓ Advanced cycle predictions</Text>
-          <Text style={styles.premiumFeature}>✓ Personalized meal plans</Text>
-          <Text style={styles.premiumFeature}>✓ Expert webinars</Text>
-          <Text style={styles.premiumFeature}>✓ Priority support</Text>
-        </View>
-        <TouchableOpacity style={styles.premiumButton}>
-          <Text style={styles.premiumButtonText}>Upgrade Now</Text>
-        </TouchableOpacity>
+              <View style={styles.doctorFooter}>
+                <View style={styles.priceSection}>
+                  <Text style={styles.priceText}>{doctor.price}</Text>
+                </View>
+                <TouchableOpacity style={styles.bookButton}>
+                  <Text style={styles.bookButtonText}>Book</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
       </View>
     </ScrollView>
   );
@@ -165,31 +166,72 @@ export default function ExpertScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FEF7F7',
   },
   header: {
-    padding: 24,
+    padding: 20,
     paddingTop: 60,
+    paddingBottom: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
     color: '#1a1a1a',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    color: '#6b7280',
+    fontWeight: '500',
   },
-  section: {
-    padding: 24,
-    paddingTop: 0,
+  offerBanner: {
+    margin: 20,
+    backgroundColor: '#EC4899',
+    borderRadius: 16,
+    padding: 20,
+    position: 'relative',
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
+  offerBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#F472B6',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  offerBadgeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#ffffff',
+    textTransform: 'uppercase',
+  },
+  offerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  offerDescription: {
+    fontSize: 16,
+    color: '#ffffff',
+    marginBottom: 20,
+    opacity: 0.9,
+  },
+  claimButton: {
+    backgroundColor: '#F472B6',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignSelf: 'center',
+  },
+  claimButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  consultationSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 20,
@@ -197,192 +239,137 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     marginBottom: 16,
   },
-  articleCard: {
-    marginBottom: 20,
-    borderRadius: 16,
-    overflow: 'hidden',
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+  categoryScroll: {
+    marginLeft: -20,
+    paddingLeft: 20,
   },
-  articleImage: {
-    width: '100%',
-    height: 180,
-    backgroundColor: '#f5f5f5',
+  categoryContainer: {
+    paddingRight: 20,
   },
-  articleContent: {
-    padding: 16,
-  },
-  categoryBadge: {
-    alignSelf: 'flex-start',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    backgroundColor: '#f3f9ff',
-    borderRadius: 12,
-    marginBottom: 8,
-  },
-  categoryText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#2196f3',
-    textTransform: 'capitalize',
-  },
-  articleTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 8,
-  },
-  articleMeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  author: {
-    fontSize: 14,
-    color: '#666',
-  },
-  readTime: {
-    fontSize: 14,
-    color: '#999',
-  },
-  videoScroll: {
-    marginLeft: -24,
-    paddingLeft: 24,
-  },
-  videoCard: {
-    width: 200,
-    marginRight: 16,
-  },
-  videoThumbnail: {
-    width: 200,
-    height: 120,
-    borderRadius: 12,
-    backgroundColor: '#f5f5f5',
-    marginBottom: 8,
-  },
-  playButton: {
-    position: 'absolute',
-    top: 40,
-    left: 80,
-    width: 40,
-    height: 40,
+  categoryButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#f3f4f6',
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginRight: 12,
   },
-  playIcon: {
-    fontSize: 16,
-    color: '#1a1a1a',
-    marginLeft: 4,
+  selectedCategoryButton: {
+    backgroundColor: '#6b7280',
   },
-  videoTitle: {
+  categoryButtonText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontWeight: '500',
+    color: '#6b7280',
   },
-  communityCard: {
-    padding: 20,
-    backgroundColor: '#f1f8f4',
+  selectedCategoryButtonText: {
+    color: '#ffffff',
+  },
+  doctorsSection: {
+    paddingHorizontal: 20,
+    paddingBottom: 100,
+  },
+  doctorCard: {
+    backgroundColor: '#ffffff',
     borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
     borderWidth: 1,
-    borderColor: '#c8e6c9',
+    borderColor: '#f0f0f0',
   },
-  communityTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 8,
-  },
-  communityText: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 21,
+  doctorHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
   },
-  communityButton: {
-    paddingVertical: 12,
-    backgroundColor: '#4caf50',
-    borderRadius: 8,
-    alignItems: 'center',
+  doctorImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 16,
   },
-  communityButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
+  doctorInfo: {
+    flex: 1,
   },
-  servicesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  serviceCard: {
-    width: '47%',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 16,
-    alignItems: 'center',
-  },
-  serviceName: {
-    fontSize: 16,
-    fontWeight: '600',
+  doctorName: {
+    fontSize: 18,
+    fontWeight: '700',
     color: '#1a1a1a',
-    marginTop: 12,
     marginBottom: 4,
   },
-  serviceDesc: {
-    fontSize: 12,
-    color: '#666',
-    textAlign: 'center',
+  doctorSpecialization: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '500',
   },
-  premiumCard: {
-    margin: 24,
-    marginTop: 0,
-    padding: 24,
-    backgroundColor: '#1a1a1a',
-    borderRadius: 20,
-    marginBottom: 32,
-  },
-  premiumBadge: {
-    alignSelf: 'flex-start',
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#ffd700',
-    backgroundColor: 'rgba(255, 215, 0, 0.2)',
+  availableTag: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 8,
     paddingVertical: 4,
-    paddingHorizontal: 12,
     borderRadius: 12,
-    marginBottom: 12,
   },
-  premiumTitle: {
-    fontSize: 24,
-    fontWeight: '700',
+  availableTagText: {
+    fontSize: 12,
+    fontWeight: '600',
     color: '#ffffff',
-    marginBottom: 8,
   },
-  premiumText: {
+  doctorStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  statText: {
     fontSize: 14,
-    color: '#cccccc',
-    lineHeight: 21,
-    marginBottom: 20,
+    color: '#6b7280',
+    fontWeight: '500',
   },
-  premiumFeatures: {
-    marginBottom: 20,
+  availabilitySection: {
+    marginBottom: 16,
   },
-  premiumFeature: {
+  availabilityLabel: {
     fontSize: 14,
-    color: '#ffffff',
-    marginBottom: 8,
+    color: '#6b7280',
+    marginBottom: 4,
   },
-  premiumButton: {
-    paddingVertical: 16,
-    backgroundColor: '#ffd700',
-    borderRadius: 12,
+  availabilityTime: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  doctorFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  premiumButtonText: {
-    fontSize: 16,
+  priceSection: {
+    flex: 1,
+  },
+  priceText: {
+    fontSize: 20,
     fontWeight: '700',
     color: '#1a1a1a',
+  },
+  bookButton: {
+    backgroundColor: '#e91e63',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  bookButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
   },
 });
