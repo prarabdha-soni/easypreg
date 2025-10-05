@@ -14,11 +14,11 @@ const generateMonths = () => {
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
   
-  // Generate months from current month to next 12 months (descending order)
+  // Generate months from 12 months ago to current month (descending order)
   const monthList = [];
   for (let i = 0; i < 12; i++) {
-    const monthIndex = (currentMonth + i) % 12;
-    const year = currentYear + Math.floor((currentMonth + i) / 12);
+    const monthIndex = (currentMonth - i + 12) % 12;
+    const year = currentYear - Math.floor((currentMonth - i) / 12);
     monthList.push({
       name: months[monthIndex],
       index: monthIndex,
@@ -35,19 +35,19 @@ const generateDays = (month: number, year: number) => {
   const currentMonth = today.getMonth();
   const currentDay = today.getDate();
   
-  // If it's the current year and month, only show days from today onwards
+  // If it's the current year and month, only show days up to today
   if (year === currentYear && month === currentMonth) {
-    return Array.from({ length: daysInMonth - currentDay + 1 }, (_, i) => currentDay + i);
+    return Array.from({ length: currentDay }, (_, i) => i + 1);
   }
   
-  // For future months, show all days
+  // For past months, show all days
   return Array.from({ length: daysInMonth }, (_, i) => i + 1);
 };
 
 const generateYears = () => {
   const currentYear = new Date().getFullYear();
-  // Generate years from current year to next 5 years (descending order)
-  return Array.from({ length: 6 }, (_, i) => currentYear + (5 - i));
+  // Generate years from current year to 5 years ago (descending order)
+  return Array.from({ length: 6 }, (_, i) => currentYear - i);
 };
 
 export default function PeriodDateScreen() {
@@ -56,11 +56,13 @@ export default function PeriodDateScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   
   const today = new Date();
-  const [selectedDate, setSelectedDate] = useState(today);
+  // Set default to 7 days ago (typical cycle length)
+  const defaultDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const [selectedDate, setSelectedDate] = useState(defaultDate);
   
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
-  const [selectedDay, setSelectedDay] = useState(today.getDate());
-  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(defaultDate.getMonth());
+  const [selectedDay, setSelectedDay] = useState(defaultDate.getDate());
+  const [selectedYear, setSelectedYear] = useState(defaultDate.getFullYear());
 
   const handleDateSelect = () => {
     const date = new Date(selectedYear, selectedMonth, selectedDay);
@@ -96,9 +98,9 @@ export default function PeriodDateScreen() {
           <Calendar size={48} color="#e91e63" />
         </View>
         
-        <Text style={styles.title}>When is your next period?</Text>
+        <Text style={styles.title}>When was your last period?</Text>
         <Text style={styles.subtitle}>
-          Select a future date to help us track your cycle and provide personalized insights
+          Select a past date to help us track your cycle and provide personalized insights
         </Text>
 
         <TouchableOpacity 
