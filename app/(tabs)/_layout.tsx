@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Hop as Home, Activity, Apple, Heart, BookOpen, User, Baby, GraduationCap } from 'lucide-react-native';
+import { Hop as Home, Activity, Apple, Heart, BookOpen, User, Baby, GraduationCap, ShoppingBag } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -54,6 +54,15 @@ export default function TabLayout() {
           title: 'Pregnancy',
           tabBarIcon: ({ size, color }) => (
             <Baby size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="marketplace"
+        options={{
+          title: 'Store',
+          tabBarIcon: ({ size, color }) => (
+            <ShoppingBag size={size} color={color} />
           ),
         }}
       />

@@ -261,6 +261,67 @@ export default function FertilityScreen() {
         </View>
       </View>
 
+      {/* Predictive Health Analytics */}
+      <View style={styles.analyticsSection}>
+        <View style={styles.analyticsCard}>
+          <View style={styles.analyticsHeader}>
+            <Brain size={24} color="#EC4899" />
+            <Text style={styles.analyticsTitle}>Predictive Health Analytics</Text>
+          </View>
+          
+          <View style={styles.healthRisks}>
+            <View style={styles.riskItem}>
+              <View style={styles.riskHeader}>
+                <Text style={styles.riskName}>PCOS Risk Assessment</Text>
+                <View style={styles.riskLevel}>
+                  <Text style={styles.riskLevelText}>Low Risk</Text>
+                </View>
+              </View>
+              <View style={styles.riskProgress}>
+                <View style={[styles.riskProgressFill, { width: '25%', backgroundColor: '#10B981' }]} />
+              </View>
+              <Text style={styles.riskDescription}>
+                Based on your cycle patterns, you show low risk for PCOS. Continue monitoring.
+              </Text>
+            </View>
+
+            <View style={styles.riskItem}>
+              <View style={styles.riskHeader}>
+                <Text style={styles.riskName}>Endometriosis Detection</Text>
+                <View style={styles.riskLevel}>
+                  <Text style={styles.riskLevelText}>Monitor</Text>
+                </View>
+              </View>
+              <View style={styles.riskProgress}>
+                <View style={[styles.riskProgressFill, { width: '40%', backgroundColor: '#F59E0B' }]} />
+              </View>
+              <Text style={styles.riskDescription}>
+                Some symptoms detected. Consider consulting a specialist for evaluation.
+              </Text>
+            </View>
+
+            <View style={styles.riskItem}>
+              <View style={styles.riskHeader}>
+                <Text style={styles.riskName}>Fertility Health Score</Text>
+                <View style={styles.riskLevel}>
+                  <Text style={styles.riskLevelText}>Good</Text>
+                </View>
+              </View>
+              <View style={styles.riskProgress}>
+                <View style={[styles.riskProgressFill, { width: '75%', backgroundColor: '#EC4899' }]} />
+              </View>
+              <Text style={styles.riskDescription}>
+                Your fertility indicators are positive. Maintain healthy lifestyle habits.
+              </Text>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.detailedAnalysisButton}>
+            <Text style={styles.detailedAnalysisText}>Get Detailed Health Report</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {/* AI Insights */}
       <View style={styles.aiSection}>
         <View style={styles.aiCard}>
@@ -650,5 +711,89 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     lineHeight: 20,
+  },
+  analyticsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  analyticsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#EC4899',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  analyticsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    gap: 12,
+  },
+  analyticsTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  healthRisks: {
+    marginBottom: 20,
+  },
+  riskItem: {
+    marginBottom: 20,
+  },
+  riskHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  riskName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  riskLevel: {
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  riskLevelText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  riskProgress: {
+    height: 6,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  riskProgressFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  riskDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+  },
+  detailedAnalysisButton: {
+    backgroundColor: '#EC4899',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  detailedAnalysisText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
