@@ -8,7 +8,7 @@ export default function WelcomeScreen() {
 
   return (
     <LinearGradient
-      colors={['#fff5f7', '#ffffff']}
+      colors={['#FDE2E7', '#FFFFFF']}
       style={styles.container}
     >
       <View style={styles.content}>
@@ -17,18 +17,52 @@ export default function WelcomeScreen() {
         </View>
 
         <Text style={styles.logo}>NariCare</Text>
-        <Text style={styles.tagline}>Health starts with your cycle.</Text>
-        <Text style={styles.subtagline}>Your complete women's health companion</Text>
+        <Text style={styles.tagline}>Know your period, know your body</Text>
+        <Text style={styles.subtagline}>Private, on-device tracking with cycle-smart tips</Text>
 
-        <View style={styles.illustrationContainer}>
-          <Text style={styles.illustration}>🌸</Text>
+        {/* Removed flower illustration for a cleaner hero */}
+
+        {/* Hormone Impact Diagram */}
+        <View style={styles.diagramContainer}>
+          <Text style={styles.impactTitle}>Hormone imbalance can impact</Text>
+          <View style={styles.pillGridRow}>
+            <View style={styles.pill}>
+              <Text style={styles.pillEmoji}>💇‍♀️</Text>
+              <Text style={styles.pillText}>Hair Loss</Text>
+            </View>
+            <View style={styles.pill}>
+              <Text style={styles.pillEmoji}>✨</Text>
+              <Text style={styles.pillText}>Skin Issues</Text>
+            </View>
+          </View>
+          <View style={styles.pillGridRow}>
+            <View style={styles.pill}>
+              <Text style={styles.pillEmoji}>⚖️</Text>
+              <Text style={styles.pillText}>Weight Gain</Text>
+            </View>
+            <View style={styles.pill}>
+              <Text style={styles.pillEmoji}>😊</Text>
+              <Text style={styles.pillText}>Mood</Text>
+            </View>
+            <View style={styles.pill}>
+              <Text style={styles.pillEmoji}>⚡</Text>
+              <Text style={styles.pillText}>Energy</Text>
+            </View>
+          </View>
         </View>
 
         <TouchableOpacity
           style={styles.button}
           onPress={() => router.push('/onboarding/period-date')}
         >
-          <Text style={styles.buttonText}>Get Started</Text>
+          <LinearGradient
+            colors={['#F59BB3', '#8FD3D8']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.buttonGradient}
+          >
+            <Text style={styles.buttonText}>Fix Hormone</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <Text style={styles.privacyText}>
@@ -45,9 +79,10 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 24,
+    paddingTop: 80,
   },
   logoContainer: {
     marginBottom: 16,
@@ -57,38 +92,159 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1a1a1a',
     marginBottom: 8,
+    letterSpacing: 0.2,
   },
   tagline: {
-    fontSize: 18,
-    color: '#666',
+    fontSize: 24,
+    color: '#111827',
     textAlign: 'center',
     marginBottom: 8,
+    fontWeight: '800',
   },
   subtagline: {
-    fontSize: 14,
-    color: '#999',
+    fontSize: 16,
+    color: '#6B7280',
     textAlign: 'center',
-    marginBottom: 60,
+    marginBottom: 24,
     lineHeight: 20,
   },
-  illustrationContainer: {
-    marginBottom: 60,
-  },
-  illustration: {
-    fontSize: 80,
-  },
-  button: {
-    backgroundColor: '#e91e63',
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 30,
+  illustrationContainer: {},
+  illustration: {},
+  diagramContainer: {
+    width: '100%',
+    maxWidth: 360,
+    minHeight: 180,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#FCE7F3',
+    shadowColor: '#EC4899',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+    marginTop: 12,
     marginBottom: 24,
-    minWidth: 200,
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
+  centerAbsolute: {},
+  centerNode: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFE4E9',
+    borderColor: '#F9C3D7',
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 60,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  centerEmoji: { fontSize: 22, marginBottom: 4 },
+  centerTitle: { fontSize: 16, fontWeight: '800', color: '#111827' },
+  centerSubtitle: { fontSize: 12, color: '#6B7280' },
+  satelliteNode: {
+    position: 'absolute',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+    borderRadius: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 110,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  shadowSm: {},
+  nodeEmoji: { fontSize: 16, marginBottom: 2 },
+  nodeText: { fontSize: 14, fontWeight: '700', color: '#111827' },
+  connector: {
+    position: 'absolute',
+    height: 2,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 2,
+  },
+  connectorVertical: {
+    position: 'absolute',
+    width: 2,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 2,
+  },
+  connectorH: {
+    position: 'absolute',
+    height: 2,
+    backgroundColor: 'transparent',
+    borderBottomWidth: 2,
+    borderBottomColor: '#E5E7EB',
+    borderStyle: 'dashed',
+  },
+  connectorV: {
+    position: 'absolute',
+    width: 2,
+    backgroundColor: 'transparent',
+    borderLeftWidth: 2,
+    borderLeftColor: '#E5E7EB',
+    borderStyle: 'dashed',
+  },
+  impactTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 12,
+  },
+  pillGridRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  pillEmoji: { fontSize: 16, marginRight: 6 },
+  pillText: { fontSize: 14, fontWeight: '700', color: '#111827' },
+  button: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    borderRadius: 32,
+    marginBottom: 24,
+    minWidth: 260,
+    height: 64,
+    overflow: 'hidden',
+  },
+  buttonGradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 32,
   },
   buttonText: {
     color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '800',
     textAlign: 'center',
   },
   privacyText: {
