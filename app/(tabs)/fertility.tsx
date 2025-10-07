@@ -380,7 +380,7 @@ export default function FertilityScreen() {
         <Text style={styles.sectionSubtitle}>AI-powered daily guidance and reminders</Text>
         
         <View style={styles.notificationCards}>
-          <TouchableOpacity style={styles.notificationCard}>
+          <View style={styles.notificationCard}>
             <View style={styles.notificationIcon}>
               <Clock size={20} color="#EC4899" />
             </View>
@@ -392,9 +392,9 @@ export default function FertilityScreen() {
             <View style={styles.notificationStatus}>
               <Text style={styles.statusText}>Active</Text>
             </View>
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.notificationCard}>
+          <View style={styles.notificationCard}>
             <View style={styles.notificationIcon}>
               <Heart size={20} color="#EC4899" />
             </View>
@@ -406,9 +406,9 @@ export default function FertilityScreen() {
             <View style={styles.notificationStatus}>
               <Text style={styles.statusText}>Active</Text>
             </View>
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.notificationCard}>
+          <View style={styles.notificationCard}>
             <View style={styles.notificationIcon}>
               <Brain size={20} color="#EC4899" />
             </View>
@@ -420,7 +420,49 @@ export default function FertilityScreen() {
             <View style={styles.notificationStatus}>
               <Text style={styles.statusText}>Active</Text>
             </View>
-          </TouchableOpacity>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIcon}>
+              <Text style={styles.emojiIcon}>✨</Text>
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Skin Health</Text>
+              <Text style={styles.notificationSubtitle}>Cycle-based skincare tips</Text>
+              <Text style={styles.notificationTime}>Daily at 2:00 PM</Text>
+            </View>
+            <View style={styles.notificationStatus}>
+              <Text style={styles.statusText}>Active</Text>
+            </View>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIcon}>
+              <Text style={styles.emojiIcon}>💇‍♀️</Text>
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Hair Care</Text>
+              <Text style={styles.notificationSubtitle}>Hormone-friendly hair tips</Text>
+              <Text style={styles.notificationTime}>Daily at 3:00 PM</Text>
+            </View>
+            <View style={styles.notificationStatus}>
+              <Text style={styles.statusText}>Active</Text>
+            </View>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIcon}>
+              <Text style={styles.emojiIcon}>⚖️</Text>
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Weight Management</Text>
+              <Text style={styles.notificationSubtitle}>Cycle-aware nutrition tips</Text>
+              <Text style={styles.notificationTime}>Daily at 4:00 PM</Text>
+            </View>
+            <View style={styles.notificationStatus}>
+              <Text style={styles.statusText}>Active</Text>
+            </View>
+          </View>
         </View>
       </View>
 
@@ -535,7 +577,7 @@ export default function FertilityScreen() {
               <Text style={styles.aiFeatureText}>Smart predictions</Text>
             </View>
             <View style={styles.aiFeature}>
-              <TrendingUp size={16} color="#EC4899" />
+              <Activity size={16} color="#EC4899" />
               <Text style={styles.aiFeatureText}>Pattern analysis</Text>
             </View>
             <View style={styles.aiFeature}>
@@ -910,82 +952,95 @@ const styles = StyleSheet.create({
   },
   analyticsCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 24,
+    padding: 24,
     shadowColor: '#EC4899',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 6,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: '#FCE7F3',
   },
   analyticsHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
     gap: 12,
   },
   analyticsTitle: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '800',
     color: '#1F2937',
+    letterSpacing: -0.5,
   },
   healthRisks: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   riskItem: {
-    marginBottom: 20,
+    marginBottom: 24,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
   },
   riskHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   riskName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#1F2937',
   },
   riskLevel: {
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   riskLevelText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6B7280',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#ffffff',
   },
   riskProgress: {
-    height: 6,
+    height: 8,
     backgroundColor: '#F3F4F6',
-    borderRadius: 3,
+    borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   riskProgressFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 4,
   },
   riskDescription: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#6B7280',
-    lineHeight: 20,
+    lineHeight: 22,
   },
   detailedAnalysisButton: {
     backgroundColor: '#EC4899',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 16,
     alignItems: 'center',
+    shadowColor: '#EC4899',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   detailedAnalysisText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#FFFFFF',
   },
   journeySection: {
@@ -1119,66 +1174,70 @@ const styles = StyleSheet.create({
   },
   notificationSection: {
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   notificationCards: {
-    gap: 12,
+    gap: 16,
   },
   notificationCard: {
     backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 20,
+    padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: '#EC4899',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: '#FCE7F3',
   },
   notificationIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#FCE7F3',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 16,
   },
   notificationContent: {
     flex: 1,
   },
   notificationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 2,
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 4,
   },
   notificationSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-    marginBottom: 2,
+    fontSize: 15,
+    color: '#6B7280',
+    marginBottom: 4,
+    lineHeight: 20,
   },
   notificationTime: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#EC4899',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   notificationStatus: {
     backgroundColor: '#10B981',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   statusText: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '700',
     color: '#ffffff',
+  },
+  emojiIcon: {
+    fontSize: 20,
   },
   engagementSection: {
     paddingHorizontal: 20,

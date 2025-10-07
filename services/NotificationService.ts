@@ -55,87 +55,78 @@ export interface CycleData {
   fertileWindowEnd: Date;
 }
 
-// Enhanced addictive notification content
+// Smart notification content aligned with cycle-first wellness theme
 const NOTIFICATION_CONTENT = {
   [NotificationType.PERIOD_START]: [
-    "🔥 Your period is coming in 1 day! Are you ready? Track your symptoms now!",
-    "💪 Period prep time! Your cycle is about to begin - log your mood and energy!",
-    "🌸 Tomorrow's the day! Your period is expected. Quick check-in: How do you feel?",
-    "⚡ Period alert! Your cycle starts tomorrow. Don't forget to log your symptoms!",
-    "🎯 Your period is expected tomorrow! Track your flow and symptoms for better insights!",
-    "🚨 Period countdown! Your cycle begins tomorrow. Ready to track everything?",
-    "💎 Period prediction: Tomorrow is the day! Log your symptoms for AI insights!"
+    "Your period may start tomorrow. Be gentle with yourself and prepare essentials.",
+    "Period expected soon. Light stretching and warm fluids can help you feel better.",
+    "Cycle update: menstruation may begin tomorrow. How is your energy today?",
+    "A new cycle is beginning. Consider iron-rich foods and extra rest.",
+    "Reminder: your period could start tomorrow. Keep a pad/tampon handy and breathe.",
+    "Menstrual care tip: hydration and warmth support comfort at the start of your cycle.",
+    "Your cycle is resetting. A brief check-in helps tailor your support this week."
   ],
   [NotificationType.OVULATION]: [
-    "🌟 FERTILE WINDOW OPEN! Peak fertility days are here - track everything!",
-    "💫 Ovulation time! Your most fertile days are here. Log your symptoms now!",
-    "✨ Fertile window alert! Perfect timing for conception. How are you feeling?",
-    "🔥 Peak fertility days! Track your cervical mucus and temperature!",
-    "💎 Ovulation window is here! Log your symptoms for AI-powered insights!",
-    "⚡ FERTILITY PEAK! Your most fertile days are here. Track everything!",
-    "🎯 Ovulation alert! Perfect time for conception. Log your symptoms!"
+    "You're approaching ovulation. Energy may feel higher—support it with protein and hydration.",
+    "Fertile window likely today. Noting cervical mucus or mood can improve predictions.",
+    "Ovulation phase: consider light cardio or social activities if you feel energized.",
+    "Cycle note: fertility likely at its peak. Listen to your body and rest as needed.",
+    "Around ovulation, skin may glow and mood may lift. Capture a quick check-in.",
+    "Fertile window tip: balanced meals and steady sleep keep hormones happy.",
+    "Peak window: a short walk or breath work can channel this natural energy."
   ],
   [NotificationType.SYMPTOM_LOGGING]: [
-    "📱 Daily check-in time! How's your mood, energy, and symptoms today?",
-    "🎯 Quick symptom log! Your data helps our AI predict your health better!",
-    "📊 Health tracking time! Log your symptoms for personalized insights!",
-    "💭 How are you feeling? Your daily logs create your health story!",
-    "⚡ 2-minute check-in! Log your symptoms and unlock health insights!",
-    "🔥 Daily streak continues! Log your symptoms to maintain your health score!",
-    "💪 Health warrior! Time for your daily symptom check-in!"
+    "Gentle check-in: mood, energy, cramps, skin, and sleep—how are they today?",
+    "Two-minute log: noting symptoms helps tailor guidance to your cycle phase.",
+    "Quick track: any changes in flow, pain, or cravings today?",
+    "How do you feel right now? Your notes improve tomorrow’s predictions.",
+    "Short check-in: hydration, movement, and rest—which one would help most today?",
+    "Your body shifts across the cycle. A small log keeps support personalized.",
+    "Noticing patterns builds self-trust. Share a quick update."
   ],
   [NotificationType.HEALTH_TIP]: [
-    "💡 Pro tip: Drink 2L water today to ease menstrual discomfort!",
-    "🚶‍♀️ Wellness hack: Take a 10-minute walk to boost your mood instantly!",
-    "🧘‍♀️ Self-care secret: 5 minutes of deep breathing = instant stress relief!",
-    "🥗 Health boost: Add leafy greens to your next meal for iron!",
-    "💪 Energy hack: 7 hours of sleep tonight = better tomorrow!",
-    "🔥 Power tip: 20 minutes of yoga = instant mood boost!",
-    "⚡ Wellness secret: 5 minutes of meditation = mental clarity!"
+    "Sip warm water or herbal tea—gentle support for hormonal balance.",
+    "Add leafy greens or seeds today for micronutrients your cycle loves.",
+    "5 minutes of deep breathing can calm cortisol and ease cramps.",
+    "A short walk outdoors may lift energy and stabilize mood.",
+    "Prioritize consistent sleep windows; hormones thrive on routine.",
+    "Include protein and healthy fats to steady energy across the day.",
+    "Magnesium-rich foods can support relaxation in the evening."
   ],
   [NotificationType.POSITIVE_AFFIRMATION]: [
-    "💖 You're absolutely amazing! Your body is working perfectly today!",
-    "✨ You're stronger than you know! Take a moment to appreciate yourself!",
-    "🌸 You're doing incredible! Your wellness journey is inspiring!",
-    "💎 You're a health warrior! Every day you track makes you stronger!",
-    "🌟 You're beautiful inside and out! Your self-care matters!",
-    "🔥 You're unstoppable! Your health journey is empowering!",
-    "⚡ You're a wellness champion! Keep up the amazing work!"
+    "Your body is wise. Each phase has a purpose—trust your rhythm.",
+    "You deserve care and softness today. Small steps count.",
+    "Your cycle is a guide. Listening to it is powerful.",
+    "You are doing enough. Rest and nourishment are productive.",
+    "Your energy will ebb and flow. Both are valuable.",
+    "You can meet today with kindness—for yourself and your body.",
+    "Every check-in is self-respect. You’ve got this."
   ],
   [NotificationType.MONTHLY_SUMMARY]: [
-    "📈 Your monthly health report is ready! See your amazing progress!",
-    "📊 Monthly insights unlocked! Discover your cycle patterns and trends!",
-    "🎯 Your health score this month: 85/100! Keep up the great work!",
-    "📋 Cycle report ready! See how your symptoms are evolving!",
-    "🏆 Monthly achievements unlocked! You're building healthy habits!",
-    "💎 Monthly health insights ready! Your progress is inspiring!",
-    "🔥 Monthly wellness report! See how you've improved this month!"
+    "Your monthly cycle summary is ready—see patterns and gentle suggestions.",
+    "New insights available: cycle timing, symptoms, and supportive tips.",
+    "Monthly overview: notice what helped most in each phase.",
+    "Cycle report ready. We’ve highlighted trends to support next month.",
+    "Summary available: nutrition, movement, and rest ideas by phase.",
+    "This month’s insights are here—simple steps for steadier hormones.",
+    "Explore your month: what felt nourishing? Let’s keep more of that."
   ],
   [NotificationType.IRREGULARITY_ALERT]: [
-    "⚠️ Cycle irregularity detected! Our AI suggests consulting a specialist!",
-    "🔍 Unusual pattern noticed! Track symptoms and get personalized guidance!",
-    "📋 Cycle change detected! Monitor symptoms and consider professional advice!",
-    "⚡ Irregular cycle alert! Our AI can help you understand what's happening!",
-    "🎯 Pattern change detected! Get expert insights on your cycle health!",
-    "🚨 Cycle irregularity! Our AI can guide you to better health!",
-    "💡 Unusual cycle pattern! Get personalized health recommendations!"
+    "We noticed a change in your cycle pattern. A gentle check-in may help.",
+    "Cycle timing looks different this month. Track symptoms to refine insights.",
+    "Your cycle may be shifting. If concerned, consider consulting a provider.",
+    "Pattern update: we detected irregular timing. We’ll adapt guidance.",
+    "Your body may need extra rest and nourishment this week.",
+    "Cycle change detected. Logging a few details can clarify what’s happening.",
+    "If you experience discomfort or worry, a clinician can support you."
   ],
   [NotificationType.DAILY_CHECKIN]: [
-    "☀️ Good morning, health champion! Ready to track your wellness journey?",
-    "🌅 Daily wellness check-in! How are you feeling today? Log it now!",
-    "💪 Morning motivation! Your health tracking streak continues today!",
-    "🌟 Daily health ritual! Log your symptoms and unlock insights!",
-    "🎯 Wellness warrior! Time for your daily health check-in!",
-    "🔥 Daily streak continues! Your health journey is inspiring!",
-    "⚡ Morning power-up! Track your symptoms and boost your health score!",
-    "🏆 You're in the top 10% of users! Keep logging to maintain your rank!",
-    "💎 Rare achievement unlocked! Only 5% of users reach this milestone!",
-    "🚨 URGENT: Your streak is at risk! Log symptoms in the next 2 hours!",
-    "🎁 Mystery reward waiting! Complete your daily check-in to claim it!",
-    "🔥 50,000+ women are tracking today! Don't miss out on insights!",
-    "⚡ Limited time: Premium insights expire in 3 hours! Log now!",
-    "🏅 You're 2 days away from your longest streak ever! Don't give up!",
-    "💫 Exclusive content unlocked! Your health score improved by 15%!"
+    "Good day. A brief check-in helps tailor support to your current phase.",
+    "Morning note: how are energy, mood, and sleep?",
+    "If you have 60 seconds, log anything notable today.",
+    "Your cycle leads your health—how does your body feel right now?",
+    "A small check-in now can make tonight’s tip more relevant.",
+    "Noticing your body is powerful. Share a quick update when ready."
   ]
 };
 
