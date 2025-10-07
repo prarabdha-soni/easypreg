@@ -139,6 +139,22 @@ export default function NotificationSettingsScreen() {
 
         <View style={styles.settingItem}>
           <View style={styles.settingInfo}>
+            <Bell size={20} color="#EC4899" />
+            <View style={styles.settingText}>
+              <Text style={styles.settingName}>High Frequency Mode</Text>
+              <Text style={styles.settingDescription}>Send a notification every 15 minutes (testing)</Text>
+            </View>
+          </View>
+          <Switch
+            value={preferences.highFrequency}
+            onValueChange={(value) => updatePreference('highFrequency', value)}
+            trackColor={{ false: '#e5e7eb', true: '#EC4899' }}
+            thumbColor={preferences.highFrequency ? '#ffffff' : '#f3f4f6'}
+          />
+        </View>
+
+        <View style={styles.settingItem}>
+          <View style={styles.settingInfo}>
             <Sun size={20} color="#EC4899" />
             <View style={styles.settingText}>
               <Text style={styles.settingName}>Health Tips</Text>

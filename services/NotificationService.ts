@@ -32,6 +32,8 @@ export interface NotificationPreferences {
   monthlySummary: boolean;
   irregularityAlerts: boolean;
   dailyCheckin: boolean;
+  highFrequency: boolean; // When enabled, send a notification every intervalMinutes
+  intervalMinutes: number; // Interval in minutes for high-frequency mode
   quietHours: {
     enabled: boolean;
     start: string; // "22:00"
@@ -248,6 +250,8 @@ export class NotificationService {
           monthlySummary: true,
           irregularityAlerts: true,
           dailyCheckin: true,
+          highFrequency: false,
+          intervalMinutes: 15,
           quietHours: {
             enabled: false,
             start: '22:00',
@@ -346,6 +350,22 @@ export class NotificationService {
 
     const today = new Date();
     const currentPhase = this.getCurrentCyclePhase();
+
+    // High-frequency mode: schedule repeating notifications every intervalMinutes
+    if (this.preferences.highFrequency) {
+      const intervalMs = Math.max(1, this.preferences.intervalMinutes) * 60 * 1000;
+      // Schedule the next 24 hours worth of notifications at interval boundaries
+      const end = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+      let cursor = new Date(today.getTime() + intervalMs);
+      while (cursor <= end) {
+        await this.scheduleNotification(
+          NotificationType.DAILY_CHECKIN,
+          cursor,
+          this.getRandomContent(NOTIFICATION_CONTENT[NotificationType.DAILY_CHECKIN])
+        );
+        cursor = new Date(cursor.getTime() + intervalMs);
+      }
+    }
 
     // Schedule period start reminder (1 day before)
     if (this.preferences.periodReminders) {

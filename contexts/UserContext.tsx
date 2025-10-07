@@ -50,14 +50,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [notificationService]);
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
-    setProfile(prev => ({ ...prev, ...updates }));
-    
-    // Update notification service when cycle data changes
-    if (updates.lastPeriodDate && updates.cycleLength) {
+    // Calculate the next profile state synchronously so we can decide scheduling accurately
+    const nextProfile: UserProfile = { ...profile, ...updates };
+    setProfile(nextProfile);
+
+    // If we have enough data, (re)schedule notifications even if fields were set in separate calls
+    if (nextProfile.lastPeriodDate && nextProfile.cycleLength) {
       try {
         await notificationService.updateCycleData(
-          updates.lastPeriodDate,
-          updates.cycleLength,
+          nextProfile.lastPeriodDate,
+          nextProfile.cycleLength,
           5 // Default period length
         );
       } catch (error) {

@@ -1,12 +1,40 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
-import { Calendar, Droplet, Heart, TrendingUp } from 'lucide-react-native';
+import { Calendar, Droplet, Heart, TrendingUp, Users, Zap, Shield, Sparkles, Activity, AlertTriangle, Star, ArrowRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
+import { HormonePredictionService, HealthCategory, CyclePhase } from '@/services/HormonePredictionService';
 
 export default function HomeScreen() {
   const { profile } = useUser();
   const router = useRouter();
+  const [hormoneService] = useState(() => HormonePredictionService.getInstance());
+  const [healthPredictions, setHealthPredictions] = useState<any[]>([]);
+  const [overallScore, setOverallScore] = useState(0);
+  const [currentPhase, setCurrentPhase] = useState<CyclePhase>(CyclePhase.FOLLICULAR);
+
+  useEffect(() => {
+    const initializeHormoneService = async () => {
+      if (profile.lastPeriodDate) {
+        const cycleData = {
+          lastPeriodDate: new Date(profile.lastPeriodDate),
+          cycleLength: profile.cycleLength
+        };
+        await hormoneService.initialize(profile, cycleData);
+        
+        const predictions = hormoneService.getAllHealthPredictions();
+        const score = hormoneService.getOverallWellnessScore();
+        const phase = hormoneService.getCurrentCyclePhase();
+        
+        setHealthPredictions(predictions);
+        setOverallScore(score);
+        setCurrentPhase(phase);
+      }
+    };
+
+    initializeHormoneService();
+  }, [profile.lastPeriodDate, profile.cycleLength]);
 
   const calculateCycleDay = () => {
     if (!profile.lastPeriodDate) return 1;
@@ -17,69 +45,129 @@ export default function HomeScreen() {
     return (diffDays % profile.cycleLength) || 1;
   };
 
-  const getCyclePhase = (day: number) => {
-    if (day <= 5) return { phase: 'Period', color: '#e91e63', icon: '🩸' };
-    if (day <= 11) return { phase: 'Follicular', color: '#9c27b0', icon: '🌱' };
-    if (day <= 17) return { phase: 'Fertile Window', color: '#4caf50', icon: '🌸' };
-    if (day <= 14) return { phase: 'Ovulation', color: '#ff9800', icon: '🥚' };
-    return { phase: 'Luteal', color: '#2196f3', icon: '🌙' };
+  const getCyclePhaseInfo = (phase: CyclePhase) => {
+    const phaseMap = {
+      [CyclePhase.MENSTRUAL]: { name: 'Menstrual', color: '#e91e63', icon: '🩸', description: 'Rest & Renewal' },
+      [CyclePhase.FOLLICULAR]: { name: 'Follicular', color: '#9c27b0', icon: '🌱', description: 'Energy Rising' },
+      [CyclePhase.OVULATORY]: { name: 'Ovulatory', color: '#4caf50', icon: '🌸', description: 'Peak Power' },
+      [CyclePhase.LUTEAL]: { name: 'Luteal', color: '#2196f3', icon: '🌙', description: 'Preparation' }
+    };
+    return phaseMap[phase];
   };
 
   const cycleDay = calculateCycleDay();
-  const { phase, color, icon } = getCyclePhase(cycleDay);
-  const daysUntilOvulation = Math.max(0, 14 - cycleDay);
+  const phaseInfo = getCyclePhaseInfo(currentPhase);
+
+  const getPredictionColor = (score: number) => {
+    if (score >= 80) return '#10B981';
+    if (score >= 60) return '#F59E0B';
+    return '#EF4444';
+  };
+
+  const getPredictionIcon = (category: string) => {
+    switch (category) {
+      case 'hair': return '💇‍♀️';
+      case 'skin': return '✨';
+      case 'weight': return '⚖️';
+      case 'energy': return '⚡';
+      case 'mood': return '😊';
+      case 'sleep': return '😴';
+      default: return '💪';
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Hello, {profile.gender === 'woman' ? 'Beautiful' : 'There'}!</Text>
+        <Text style={styles.greeting}>Your Health Predictions</Text>
         <Text style={styles.date}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}</Text>
       </View>
 
+      {/* Current Phase Status */}
       <LinearGradient
-        colors={[color + '20', color + '10']}
-        style={styles.cycleCard}
+        colors={[phaseInfo.color + '20', phaseInfo.color + '10']}
+        style={styles.phaseCard}
       >
-        <View style={styles.cycleHeader}>
-          <Text style={styles.cycleIcon}>{icon}</Text>
-          <View style={styles.cycleTitleContainer}>
-            <Text style={styles.cyclePhase}>{phase}</Text>
-            <Text style={styles.cycleDay}>Day {cycleDay} of {profile.cycleLength}</Text>
+        <View style={styles.phaseHeader}>
+          <Text style={styles.phaseIcon}>{phaseInfo.icon}</Text>
+          <View style={styles.phaseInfo}>
+            <Text style={styles.phaseName}>{phaseInfo.name} Phase</Text>
+            <Text style={styles.phaseDescription}>Day {cycleDay} • {phaseInfo.description}</Text>
           </View>
         </View>
-
-        <View style={styles.progressBarContainer}>
-          <View style={styles.progressBar}>
-            <View
-              style={[
-                styles.progressFill,
-                { width: `${(cycleDay / profile.cycleLength) * 100}%`, backgroundColor: color }
-              ]}
-            />
-          </View>
-          <View style={styles.progressLabels}>
-            <Text style={styles.progressLabel}>Period</Text>
-            <Text style={styles.progressLabel}>Fertile</Text>
-            <Text style={styles.progressLabel}>Ovulation</Text>
-            <Text style={styles.progressLabel}>Luteal</Text>
-          </View>
+        <View style={styles.overallScore}>
+          <Text style={styles.scoreLabel}>Overall Health Score</Text>
+          <Text style={[styles.scoreValue, { color: phaseInfo.color }]}>{overallScore}/100</Text>
         </View>
       </LinearGradient>
 
-      <View style={styles.focusCard}>
-        <Text style={styles.focusTitle}>Today's Focus</Text>
-        <View style={styles.focusContent}>
-          <Text style={styles.focusIcon}>🌸</Text>
-          <Text style={styles.focusText}>
-            {daysUntilOvulation === 0
-              ? "Today is your most fertile day! Stay hydrated and eat zinc-rich foods."
-              : daysUntilOvulation <= 3
-              ? `Your fertile window is approaching in ${daysUntilOvulation} days. Focus on nutrient-rich foods.`
-              : "Maintain a balanced diet and stay active for optimal fertility."}
-          </Text>
-        </View>
+      {/* Health Predictions */}
+      <Text style={styles.sectionTitle}>Today's Health Predictions</Text>
+      
+      <View style={styles.predictionsContainer}>
+        {healthPredictions.slice(0, 6).map((prediction, index) => (
+          <TouchableOpacity 
+            key={index} 
+            style={[styles.predictionCard, { borderLeftColor: getPredictionColor(prediction.score) }]}
+            onPress={() => {
+              Alert.alert(
+                `${prediction.category.charAt(0).toUpperCase() + prediction.category.slice(1)} Health`,
+                `Score: ${prediction.score}/100\nTrend: ${prediction.trend}\n\nRecommendations:\n${prediction.recommendations.slice(0, 2).join('\n')}`,
+                [
+                  { text: 'Talk to Expert', onPress: () => router.push('/experts') },
+                  { text: 'View Details', onPress: () => {} },
+                  { text: 'Close', style: 'cancel' }
+                ]
+              );
+            }}
+          >
+            <View style={styles.predictionHeader}>
+              <Text style={styles.predictionIcon}>{getPredictionIcon(prediction.category)}</Text>
+              <View style={styles.predictionScore}>
+                <Text style={[styles.scoreNumber, { color: getPredictionColor(prediction.score) }]}>
+                  {prediction.score}
+                </Text>
+                <Text style={styles.scoreLabel}>/100</Text>
+              </View>
+            </View>
+            <Text style={styles.predictionCategory}>
+              {prediction.category.charAt(0).toUpperCase() + prediction.category.slice(1)}
+            </Text>
+            <View style={styles.predictionTrend}>
+              <Text style={styles.trendText}>
+                {prediction.trend === 'improving' ? '📈 Improving' :
+                 prediction.trend === 'stable' ? '➡️ Stable' : '📉 Needs Attention'}
+              </Text>
+              <ArrowRight size={16} color="#6B7280" />
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
 
+      {/* Expert Recommendations */}
+      <Text style={styles.sectionTitle}>Expert Recommendations</Text>
+      
+      <View style={styles.recommendationsGrid}>
+        <TouchableOpacity 
+          style={[styles.recommendationCard, { backgroundColor: '#F0FDF4' }]}
+          onPress={() => router.push('/experts')}
+        >
+          <Users size={24} color="#10B981" />
+          <Text style={styles.recommendationTitle}>Talk to Expert</Text>
+          <Text style={styles.recommendationDesc}>Get personalized advice for your cycle phase</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.recommendationCard, { backgroundColor: '#FEF3F2' }]}
+          onPress={() => Alert.alert('Supplements', 'Recommended supplements for your current phase:\n\n' + hormoneService.getSupplementRecommendations().slice(0, 4).join('\n'))}
+        >
+          <Zap size={24} color="#EF4444" />
+          <Text style={styles.recommendationTitle}>Supplements</Text>
+          <Text style={styles.recommendationDesc}>Essential nutrients for your phase</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Quick Actions */}
       <Text style={styles.sectionTitle}>Quick Actions</Text>
 
       <View style={styles.actionGrid}>
@@ -108,21 +196,29 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.actionCard, { backgroundColor: '#fff8f0' }]}
-          onPress={() => router.push('/log/partner')}
+          style={[styles.actionCard, { backgroundColor: '#f0fdf4' }]}
+          onPress={() => router.push('/experts')}
         >
-          <Calendar size={32} color="#ff9800" />
-          <Text style={styles.actionText}>Partner Log</Text>
+          <Users size={32} color="#10B981" />
+          <Text style={styles.actionText}>Talk to Expert</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Personalized Recommendations */}
       <View style={styles.insightCard}>
-        <Text style={styles.insightTitle}>Fertility Score</Text>
-        <View style={styles.scoreContainer}>
-          <Text style={styles.score}>85</Text>
-          <View style={styles.scoreDetails}>
-            <Text style={styles.scoreLabel}>Good</Text>
-            <Text style={styles.scoreDesc}>You're on track!</Text>
+        <Text style={styles.insightTitle}>Today's Recommendations</Text>
+        <View style={styles.recommendationsContainer}>
+          <View style={styles.recommendationItem}>
+            <Shield size={20} color="#10B981" />
+            <Text style={styles.recommendationText}>
+              {hormoneService.getLifestyleRecommendations().slice(0, 2).join(', ')}
+            </Text>
+          </View>
+          <View style={styles.recommendationItem}>
+            <Activity size={20} color="#3b82f6" />
+            <Text style={styles.recommendationText}>
+              Supplements: {hormoneService.getSupplementRecommendations().slice(0, 3).join(', ')}
+            </Text>
           </View>
         </View>
       </View>
@@ -149,7 +245,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  cycleCard: {
+  phaseCard: {
     margin: 24,
     marginTop: 0,
     padding: 24,
@@ -157,25 +253,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
   },
-  cycleHeader: {
+  phaseHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
-  cycleIcon: {
+  phaseIcon: {
     fontSize: 48,
     marginRight: 16,
   },
-  cycleTitleContainer: {
+  phaseInfo: {
     flex: 1,
   },
-  cyclePhase: {
+  phaseName: {
     fontSize: 24,
     fontWeight: '700',
     color: '#1a1a1a',
     marginBottom: 4,
   },
-  cycleDay: {
+  phaseDescription: {
     fontSize: 14,
     color: '#666',
   },
@@ -266,11 +362,70 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#bbdefb',
   },
+  chipsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: 24,
+    marginBottom: 8,
+  },
+  chip: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
   insightTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#1a1a1a',
     marginBottom: 16,
+  },
+  miniChartWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  healthGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 24,
+    gap: 12,
+    marginBottom: 16,
+  },
+  healthCard: {
+    width: '47%',
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    padding: 12,
+  },
+  healthCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  healthIcon: { fontSize: 20 },
+  healthScore: { fontSize: 16, fontWeight: '700', color: '#111827' },
+  healthCategory: { fontSize: 14, fontWeight: '600', color: '#111827' },
+  healthTrend: { fontSize: 12, color: '#6b7280', marginTop: 4 },
+  recommendationsContainer: {
+    gap: 10,
+  },
+  recommendationItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  recommendationText: {
+    fontSize: 14,
+    color: '#1f2937',
+    flex: 1,
   },
   scoreContainer: {
     flexDirection: 'row',
@@ -294,5 +449,79 @@ const styles = StyleSheet.create({
   scoreDesc: {
     fontSize: 14,
     color: '#666',
+  },
+  predictionsContainer: {
+    paddingHorizontal: 24,
+    marginBottom: 24,
+  },
+  predictionCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  predictionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  predictionIcon: {
+    fontSize: 24,
+  },
+  predictionScore: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  scoreNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  predictionCategory: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 8,
+  },
+  predictionTrend: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  trendText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  recommendationsGrid: {
+    flexDirection: 'row',
+    paddingHorizontal: 24,
+    gap: 12,
+    marginBottom: 24,
+  },
+  recommendationCard: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  recommendationTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  recommendationDesc: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
   },
 });
