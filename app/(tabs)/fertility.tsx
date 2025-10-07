@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
-import { Calendar, TrendingUp, CircleAlert as AlertCircle, Brain, Activity, Zap, Heart, Shield, Apple, ChefHat, Star, Clock, Users, Moon, Sun } from 'lucide-react-native';
+import { Calendar, CircleAlert as AlertCircle, Brain, Activity, Zap, Heart, Shield, Apple, ChefHat, Star, Clock, Users, Moon, Sun } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
@@ -30,14 +30,7 @@ const pcosSymptoms = [
   { name: 'Insulin Resistance', severity: 'High', icon: '🍯', color: '#DDA0DD' },
 ];
 
-const healthJourneyStages = [
-  { stage: 'First Period', age: '10-16', description: 'Understanding your cycle', icon: '🌸', color: '#FFB6C1' },
-  { stage: 'Teen Health', age: '13-19', description: 'Building healthy habits', icon: '👧', color: '#FFC0CB' },
-  { stage: 'PCOS Management', age: '15-35', description: 'Managing symptoms', icon: '🦋', color: '#DDA0DD' },
-  { stage: 'Fertility Planning', age: '20-35', description: 'Optimizing for conception', icon: '💕', color: '#FF69B4' },
-  { stage: 'Pregnancy', age: '20-40', description: 'Healthy pregnancy journey', icon: '🤱', color: '#98FB98' },
-  { stage: 'Postpartum', age: '20-40', description: 'Recovery and care', icon: '👶', color: '#87CEEB' },
-];
+// Removed deprecated health journey stages
 
 export default function FertilityScreen() {
   const { profile } = useUser();
@@ -293,8 +286,8 @@ export default function FertilityScreen() {
         colors={['#FFB6C1', '#FFC0CB', '#FFE4E1']}
         style={styles.header}
       >
-        <Text style={styles.title}>Your Health Journey</Text>
-        <Text style={styles.subtitle}>Track your cycle and nourish your body</Text>
+        <Text style={styles.title}>Cycle Insights</Text>
+        <Text style={styles.subtitle}>Health starts with your cycle</Text>
       </LinearGradient>
 
       {/* Today's Status Card */}
@@ -431,149 +424,7 @@ export default function FertilityScreen() {
         </View>
       </View>
 
-      {/* Psychological Engagement System */}
-      <View style={styles.engagementSection}>
-        <View style={styles.sectionHeader}>
-          <TrendingUp size={24} color="#EC4899" />
-          <Text style={styles.sectionTitle}>Your Health Journey</Text>
-        </View>
-        <Text style={styles.sectionSubtitle}>Join 50,000+ women tracking their health</Text>
-        
-        {/* Social Proof & Community */}
-        <View style={styles.socialProofSection}>
-          <View style={styles.socialProofCard}>
-            <View style={styles.socialProofHeader}>
-              <Text style={styles.socialProofTitle}>🔥 Trending Now</Text>
-              <Text style={styles.socialProofSubtitle}>50,247 women active today</Text>
-            </View>
-            <View style={styles.socialProofStats}>
-              <View style={styles.socialStat}>
-                <Text style={styles.socialStatNumber}>2.3K</Text>
-                <Text style={styles.socialStatLabel}>logged symptoms</Text>
-              </View>
-              <View style={styles.socialStat}>
-                <Text style={styles.socialStatNumber}>847</Text>
-                <Text style={styles.socialStatLabel}>achieved goals</Text>
-              </View>
-              <View style={styles.socialStat}>
-                <Text style={styles.socialStatNumber}>156</Text>
-                <Text style={styles.socialStatLabel}>new streaks</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* Scarcity & Urgency */}
-        <View style={styles.urgencySection}>
-          <View style={styles.urgencyCard}>
-            <LinearGradient
-              colors={['#FF6B6B', '#FF8E8E']}
-              style={styles.urgencyGradient}
-            >
-              <Text style={styles.urgencyEmoji}>⏰</Text>
-              <Text style={styles.urgencyTitle}>Limited Time!</Text>
-              <Text style={styles.urgencySubtitle}>Premium insights expire in 2 days</Text>
-              <View style={styles.urgencyTimer}>
-                <Text style={styles.timerText}>47:23:15</Text>
-              </View>
-            </LinearGradient>
-          </View>
-        </View>
-
-        {/* Variable Reward System */}
-        <View style={styles.rewardsSection}>
-          <Text style={styles.rewardsTitle}>🎁 Daily Rewards</Text>
-          <View style={styles.rewardsGrid}>
-            <TouchableOpacity style={styles.rewardCard}>
-              <View style={styles.rewardIcon}>
-                <Text style={styles.rewardEmoji}>🎯</Text>
-              </View>
-              <Text style={styles.rewardTitle}>Mystery Reward</Text>
-              <Text style={styles.rewardSubtitle}>Log symptoms to unlock!</Text>
-              <View style={styles.rewardProgress}>
-                <View style={[styles.rewardProgressFill, { width: '75%' }]} />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.rewardCard}>
-              <View style={styles.rewardIcon}>
-                <Text style={styles.rewardEmoji}>💎</Text>
-              </View>
-              <Text style={styles.rewardTitle}>Rare Achievement</Text>
-              <Text style={styles.rewardSubtitle}>Only 2% unlock this!</Text>
-              <View style={styles.rewardProgress}>
-                <View style={[styles.rewardProgressFill, { width: '90%' }]} />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Loss Aversion */}
-        <View style={styles.lossAversionSection}>
-          <View style={styles.lossCard}>
-            <Text style={styles.lossTitle}>⚠️ Don't Lose Your Streak!</Text>
-            <Text style={styles.lossSubtitle}>You're 2 days away from your longest streak ever</Text>
-            <View style={styles.lossStats}>
-              <View style={styles.lossStat}>
-                <Text style={styles.lossStatNumber}>23</Text>
-                <Text style={styles.lossStatLabel}>Current Streak</Text>
-              </View>
-              <View style={styles.lossStat}>
-                <Text style={styles.lossStatNumber}>25</Text>
-                <Text style={styles.lossStatLabel}>Personal Best</Text>
-              </View>
-            </View>
-            <TouchableOpacity style={styles.lossButton}>
-              <Text style={styles.lossButtonText}>Continue Streak Now</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Social Comparison */}
-        <View style={styles.comparisonSection}>
-          <Text style={styles.comparisonTitle}>🏆 Leaderboard</Text>
-          <View style={styles.leaderboard}>
-            <View style={styles.leaderboardItem}>
-              <View style={styles.leaderboardRank}>
-                <Text style={styles.rankNumber}>1</Text>
-              </View>
-              <View style={styles.leaderboardInfo}>
-                <Text style={styles.leaderboardName}>Sarah M.</Text>
-                <Text style={styles.leaderboardScore}>98/100 Health Score</Text>
-              </View>
-              <View style={styles.leaderboardBadge}>
-                <Text style={styles.badgeText}>👑</Text>
-              </View>
-            </View>
-            
-            <View style={styles.leaderboardItem}>
-              <View style={styles.leaderboardRank}>
-                <Text style={styles.rankNumber}>2</Text>
-              </View>
-              <View style={styles.leaderboardInfo}>
-                <Text style={styles.leaderboardName}>Priya K.</Text>
-                <Text style={styles.leaderboardScore}>95/100 Health Score</Text>
-              </View>
-              <View style={styles.leaderboardBadge}>
-                <Text style={styles.badgeText}>🥈</Text>
-              </View>
-            </View>
-            
-            <View style={[styles.leaderboardItem, styles.currentUserItem]}>
-              <View style={styles.leaderboardRank}>
-                <Text style={styles.rankNumber}>3</Text>
-              </View>
-              <View style={styles.leaderboardInfo}>
-                <Text style={styles.leaderboardName}>You</Text>
-                <Text style={styles.leaderboardScore}>85/100 Health Score</Text>
-              </View>
-              <View style={styles.leaderboardBadge}>
-                <Text style={styles.badgeText}>🥉</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+      {/* Engagement/gamification removed as requested */}
 
       {/* Predictive Health Analytics */}
       <View style={styles.analyticsSection}>
