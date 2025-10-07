@@ -137,6 +137,28 @@ export default function NotificationSettingsScreen() {
           />
         </View>
 
+        {preferences.highFrequency && (
+          <View style={styles.testSection}>
+            <Text style={styles.testTitle}>🧪 Test Mode Active</Text>
+            <Text style={styles.testDescription}>
+              You'll receive dummy notifications every 15 minutes with cycle-based tips and affirmations.
+            </Text>
+            <TouchableOpacity 
+              style={styles.testButton}
+              onPress={async () => {
+                try {
+                  await notificationService.scheduleNotifications();
+                  Alert.alert('Success', 'Test notifications scheduled! You should receive them every 15 minutes.');
+                } catch (error) {
+                  Alert.alert('Error', 'Failed to schedule test notifications');
+                }
+              }}
+            >
+              <Text style={styles.testButtonText}>Reschedule Test Notifications</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.settingItem}>
           <View style={styles.settingInfo}>
             <MessageCircle size={20} color="#EC4899" />
@@ -433,5 +455,37 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: '#ef4444',
+  },
+  testSection: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#F0F9FF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  testTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1E40AF',
+    marginBottom: 8,
+  },
+  testDescription: {
+    fontSize: 14,
+    color: '#1E40AF',
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  testButton: {
+    backgroundColor: '#EC4899',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  testButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });

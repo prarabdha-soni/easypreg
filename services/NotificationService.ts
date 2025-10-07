@@ -241,7 +241,7 @@ export class NotificationService {
           monthlySummary: true,
           irregularityAlerts: true,
           dailyCheckin: true,
-          highFrequency: false,
+          highFrequency: true,
           intervalMinutes: 15,
           quietHours: {
             enabled: false,
@@ -356,6 +356,20 @@ export class NotificationService {
         NotificationType.POSITIVE_AFFIRMATION
       ];
       
+      // Add dummy notification types for testing
+      const dummyNotifications = [
+        "🌸 Your cycle is in the follicular phase - perfect time for gentle exercise!",
+        "💧 Stay hydrated today! Your body needs extra water during this phase.",
+        "🧘‍♀️ Take 5 minutes for deep breathing - it helps balance your hormones.",
+        "🥗 Add leafy greens to your next meal for iron and folate.",
+        "🌙 Your body is preparing for ovulation - listen to your energy levels.",
+        "✨ You're doing amazing! Trust your body's natural rhythm.",
+        "💪 Gentle movement today can boost your mood and energy.",
+        "🍯 Consider magnesium-rich foods to support your cycle naturally.",
+        "🌱 Your energy is building - this is a great time for new projects!",
+        "💖 You deserve rest and nourishment - be gentle with yourself today."
+      ];
+      
       while (cursor <= end) {
         // Schedule a random notification type every 15 minutes
         const randomType = notificationTypes[Math.floor(Math.random() * notificationTypes.length)];
@@ -369,6 +383,11 @@ export class NotificationService {
           content = this.getRandomContent(AFFIRMATIONS_BY_PHASE[phase]);
         } else {
           content = this.getRandomContent(NOTIFICATION_CONTENT[randomType]);
+        }
+        
+        // Add some dummy notifications for variety
+        if (Math.random() < 0.3) { // 30% chance of dummy notification
+          content = this.getRandomContent(dummyNotifications);
         }
         
         await this.scheduleNotification(randomType, cursor, content);
@@ -570,5 +589,20 @@ export class NotificationService {
   // Get scheduled notifications
   public async getScheduledNotifications(): Promise<Notifications.NotificationRequest[]> {
     return await Notifications.getAllScheduledNotificationsAsync();
+  }
+
+  // Enable high-frequency mode for testing (sends notifications every 15 minutes)
+  public async enableHighFrequencyMode(): Promise<void> {
+    await this.updatePreferences({ 
+      highFrequency: true, 
+      intervalMinutes: 15 
+    });
+  }
+
+  // Disable high-frequency mode
+  public async disableHighFrequencyMode(): Promise<void> {
+    await this.updatePreferences({ 
+      highFrequency: false 
+    });
   }
 }
