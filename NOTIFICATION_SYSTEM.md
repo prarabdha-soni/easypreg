@@ -1,7 +1,7 @@
 # 🔔 Notification System Documentation
 
 ## Overview
-The EaseMyPreg app includes a comprehensive notification system that provides Flo/Clue-style reminders and health tips based on the user's menstrual cycle. All data is stored locally on the device for complete privacy.
+The NariCare app includes a comprehensive notification system that provides Flo/Clue-style reminders and health tips based on the user's menstrual cycle. All data is stored locally on the device for complete privacy.
 
 ## Features
 

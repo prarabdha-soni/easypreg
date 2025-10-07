@@ -523,7 +523,7 @@ export class NotificationService {
 
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: 'EaseMyPreg',
+        title: 'NariCare',
         body: content,
         data: { type },
         sound: 'default',

@@ -47,8 +47,8 @@ export default function ExpertsScreen() {
 
   const openWhatsApp = (provider: Provider, timeSlot?: string) => {
     const message = timeSlot 
-      ? `Hi Dr. ${provider.name}, I'd like to book a consultation for ${timeSlot}. I found you through easeMyPreg app.`
-      : `Hi Dr. ${provider.name}, I'd like to book a consultation. I found you through easeMyPreg app.`;
+      ? `Hi Dr. ${provider.name}, I'd like to book a consultation for ${timeSlot}. I found you through NariCare app.`
+      : `Hi Dr. ${provider.name}, I'd like to book a consultation. I found you through NariCare app.`;
 
     // Target specific phone for chat
     const url = `whatsapp://send?phone=${TARGET_PHONE_E164}&text=${encodeURIComponent(message)}`;

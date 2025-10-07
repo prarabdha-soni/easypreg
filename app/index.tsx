@@ -16,7 +16,7 @@ export default function WelcomeScreen() {
           <Heart size={64} color="#e91e63" strokeWidth={2} />
         </View>
 
-        <Text style={styles.logo}>EasyPreg</Text>
+        <Text style={styles.logo}>NariCare</Text>
         <Text style={styles.tagline}>Your complete women's health companion</Text>
         <Text style={styles.subtagline}>From first periods to motherhood - we guide you every step of the way</Text>
 
