@@ -110,15 +110,23 @@ export default function HomeScreen() {
             key={index} 
             style={[styles.predictionCard, { borderLeftColor: getPredictionColor(prediction.score) }]}
             onPress={() => {
-              Alert.alert(
-                `${prediction.category.charAt(0).toUpperCase() + prediction.category.slice(1)} Health`,
-                `Score: ${prediction.score}/100\nTrend: ${prediction.trend}\n\nRecommendations:\n${prediction.recommendations.slice(0, 2).join('\n')}`,
-                [
-                  { text: 'Talk to Expert', onPress: () => router.push('/experts') },
-                  { text: 'View Details', onPress: () => {} },
-                  { text: 'Close', style: 'cancel' }
-                ]
-              );
+              const category = prediction.category;
+              if (category === 'hair') {
+                router.push('/techniques/hair');
+              } else if (category === 'skin') {
+                router.push('/techniques/skin');
+              } else if (category === 'weight') {
+                router.push('/techniques/weight');
+              } else {
+                Alert.alert(
+                  `${category.charAt(0).toUpperCase() + category.slice(1)} Health`,
+                  `Score: ${prediction.score}/100\nTrend: ${prediction.trend}\n\nRecommendations:\n${prediction.recommendations.slice(0, 2).join('\n')}`,
+                  [
+                    { text: 'Talk to Expert', onPress: () => router.push('/experts') },
+                    { text: 'Close', style: 'cancel' }
+                  ]
+                );
+              }
             }}
           >
             <View style={styles.predictionHeader}>
@@ -204,24 +212,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Personalized Recommendations */}
-      <View style={styles.insightCard}>
-        <Text style={styles.insightTitle}>Today's Recommendations</Text>
-        <View style={styles.recommendationsContainer}>
-          <View style={styles.recommendationItem}>
-            <Shield size={20} color="#10B981" />
-            <Text style={styles.recommendationText}>
-              {hormoneService.getLifestyleRecommendations().slice(0, 2).join(', ')}
-            </Text>
-          </View>
-          <View style={styles.recommendationItem}>
-            <Activity size={20} color="#3b82f6" />
-            <Text style={styles.recommendationText}>
-              Supplements: {hormoneService.getSupplementRecommendations().slice(0, 3).join(', ')}
-            </Text>
-          </View>
-        </View>
-      </View>
     </ScrollView>
   );
 }

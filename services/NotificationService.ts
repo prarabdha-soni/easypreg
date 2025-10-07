@@ -351,18 +351,36 @@ export class NotificationService {
     const today = new Date();
     const currentPhase = this.getCurrentCyclePhase();
 
-    // High-frequency mode: schedule repeating notifications every intervalMinutes
+    // High-frequency mode: schedule ALL notification types every 15 minutes
     if (this.preferences.highFrequency) {
       const intervalMs = Math.max(1, this.preferences.intervalMinutes) * 60 * 1000;
       // Schedule the next 24 hours worth of notifications at interval boundaries
       const end = new Date(today.getTime() + 24 * 60 * 60 * 1000);
       let cursor = new Date(today.getTime() + intervalMs);
+      
+      const notificationTypes = [
+        NotificationType.DAILY_CHECKIN,
+        NotificationType.SYMPTOM_LOGGING,
+        NotificationType.HEALTH_TIP,
+        NotificationType.POSITIVE_AFFIRMATION
+      ];
+      
       while (cursor <= end) {
-        await this.scheduleNotification(
-          NotificationType.DAILY_CHECKIN,
-          cursor,
-          this.getRandomContent(NOTIFICATION_CONTENT[NotificationType.DAILY_CHECKIN])
-        );
+        // Schedule a random notification type every 15 minutes
+        const randomType = notificationTypes[Math.floor(Math.random() * notificationTypes.length)];
+        let content = '';
+        
+        if (randomType === NotificationType.HEALTH_TIP) {
+          const phase = this.getCurrentCyclePhase();
+          content = this.getRandomContent(HEALTH_TIPS_BY_PHASE[phase]);
+        } else if (randomType === NotificationType.POSITIVE_AFFIRMATION) {
+          const phase = this.getCurrentCyclePhase();
+          content = this.getRandomContent(AFFIRMATIONS_BY_PHASE[phase]);
+        } else {
+          content = this.getRandomContent(NOTIFICATION_CONTENT[randomType]);
+        }
+        
+        await this.scheduleNotification(randomType, cursor, content);
         cursor = new Date(cursor.getTime() + intervalMs);
       }
     }

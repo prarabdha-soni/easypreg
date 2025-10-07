@@ -117,10 +117,26 @@ export default function NotificationSettingsScreen() {
         </View>
       </View>
 
-      {/* Daily Wellness */}
+      {/* Smart Notifications */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Daily Wellness</Text>
+        <Text style={styles.sectionTitle}>Smart Notifications</Text>
         
+        <View style={styles.settingItem}>
+          <View style={styles.settingInfo}>
+            <Bell size={20} color="#EC4899" />
+            <View style={styles.settingText}>
+              <Text style={styles.settingName}>High Frequency Mode</Text>
+              <Text style={styles.settingDescription}>Send a notification every 15 minutes</Text>
+            </View>
+          </View>
+          <Switch
+            value={preferences.highFrequency}
+            onValueChange={(value) => updatePreference('highFrequency', value)}
+            trackColor={{ false: '#e5e7eb', true: '#EC4899' }}
+            thumbColor={preferences.highFrequency ? '#ffffff' : '#f3f4f6'}
+          />
+        </View>
+
         <View style={styles.settingItem}>
           <View style={styles.settingInfo}>
             <MessageCircle size={20} color="#EC4899" />
@@ -134,22 +150,6 @@ export default function NotificationSettingsScreen() {
             onValueChange={(value) => updatePreference('symptomLogging', value)}
             trackColor={{ false: '#e5e7eb', true: '#EC4899' }}
             thumbColor={preferences.symptomLogging ? '#ffffff' : '#f3f4f6'}
-          />
-        </View>
-
-        <View style={styles.settingItem}>
-          <View style={styles.settingInfo}>
-            <Bell size={20} color="#EC4899" />
-            <View style={styles.settingText}>
-              <Text style={styles.settingName}>High Frequency Mode</Text>
-              <Text style={styles.settingDescription}>Send a notification every 15 minutes (testing)</Text>
-            </View>
-          </View>
-          <Switch
-            value={preferences.highFrequency}
-            onValueChange={(value) => updatePreference('highFrequency', value)}
-            trackColor={{ false: '#e5e7eb', true: '#EC4899' }}
-            thumbColor={preferences.highFrequency ? '#ffffff' : '#f3f4f6'}
           />
         </View>
 
