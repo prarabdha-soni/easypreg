@@ -14,10 +14,56 @@ export default function NotificationSettingsScreen() {
 
   const loadPreferences = async () => {
     try {
+      // Initialize the notification service first
+      await notificationService.initialize();
       const prefs = notificationService.getPreferences();
-      setPreferences(prefs);
+      
+      if (prefs) {
+        setPreferences(prefs);
+      } else {
+        // Fallback to default preferences if none exist
+        const defaultPrefs: NotificationPreferences = {
+          periodReminders: true,
+          ovulationReminders: true,
+          symptomLogging: true,
+          healthTips: true,
+          positiveAffirmations: true,
+          monthlySummary: true,
+          irregularityAlerts: true,
+          dailyCheckin: true,
+          highFrequency: true,
+          intervalMinutes: 15,
+          quietHours: {
+            enabled: false,
+            start: '22:00',
+            end: '08:00'
+          },
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+        setPreferences(defaultPrefs);
+      }
     } catch (error) {
       console.error('Error loading preferences:', error);
+      // Set fallback preferences on error
+      const fallbackPrefs: NotificationPreferences = {
+        periodReminders: true,
+        ovulationReminders: true,
+        symptomLogging: true,
+        healthTips: true,
+        positiveAffirmations: true,
+        monthlySummary: true,
+        irregularityAlerts: true,
+        dailyCheckin: true,
+        highFrequency: true,
+        intervalMinutes: 15,
+        quietHours: {
+          enabled: false,
+          start: '22:00',
+          end: '08:00'
+        },
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      };
+      setPreferences(fallbackPrefs);
     } finally {
       setLoading(false);
     }
