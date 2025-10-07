@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
-import { Calendar, Droplet, Heart, TrendingUp, Users, Zap, Shield, Sparkles, Activity, AlertTriangle, Star, ArrowRight } from 'lucide-react-native';
+import { Calendar, Droplet, Heart, TrendingUp, Users, Zap, Shield, Sparkles, Activity, AlertTriangle, Star, ArrowRight, Flower2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
@@ -78,9 +78,14 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.greeting}>Your Health Predictions</Text>
-        <Text style={styles.date}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })}</Text>
+      {/* Welcome Header */}
+      <View style={styles.welcomeHeader}>
+        <View style={styles.logoContainer}>
+          <Heart size={32} color="#EC4899" style={styles.logoIcon} />
+          <Text style={styles.appName}>NariCare</Text>
+        </View>
+        <Text style={styles.tagline}>Health starts with your cycle.</Text>
+        <Text style={styles.subtitle}>Your complete women's health companion</Text>
       </View>
 
       {/* Current Phase Status */}
@@ -102,7 +107,7 @@ export default function HomeScreen() {
       </LinearGradient>
 
       {/* Health Predictions */}
-      <Text style={styles.sectionTitle}>Today's Health Predictions</Text>
+      <Text style={styles.sectionTitle}>Your Health Insights</Text>
       
       <View style={styles.predictionsContainer}>
         {healthPredictions.slice(0, 6).map((prediction, index) => (
@@ -153,7 +158,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Expert Recommendations */}
-      <Text style={styles.sectionTitle}>Expert Recommendations</Text>
+      <Text style={styles.sectionTitle}>Personalized Care</Text>
       
       <View style={styles.recommendationsGrid}>
         <TouchableOpacity 
@@ -176,7 +181,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Quick Actions */}
-      <Text style={styles.sectionTitle}>Quick Actions</Text>
+      <Text style={styles.sectionTitle}>Track Your Health</Text>
 
       <View style={styles.actionGrid}>
         <TouchableOpacity
@@ -212,6 +217,12 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Privacy Notice */}
+      <View style={styles.privacyNotice}>
+        <Shield size={16} color="#9CA3AF" />
+        <Text style={styles.privacyText}>Your data is private, encrypted, and never sold.</Text>
+      </View>
+
     </ScrollView>
   );
 }
@@ -219,29 +230,52 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FEFEFE',
   },
-  header: {
+  welcomeHeader: {
     padding: 24,
     paddingTop: 60,
+    alignItems: 'center',
+    backgroundColor: '#FEFEFE',
   },
-  greeting: {
-    fontSize: 28,
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  logoIcon: {
+    marginRight: 12,
+  },
+  appName: {
+    fontSize: 32,
     fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
+    color: '#1F2937',
   },
-  date: {
+  tagline: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#374151',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#9CA3AF',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   phaseCard: {
     margin: 24,
-    marginTop: 0,
+    marginTop: 16,
     padding: 24,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#F3F4F6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   phaseHeader: {
     flexDirection: 'row',
@@ -319,9 +353,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#1F2937',
     paddingHorizontal: 24,
     marginBottom: 16,
+    marginTop: 8,
   },
   actionGrid: {
     flexDirection: 'row',
@@ -336,11 +371,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
   actionText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1a1a1a',
+    color: '#1F2937',
     textAlign: 'center',
   },
   insightCard: {
@@ -513,5 +553,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6B7280',
     textAlign: 'center',
+  },
+  privacyNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    marginBottom: 24,
+  },
+  privacyText: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginLeft: 8,
   },
 });

@@ -17,8 +17,8 @@ export default function WelcomeScreen() {
         </View>
 
         <Text style={styles.logo}>NariCare</Text>
-        <Text style={styles.tagline}>Your complete women's health companion</Text>
-        <Text style={styles.subtagline}>From first periods to motherhood - we guide you every step of the way</Text>
+        <Text style={styles.tagline}>Health starts with your cycle.</Text>
+        <Text style={styles.subtagline}>Your complete women's health companion</Text>
 
         <View style={styles.illustrationContainer}>
           <Text style={styles.illustration}>🌸</Text>
