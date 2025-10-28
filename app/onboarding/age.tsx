@@ -113,10 +113,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   input: {
-    fontSize: 48,
-    fontWeight: '700',
+    fontSize: 24,
+    fontWeight: '600',
     color: '#1F2937',
-    paddingVertical: 16,
+    paddingVertical: 12,
     borderBottomWidth: 2,
     borderBottomColor: '#EC4899',
     textAlign: 'center',

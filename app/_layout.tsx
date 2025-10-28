@@ -15,11 +15,27 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding/user-details" />
         <Stack.Screen name="onboarding/cycle-setup" />
         <Stack.Screen name="onboarding/preferences" />
+        <Stack.Screen name="onboarding/welcome" />
+        <Stack.Screen name="onboarding/age" />
+        <Stack.Screen name="onboarding/stage" />
+        <Stack.Screen name="onboarding/symptoms" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="log/period" />
         <Stack.Screen name="log/symptoms" />
         <Stack.Screen name="log/partner" />
         <Stack.Screen name="log/flow-mood" />
+        <Stack.Screen name="symptoms/tracker" />
+        <Stack.Screen name="treatment/hrt" />
+        <Stack.Screen name="telehealth/providers" />
+        <Stack.Screen name="telehealth/booking" />
+        <Stack.Screen name="telehealth/appointment" />
+        <Stack.Screen name="expert/ask-question" />
+        <Stack.Screen name="expert/care-plan" />
+        <Stack.Screen name="expert/lab-results" />
+        <Stack.Screen name="expert/advice" />
+        <Stack.Screen name="education/hrt" />
+        <Stack.Screen name="education/lifestyle" />
+        <Stack.Screen name="education/sleep" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

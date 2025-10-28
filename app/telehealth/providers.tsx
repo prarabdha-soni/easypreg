@@ -49,46 +49,24 @@ export default function ProvidersScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ChevronLeft size={24} color="#1F2937" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Our Providers</Text>
-        <View style={{ width: 24 }} />
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header Banner */}
+      <View style={styles.headerBanner}>
+        <Video size={32} color="#FFFFFF" />
+        <Text style={styles.headerTitle}>Talk to Providers</Text>
+        <Text style={styles.headerSubtitle}>
+          Board-certified menopause specialists
+        </Text>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Hero Section */}
-        <View style={styles.heroSection}>
-          <Text style={styles.heroTitle}>Expert Menopause Care</Text>
-          <Text style={styles.heroSubtitle}>
-            Connect with board-certified specialists who understand menopause inside and out
-          </Text>
-        </View>
-
-        {/* Benefits */}
-        <View style={styles.benefitsSection}>
-          <View style={styles.benefitItem}>
-            <CheckCircle2 size={20} color="#10B981" />
-            <Text style={styles.benefitText}>Video visits from home</Text>
-          </View>
-          <View style={styles.benefitItem}>
-            <CheckCircle2 size={20} color="#10B981" />
-            <Text style={styles.benefitText}>Same-day appointments</Text>
-          </View>
-          <View style={styles.benefitItem}>
-            <CheckCircle2 size={20} color="#10B981" />
-            <Text style={styles.benefitText}>Prescriptions sent to your pharmacy</Text>
-          </View>
-        </View>
-
-        {/* Providers List */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Available Providers</Text>
+      {/* Providers List */}
+      <View style={[styles.section, styles.firstSection]}>
+        <Text style={styles.sectionTitle}>Available Specialists</Text>
+        <Text style={styles.sectionSubtitle}>
+          Board-certified menopause experts ready to help
+        </Text>
           
-          {providers.map((provider) => (
+        {providers.map((provider) => (
             <View key={provider.id} style={styles.providerCard}>
               {/* Provider Avatar */}
               <View style={styles.providerHeader}>
@@ -144,116 +122,66 @@ export default function ProvidersScreen() {
               </View>
             </View>
           ))}
-        </View>
+      </View>
 
-        {/* FAQ Section */}
-        <View style={styles.faqSection}>
-          <Text style={styles.faqTitle}>How it works</Text>
-          <View style={styles.faqItem}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>1</Text>
-            </View>
-            <Text style={styles.faqText}>Choose your provider and book a time</Text>
-          </View>
-          <View style={styles.faqItem}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>2</Text>
-            </View>
-            <Text style={styles.faqText}>Join the video visit from your phone</Text>
-          </View>
-          <View style={styles.faqItem}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>3</Text>
-            </View>
-            <Text style={styles.faqText}>Get your treatment plan and prescriptions</Text>
-          </View>
-        </View>
-
-        <View style={{ height: 40 }} />
-      </ScrollView>
-    </View>
+      <View style={{ height: 40 }} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#FAF9F7',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
+  headerBanner: {
+    backgroundColor: '#8B5A8F',
     paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
+    paddingBottom: 32,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1F2937',
-  },
-  content: {
-    flex: 1,
-  },
-  heroSection: {
-    padding: 24,
-    backgroundColor: '#FFFFFF',
-  },
-  heroTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: 12,
+    color: '#FFFFFF',
+    marginTop: 12,
+    marginBottom: 6,
   },
-  heroSubtitle: {
+  headerSubtitle: {
     fontSize: 15,
-    color: '#6B7280',
-    lineHeight: 22,
-  },
-  benefitsSection: {
-    backgroundColor: '#F0FDF4',
-    padding: 20,
-    gap: 12,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#D1FAE5',
-  },
-  benefitItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  benefitText: {
-    fontSize: 14,
-    color: '#1F2937',
-    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   section: {
-    padding: 20,
+    marginBottom: 32,
+    paddingHorizontal: 20,
+  },
+  firstSection: {
+    marginTop: 24,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: 16,
+    color: '#5A3A5A',
+    marginBottom: 6,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: '#8B7280',
+    marginBottom: 18,
   },
   providerCard: {
     backgroundColor: '#FFFFFF',
     padding: 20,
     borderRadius: 16,
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderWidth: 1.5,
+    borderColor: '#E8D5E8',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   providerHeader: {
     flexDirection: 'row',
@@ -264,7 +192,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#EC4899',
+    backgroundColor: '#8B5A8F',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -303,7 +231,7 @@ const styles = StyleSheet.create({
   },
   experienceTag: {
     alignSelf: 'flex-start',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: '#F3E8F3',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -311,7 +239,7 @@ const styles = StyleSheet.create({
   },
   experienceText: {
     fontSize: 12,
-    color: '#3B82F6',
+    color: '#8B5A8F',
     fontWeight: '600',
   },
   specialtiesContainer: {
@@ -321,16 +249,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   specialtyTag: {
-    backgroundColor: '#FFF5F7',
+    backgroundColor: '#F9F5F9',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#FCE7F3',
+    borderColor: '#E8D5E8',
   },
   specialtyText: {
     fontSize: 12,
-    color: '#EC4899',
+    color: '#8B5A8F',
     fontWeight: '500',
   },
   availabilityContainer: {
@@ -370,7 +298,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#8B5A8F',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -379,45 +307,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
-  faqSection: {
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 20,
-    padding: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  faqTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: 16,
-  },
-  faqItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    marginBottom: 16,
-  },
-  stepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#EC4899',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepNumberText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  faqText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#6B7280',
-    lineHeight: 20,
   },
 });
 
