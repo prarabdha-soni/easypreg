@@ -21,7 +21,7 @@ export default function AppointmentScreen() {
             <Video size={32} color="#3B82F6" />
           </View>
           <Text style={styles.title}>Video Consultation</Text>
-          <Text style={styles.subtitle}>Dr. Priya Sharma</Text>
+          <Text style={styles.subtitle}>Dr. Prarabdha Soni</Text>
 
           <View style={styles.detailRow}>
             <Calendar size={20} color="#6B7280" />

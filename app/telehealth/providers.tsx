@@ -10,7 +10,7 @@ export default function ProvidersScreen() {
   const providers = [
     {
       id: 1,
-      name: 'Dr. Priya Sharma',
+      name: 'Dr. Prarabdha Soni',
       title: 'OB-GYN, Menopause Specialist',
       rating: 4.9,
       reviews: 234,
@@ -21,7 +21,7 @@ export default function ProvidersScreen() {
     },
     {
       id: 2,
-      name: 'Dr. Anjali Gupta',
+      name: 'Dr. Prarabdha Soni',
       title: 'Endocrinologist',
       rating: 4.8,
       reviews: 189,
@@ -32,7 +32,7 @@ export default function ProvidersScreen() {
     },
     {
       id: 3,
-      name: 'Dr. Kavita Reddy',
+      name: 'Dr. Prarabdha Soni',
       title: 'Women Health Specialist',
       rating: 5.0,
       reviews: 156,

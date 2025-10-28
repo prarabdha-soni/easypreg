@@ -43,7 +43,7 @@ export default function BookingScreen() {
             <Text style={styles.avatarInitials}>PS</Text>
           </View>
           <View>
-            <Text style={styles.providerName}>Dr. Priya Sharma</Text>
+            <Text style={styles.providerName}>Dr. Prarabdha Soni</Text>
             <Text style={styles.providerTitle}>OB-GYN, Menopause Specialist</Text>
           </View>
         </View>

@@ -70,7 +70,7 @@ export default function ExpertCareScreen() {
   const upcomingAppointments = profile.nextAppointment ? [
     {
       id: 1,
-      doctor: 'Dr. Priya Sharma',
+      doctor: 'Dr. Prarabdha Soni',
       specialty: 'Menopause Specialist',
       date: profile.nextAppointment,
       type: 'Video Call',
@@ -81,7 +81,7 @@ export default function ExpertCareScreen() {
   const recentMessages = [
     {
       id: 1,
-      from: 'Dr. Anjali Gupta',
+      from: 'Dr. Prarabdha Soni',
       subject: 'Your Sleep Question',
       preview: 'Based on your symptoms, I recommend trying these sleep hygiene tips...',
       time: '2 hours ago',
@@ -100,7 +100,7 @@ export default function ExpertCareScreen() {
   const availableDoctors = [
     {
       id: 1,
-      name: 'Dr. Priya Sharma',
+      name: 'Dr. Prarabdha Soni',
       specialty: 'OB-GYN, Menopause Specialist',
       rating: 4.9,
       reviews: 234,
@@ -110,7 +110,7 @@ export default function ExpertCareScreen() {
     },
     {
       id: 2,
-      name: 'Dr. Kavita Reddy',
+      name: 'Dr. Prarabdha Soni',
       specialty: 'Endocrinologist',
       rating: 4.8,
       reviews: 189,

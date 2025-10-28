@@ -44,7 +44,7 @@ export default function CircleScreen() {
   const expertSessions = [
     {
       id: 1,
-      expert: 'Dr. Priya Sharma',
+      expert: 'Dr. Prarabdha Soni',
       title: 'Managing Hot Flashes Naturally',
       specialty: 'OB-GYN',
       date: 'Tomorrow, 2:00 PM',
@@ -53,7 +53,7 @@ export default function CircleScreen() {
     },
     {
       id: 2,
-      expert: 'Dr. Anjali Gupta',
+      expert: 'Dr. Prarabdha Soni',
       title: 'Sleep Solutions for Menopause',
       specialty: 'Sleep Specialist',
       date: 'Friday, 7:00 PM',

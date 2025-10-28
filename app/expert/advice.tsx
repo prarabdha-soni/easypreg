@@ -8,7 +8,7 @@ export default function PersonalizedAdviceScreen() {
   const advice = [
     {
       id: 1,
-      from: 'Dr. Priya Sharma',
+      from: 'Dr. Prarabdha Soni',
       specialty: 'Menopause Specialist',
       date: 'Today',
       title: 'Managing Hot Flashes',
@@ -18,7 +18,7 @@ export default function PersonalizedAdviceScreen() {
     },
     {
       id: 2,
-      from: 'Dr. Anjali Gupta',
+      from: 'Dr. Prarabdha Soni',
       specialty: 'Sleep Specialist',
       date: 'Yesterday',
       title: 'Sleep Hygiene Tips',
