@@ -11,6 +11,7 @@ export default function RootLayout() {
     <UserProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="onboarding/period-date" />
         <Stack.Screen name="onboarding/user-details" />
         <Stack.Screen name="onboarding/cycle-setup" />
         <Stack.Screen name="onboarding/preferences" />
@@ -18,6 +19,7 @@ export default function RootLayout() {
         <Stack.Screen name="log/period" />
         <Stack.Screen name="log/symptoms" />
         <Stack.Screen name="log/partner" />
+        <Stack.Screen name="log/flow-mood" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

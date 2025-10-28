@@ -1,50 +1,77 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NotificationService } from '@/services/NotificationService';
 
 interface UserProfile {
-  gender: 'woman' | 'man' | 'couple' | null;
   age: number | null;
-  tryingToConceive: boolean;
-  planningSoon: boolean;
-  language: 'english' | 'hindi' | 'regional';
-  foodPreference: 'veg' | 'non-veg' | 'vegan' | 'ayurvedic';
+  menopauseStage: 'perimenopause' | 'menopause' | 'postmenopause' | null;
   lastPeriodDate: Date | null;
-  cycleLength: number;
-  isRegular: boolean;
+  symptomsStartDate: Date | null;
   hasCompletedOnboarding: boolean;
-  isPregnant: boolean;
-  pregnancyStartDate: Date | null;
-  currentPregnancyMonth: number | null;
+  // Treatment preferences
+  interestedInHRT: boolean;
+  currentTreatments: string[];
+  // Symptom tracking
+  primarySymptoms: string[];
+  symptomSeverity: 'mild' | 'moderate' | 'severe' | null;
+  // Telehealth
+  hasProvider: boolean;
+  nextAppointment: Date | null;
 }
 
 interface UserContextType {
   profile: UserProfile;
   updateProfile: (updates: Partial<UserProfile>) => void;
+  isLoading: boolean;
 }
 
 const defaultProfile: UserProfile = {
-  gender: null,
   age: null,
-  tryingToConceive: true,
-  planningSoon: false,
-  language: 'english',
-  foodPreference: 'veg',
+  menopauseStage: null,
   lastPeriodDate: null,
-  cycleLength: 28,
-  isRegular: true,
+  symptomsStartDate: null,
   hasCompletedOnboarding: false,
-  isPregnant: false,
-  pregnancyStartDate: null,
-  currentPregnancyMonth: null,
+  interestedInHRT: false,
+  currentTreatments: [],
+  primarySymptoms: [],
+  symptomSeverity: null,
+  hasProvider: false,
+  nextAppointment: null,
 };
+
+const STORAGE_KEY = '@user_profile';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  const [isLoading, setIsLoading] = useState(true);
   const [notificationService] = useState(() => NotificationService.getInstance());
 
+  // Load profile from AsyncStorage on mount
   useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const storedProfile = await AsyncStorage.getItem(STORAGE_KEY);
+        if (storedProfile) {
+          const parsed = JSON.parse(storedProfile);
+          // Convert date strings back to Date objects
+          if (parsed.lastPeriodDate) {
+            parsed.lastPeriodDate = new Date(parsed.lastPeriodDate);
+          }
+          if (parsed.pregnancyStartDate) {
+            parsed.pregnancyStartDate = new Date(parsed.pregnancyStartDate);
+          }
+          setProfile(parsed);
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProfile();
     // Initialize notification service when app starts
     notificationService.initialize();
   }, [notificationService]);
@@ -54,14 +81,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const nextProfile: UserProfile = { ...profile, ...updates };
     setProfile(nextProfile);
 
-    // If we have enough data, (re)schedule notifications even if fields were set in separate calls
-    if (nextProfile.lastPeriodDate && nextProfile.cycleLength) {
+    // Save to AsyncStorage
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(nextProfile));
+    } catch (error) {
+      console.error('Error saving profile:', error);
+    }
+
+    // Schedule symptom tracking reminders if user has completed onboarding
+    if (nextProfile.hasCompletedOnboarding && nextProfile.primarySymptoms.length > 0) {
       try {
-        await notificationService.updateCycleData(
-          nextProfile.lastPeriodDate,
-          nextProfile.cycleLength,
-          5 // Default period length
-        );
+        // Could schedule daily symptom tracking reminders
+        await notificationService.initialize();
       } catch (error) {
         console.error('Error updating notification service:', error);
       }
@@ -69,7 +100,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <UserContext.Provider value={{ profile, updateProfile }}>
+    <UserContext.Provider value={{ profile, updateProfile, isLoading }}>
       {children}
     </UserContext.Provider>
   );

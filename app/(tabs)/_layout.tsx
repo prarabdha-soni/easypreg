@@ -1,23 +1,24 @@
 import { Tabs } from 'expo-router';
-import { Hop as Home, Heart, Bell, Users, RefreshCw } from 'lucide-react-native';
+import { Home, Activity, Brain, Users, User, Stethoscope } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#EC4899',
-        tabBarInactiveTintColor: '#999',
+        tabBarActiveTintColor: '#8B5A8F', // Rich purple (menopause theme)
+        tabBarInactiveTintColor: '#B8A8BA', // Soft lavender
         tabBarStyle: {
-          borderTopWidth: 1,
-          borderTopColor: '#FCE7F3',
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1.5,
+          borderTopColor: '#E8D5E8', // Lavender border
           paddingTop: 8,
           paddingBottom: 8,
-          height: 65,
+          height: 70,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
+          fontSize: 11,
+          fontWeight: '600',
         },
       }}
     >
@@ -31,30 +32,66 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="fertility"
+        name="health-dashboard"
         options={{
-          title: 'Health',
+          title: 'My Journey',
           tabBarIcon: ({ size, color }) => (
-            <Heart size={size} color={color} />
+            <Activity size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="experts"
+        name="insights"
         options={{
-          title: 'Experts',
+          title: 'Stage Insights',
+          tabBarIcon: ({ size, color }) => (
+            <Brain size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="community"
+        options={{
+          title: 'Circle',
           tabBarIcon: ({ size, color }) => (
             <Users size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
+        name="experts"
+        options={{
+          title: 'Expert Care',
+          tabBarIcon: ({ size, color }) => (
+            <Stethoscope size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Wellness',
+          tabBarIcon: ({ size, color }) => (
+            <User size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="notification-settings"
         options={{
-          title: 'Notifications',
-          tabBarIcon: ({ size, color }) => (
-            <Bell size={size} color={color} />
-          ),
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="fertility"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="ovulation"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

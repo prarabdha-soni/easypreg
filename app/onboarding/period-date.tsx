@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useUser } from '@/contexts/UserContext';
-import { Calendar } from 'lucide-react-native';
+import { Calendar, Heart, Sunset, Flame } from 'lucide-react-native';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -54,6 +54,7 @@ export default function PeriodDateScreen() {
   const router = useRouter();
   const { updateProfile } = useUser();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState<'control-cycle' | 'ease-perimenopause' | 'relieve-menopause' | null>(null);
   
   const today = new Date();
   // Set default to 7 days ago (typical cycle length)
@@ -71,17 +72,22 @@ export default function PeriodDateScreen() {
   };
 
   const handleComplete = () => {
+    if (!selectedGoal) {
+      return; // Don't proceed without a goal selected
+    }
+
     updateProfile({
-      gender: 'woman', // Default to woman for fertility tracking
-      age: 25, // Default age
-      tryingToConceive: true,
+      gender: 'woman',
+      age: 25,
+      tryingToConceive: selectedGoal === 'control-cycle',
       planningSoon: false,
       language: 'english',
-      foodPreference: 'veg', // Default to vegetarian
+      foodPreference: 'veg',
       lastPeriodDate: selectedDate,
       cycleLength: 28,
       isRegular: true,
       hasCompletedOnboarding: true,
+      healthGoal: selectedGoal,
     });
 
     router.replace('/(tabs)');
@@ -92,38 +98,110 @@ export default function PeriodDateScreen() {
   const monthList = generateMonths();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          <Calendar size={48} color="#e91e63" />
-        </View>
-        
-        <Text style={styles.title}>When was your last period?</Text>
-        <Text style={styles.subtitle}>
-          Select a past date to help us track your cycle and provide personalized insights
-        </Text>
-
-        <TouchableOpacity 
-          style={styles.dateButton}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text style={styles.dateButtonText}>
-            {selectedDate.toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
+    <View style={styles.outerContainer}>
+      <ScrollView style={styles.container}>
+        <View style={styles.content}>
+          <View style={styles.iconContainer}>
+            <Calendar size={48} color="#e91e63" />
+          </View>
+          
+          <Text style={styles.title}>When was your last period?</Text>
+          <Text style={styles.subtitle}>
+            Select a past date to help us track your cycle and provide personalized insights
           </Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.completeButton}
-          onPress={handleComplete}
-        >
-          <Text style={styles.completeButtonText}>Start My Journey</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity 
+            style={styles.dateButton}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text style={styles.dateButtonText}>
+              {selectedDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Health Goals */}
+          <Text style={styles.goalTitle}>What's your health goal?</Text>
+          <Text style={styles.goalSubtitle}>Choose one to personalize your experience</Text>
+
+          <View style={styles.goalOptions}>
+            <TouchableOpacity
+              style={[
+                styles.goalCard,
+                selectedGoal === 'control-cycle' && styles.goalCardSelected
+              ]}
+              onPress={() => setSelectedGoal('control-cycle')}
+            >
+              <View style={[styles.goalIconContainer, { backgroundColor: '#FFF5F7' }]}>
+                <Heart size={32} color="#EC4899" />
+              </View>
+              <Text style={styles.goalCardTitle}>Control Cycle</Text>
+              <Text style={styles.goalCardDescription}>
+                Track your menstrual cycle, predict periods, and understand your fertility
+              </Text>
+              {selectedGoal === 'control-cycle' && (
+                <View style={styles.selectedBadge}>
+                  <Text style={styles.selectedBadgeText}>✓ Selected</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.goalCard,
+                selectedGoal === 'ease-perimenopause' && styles.goalCardSelected
+              ]}
+              onPress={() => setSelectedGoal('ease-perimenopause')}
+            >
+              <View style={[styles.goalIconContainer, { backgroundColor: '#FEF3F2' }]}>
+                <Sunset size={32} color="#F97316" />
+              </View>
+              <Text style={styles.goalCardTitle}>Ease Perimenopause</Text>
+              <Text style={styles.goalCardDescription}>
+                Manage symptoms, track changes, and get support during this transition
+              </Text>
+              {selectedGoal === 'ease-perimenopause' && (
+                <View style={styles.selectedBadge}>
+                  <Text style={styles.selectedBadgeText}>✓ Selected</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.goalCard,
+                selectedGoal === 'relieve-menopause' && styles.goalCardSelected
+              ]}
+              onPress={() => setSelectedGoal('relieve-menopause')}
+            >
+              <View style={[styles.goalIconContainer, { backgroundColor: '#FEF9F3' }]}>
+                <Flame size={32} color="#EAB308" />
+              </View>
+              <Text style={styles.goalCardTitle}>Relieve Menopause</Text>
+              <Text style={styles.goalCardDescription}>
+                Navigate hot flashes, mood changes, and other menopause symptoms
+              </Text>
+              {selectedGoal === 'relieve-menopause' && (
+                <View style={styles.selectedBadge}>
+                  <Text style={styles.selectedBadgeText}>✓ Selected</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.completeButton, !selectedGoal && styles.completeButtonDisabled]}
+            onPress={handleComplete}
+            disabled={!selectedGoal}
+          >
+            <Text style={styles.completeButtonText}>Start My Journey</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
 
       <Modal
         visible={showDatePicker}
@@ -211,15 +289,20 @@ export default function PeriodDateScreen() {
   );
 }
 
+
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
   },
   content: {
-    flex: 1,
     padding: 24,
-    justifyContent: 'center',
+    paddingTop: 60,
+    paddingBottom: 40,
     alignItems: 'center',
   },
   iconContainer: {
@@ -262,12 +345,81 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     textAlign: 'center',
   },
+  goalTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginTop: 32,
+    marginBottom: 8,
+  },
+  goalSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  goalOptions: {
+    width: '100%',
+    gap: 16,
+    marginBottom: 32,
+  },
+  goalCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 2,
+    borderColor: '#e9ecef',
+    position: 'relative',
+  },
+  goalCardSelected: {
+    borderColor: '#EC4899',
+    backgroundColor: '#FFF5F7',
+  },
+  goalIconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  goalCardTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 8,
+  },
+  goalCardDescription: {
+    fontSize: 15,
+    color: '#666',
+    lineHeight: 22,
+  },
+  selectedBadge: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    backgroundColor: '#EC4899',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  selectedBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
   completeButton: {
     backgroundColor: '#e91e63',
     paddingVertical: 18,
     paddingHorizontal: 48,
     borderRadius: 16,
-    minWidth: 200,
+    width: '100%',
+    maxWidth: 300,
+  },
+  completeButtonDisabled: {
+    backgroundColor: '#d1d5db',
+    opacity: 0.6,
   },
   completeButtonText: {
     color: '#ffffff',

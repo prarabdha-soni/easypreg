@@ -1,228 +1,264 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
-import { Calendar, Droplet, Heart, TrendingUp, Users, Zap, Shield, Sparkles, Activity, AlertTriangle, Star, ArrowRight, Flower2 } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { 
+  Flame, Moon, Heart, Droplets, Wind, Activity, 
+  Brain, Pill, Video, ChevronRight, TrendingUp, Calendar, Sparkles 
+} from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { HormonePredictionService, HealthCategory, CyclePhase } from '@/services/HormonePredictionService';
+import { useState } from 'react';
 
 export default function HomeScreen() {
   const { profile } = useUser();
   const router = useRouter();
-  const [hormoneService] = useState(() => HormonePredictionService.getInstance());
-  const [healthPredictions, setHealthPredictions] = useState<any[]>([]);
-  const [overallScore, setOverallScore] = useState(0);
-  const [currentPhase, setCurrentPhase] = useState<CyclePhase>(CyclePhase.FOLLICULAR);
 
-  useEffect(() => {
-    const initializeHormoneService = async () => {
-      if (profile.lastPeriodDate) {
-        const cycleData = {
-          lastPeriodDate: new Date(profile.lastPeriodDate),
-          cycleLength: profile.cycleLength
-        };
-        await hormoneService.initialize(profile, cycleData);
-        
-        const predictions = hormoneService.getAllHealthPredictions();
-        const score = hormoneService.getOverallWellnessScore();
-        const phase = hormoneService.getCurrentCyclePhase();
-        
-        setHealthPredictions(predictions);
-        setOverallScore(score);
-        setCurrentPhase(phase);
-      }
-    };
-
-    initializeHormoneService();
-  }, [profile.lastPeriodDate, profile.cycleLength]);
-
-  const calculateCycleDay = () => {
-    if (!profile.lastPeriodDate) return 1;
-    const today = new Date();
-    const lastPeriod = new Date(profile.lastPeriodDate);
-    const diffTime = Math.abs(today.getTime() - lastPeriod.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return (diffDays % profile.cycleLength) || 1;
-  };
-
-  const getCyclePhaseInfo = (phase: CyclePhase) => {
-    const phaseMap = {
-      [CyclePhase.MENSTRUAL]: { name: 'Menstrual', color: '#e91e63', icon: '🩸', description: 'Rest & Renewal' },
-      [CyclePhase.FOLLICULAR]: { name: 'Follicular', color: '#9c27b0', icon: '🌱', description: 'Energy Rising' },
-      [CyclePhase.OVULATORY]: { name: 'Ovulatory', color: '#4caf50', icon: '🌸', description: 'Peak Power' },
-      [CyclePhase.LUTEAL]: { name: 'Luteal', color: '#2196f3', icon: '🌙', description: 'Preparation' }
-    };
-    return phaseMap[phase];
-  };
-
-  const cycleDay = calculateCycleDay();
-  const phaseInfo = getCyclePhaseInfo(currentPhase);
-
-  const getPredictionColor = (score: number) => {
-    if (score >= 80) return '#10B981';
-    if (score >= 60) return '#F59E0B';
-    return '#EF4444';
-  };
-
-  const getPredictionIcon = (category: string) => {
-    switch (category) {
-      case 'hair': return '💇‍♀️';
-      case 'skin': return '✨';
-      case 'weight': return '⚖️';
-      case 'energy': return '⚡';
-      case 'mood': return '😊';
-      case 'sleep': return '😴';
-      default: return '💪';
-    }
-  };
+  // Menopause-specific symptoms (forhers.com style)
+  const menopauseSymptoms = [
+    { id: 'hot-flashes', label: 'Hot Flashes', icon: Flame, color: '#EF4444', bg: '#FEF2F2' },
+    { id: 'night-sweats', label: 'Night Sweats', icon: Moon, color: '#6366F1', bg: '#EEF2FF' },
+    { id: 'mood-changes', label: 'Mood Changes', icon: Heart, color: '#EC4899', bg: '#FDF2F8' },
+    { id: 'sleep-issues', label: 'Sleep Issues', icon: Moon, color: '#8B5CF6', bg: '#F5F3FF' },
+    { id: 'vaginal-dryness', label: 'Vaginal Dryness', icon: Droplets, color: '#10B981', bg: '#ECFDF5' },
+    { id: 'brain-fog', label: 'Brain Fog', icon: Brain, color: '#F59E0B', bg: '#FFFBEB' },
+    { id: 'fatigue', label: 'Fatigue', icon: Wind, color: '#6B7280', bg: '#F9FAFB' },
+    { id: 'joint-pain', label: 'Joint Pain', icon: Activity, color: '#EF4444', bg: '#FEF2F2' },
+  ];
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Welcome Header */}
-      <View style={styles.welcomeHeader}>
-        <View style={styles.logoContainer}>
-          <Heart size={32} color="#EC4899" style={styles.logoIcon} />
-          <Text style={styles.appName}>NariCare</Text>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Hero Banner Section */}
+      <View style={styles.heroBanner}>
+        <View style={styles.heroContent}>
+          <Text style={styles.appName}>Gloww</Text>
+          <Text style={styles.heroTagline}>
+            Your Menopause & Perimenopause Companion
+          </Text>
+          <Text style={styles.heroSubtext}>
+            Tailored support for every stage of your hormonal journey
+          </Text>
         </View>
-        <Text style={styles.tagline}>Health starts with your cycle.</Text>
-        <Text style={styles.subtitle}>Your complete women's health companion</Text>
+        {/* Decorative Elements */}
+        <View style={styles.decorativeElements}>
+          <View style={[styles.decorativeCircle, { backgroundColor: '#D4A5D4', opacity: 0.3 }]} />
+          <View style={[styles.decorativeCircle, { backgroundColor: '#F08080', opacity: 0.2 }]} />
+        </View>
       </View>
 
-      {/* Current Phase Status */}
-      <LinearGradient
-        colors={[phaseInfo.color + '20', phaseInfo.color + '10']}
-        style={styles.phaseCard}
-      >
-        <View style={styles.phaseHeader}>
-          <Text style={styles.phaseIcon}>{phaseInfo.icon}</Text>
-          <View style={styles.phaseInfo}>
-            <Text style={styles.phaseName}>{phaseInfo.name} Phase</Text>
-            <Text style={styles.phaseDescription}>Day {cycleDay} • {phaseInfo.description}</Text>
+      {/* Current Stage Card */}
+      <View style={styles.stageCard}>
+        <View style={styles.stageHeader}>
+          <View style={styles.stageBadge}>
+            <Text style={styles.stageBadgeText}>YOUR STAGE</Text>
           </View>
         </View>
-        <View style={styles.overallScore}>
-          <Text style={styles.scoreLabel}>Overall Health Score</Text>
-          <Text style={[styles.scoreValue, { color: phaseInfo.color }]}>{overallScore}/100</Text>
+        <Text style={styles.stageTitle}>
+          {profile.menopauseStage === 'perimenopause' 
+            ? '🌸 Perimenopause' 
+            : profile.menopauseStage === 'menopause'
+            ? '🌙 Menopause'
+            : profile.menopauseStage === 'postmenopause'
+            ? '✨ Postmenopause'
+            : '💜 Your Journey'}
+        </Text>
+        <Text style={styles.stageDescription}>
+          {profile.menopauseStage === 'perimenopause' 
+            ? 'Navigating the transition with irregular cycles and changing hormones' 
+            : profile.menopauseStage === 'menopause'
+            ? 'Managing symptoms and adapting to hormonal changes'
+            : profile.menopauseStage === 'postmenopause'
+            ? 'Thriving beyond menopause with continued wellness support'
+            : 'Understanding and supporting your unique hormonal journey'}
+        </Text>
+      </View>
+
+      {/* Daily Menopause Tip */}
+      <View style={styles.dailyTipCard}>
+        <View style={styles.tipHeader}>
+          <Sparkles size={20} color="#8B5A8F" />
+          <Text style={styles.tipTitle}>Today's Menopause Tip</Text>
         </View>
-      </LinearGradient>
+        <Text style={styles.tipText}>
+          {profile.menopauseStage === 'perimenopause'
+            ? 'Keep a cool bedroom (65-68°F) to help manage night sweats and improve sleep quality'
+            : 'Regular weight-bearing exercise helps maintain bone density during menopause'}
+        </Text>
+      </View>
 
-      {/* Health Predictions */}
-      <Text style={styles.sectionTitle}>Your Health Insights</Text>
-      
-      <View style={styles.predictionsContainer}>
-        {healthPredictions.slice(0, 6).map((prediction, index) => (
-          <TouchableOpacity 
-            key={index} 
-            style={[styles.predictionCard, { borderLeftColor: getPredictionColor(prediction.score) }]}
-            onPress={() => {
-              const category = prediction.category;
-              if (category === 'hair') {
-                router.push('/techniques/hair');
-              } else if (category === 'skin') {
-                router.push('/techniques/skin');
-              } else if (category === 'weight') {
-                router.push('/techniques/weight');
-              } else {
-                Alert.alert(
-                  `${category.charAt(0).toUpperCase() + category.slice(1)} Health`,
-                  `Score: ${prediction.score}/100\nTrend: ${prediction.trend}\n\nRecommendations:\n${prediction.recommendations.slice(0, 2).join('\n')}`,
-                  [
-                    { text: 'Talk to Expert', onPress: () => router.push('/experts') },
-                    { text: 'Close', style: 'cancel' }
-                  ]
-                );
-              }
-            }}
-          >
-            <View style={styles.predictionHeader}>
-              <Text style={styles.predictionIcon}>{getPredictionIcon(prediction.category)}</Text>
-              <View style={styles.predictionScore}>
-                <Text style={[styles.scoreNumber, { color: getPredictionColor(prediction.score) }]}>
-                  {prediction.score}
-                </Text>
-                <Text style={styles.scoreLabel}>/100</Text>
-              </View>
-            </View>
-            <Text style={styles.predictionCategory}>
-              {prediction.category.charAt(0).toUpperCase() + prediction.category.slice(1)}
+      {/* Quick Actions - forhers.com style */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Menopause Care Options</Text>
+        <Text style={styles.sectionSubtitle}>
+          Evidence-based treatments designed for your stage
+        </Text>
+        
+        <TouchableOpacity 
+          style={styles.actionCard}
+          onPress={() => router.push('/treatment/hrt')}
+        >
+          <View style={[styles.actionIcon, { backgroundColor: '#FFF5F7' }]}>
+            <Pill size={24} color="#EC4899" />
+          </View>
+          <View style={styles.actionContent}>
+            <Text style={styles.actionTitle}>Hormone Replacement Therapy</Text>
+            <Text style={styles.actionSubtitle}>
+              {profile.interestedInHRT 
+                ? 'View your treatment plan' 
+                : 'Explore HRT options & get started'}
             </Text>
-            <View style={styles.predictionTrend}>
-              <Text style={styles.trendText}>
-                {prediction.trend === 'improving' ? '📈 Improving' :
-                 prediction.trend === 'stable' ? '➡️ Stable' : '📉 Needs Attention'}
-              </Text>
-              <ArrowRight size={16} color="#6B7280" />
+          </View>
+          <ChevronRight size={20} color="#9CA3AF" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.actionCard}
+          onPress={() => router.push('/telehealth/providers')}
+        >
+          <View style={[styles.actionIcon, { backgroundColor: '#EFF6FF' }]}>
+            <Video size={24} color="#3B82F6" />
+          </View>
+          <View style={styles.actionContent}>
+            <Text style={styles.actionTitle}>Talk to a Provider</Text>
+            <Text style={styles.actionSubtitle}>
+              {profile.hasProvider 
+                ? 'Schedule your next visit' 
+                : 'Connect with menopause specialists'}
+            </Text>
+          </View>
+          <ChevronRight size={20} color="#9CA3AF" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Symptom Tracking */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          {profile.menopauseStage === 'perimenopause' 
+            ? 'Track My Perimenopause' 
+            : profile.menopauseStage === 'menopause'
+            ? 'Track My Menopause'
+            : 'Track Symptoms'}
+        </Text>
+        <Text style={styles.sectionSubtitle}>
+          Monitor patterns to better understand your unique hormonal journey
+        </Text>
+        
+        <View style={styles.symptomGrid}>
+          {menopauseSymptoms.slice(0, 6).map((symptom) => (
+            <TouchableOpacity
+              key={symptom.id}
+              style={styles.symptomCard}
+              onPress={() => router.push('/symptoms/tracker')}
+            >
+              <View style={[styles.symptomIcon, { backgroundColor: symptom.bg }]}>
+                <symptom.icon size={20} color={symptom.color} />
+              </View>
+              <Text style={styles.symptomLabel}>{symptom.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <TouchableOpacity 
+          style={styles.viewAllButton}
+          onPress={() => router.push('/symptoms/tracker')}
+        >
+          <Text style={styles.viewAllText}>Track All Symptoms</Text>
+          <ChevronRight size={16} color="#8B5A8F" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Insights & Progress */}
+      <TouchableOpacity 
+        style={styles.insightCard} 
+        onPress={() => router.push('/(tabs)/insights')}
+      >
+        <View style={[styles.actionIcon, { backgroundColor: '#F0FDF4' }]}>
+          <TrendingUp size={24} color="#10B981" />
+        </View>
+        <View style={styles.actionContent}>
+          <Text style={styles.actionTitle}>Your Progress</Text>
+          <Text style={styles.actionSubtitle}>
+            Hot flashes down 30% this week. Great progress!
+          </Text>
+        </View>
+        <ChevronRight size={20} color="#9CA3AF" />
+      </TouchableOpacity>
+
+      {/* Educational Content - forhers style */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          {profile.menopauseStage === 'perimenopause' 
+            ? 'Understanding Perimenopause' 
+            : 'Learn About Menopause'}
+        </Text>
+        <Text style={styles.sectionSubtitle}>
+          Knowledge is power—educate yourself about this natural transition
+        </Text>
+        
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.articleScroll}>
+          <TouchableOpacity 
+            style={styles.articleCard}
+            onPress={() => router.push('/education/hrt')}
+          >
+            <View style={styles.articleImagePlaceholder}>
+              <Pill size={32} color="#EC4899" />
             </View>
+            <Text style={styles.articleTitle}>Understanding HRT</Text>
+            <Text style={styles.articleDescription}>
+              What to expect from hormone replacement therapy
+            </Text>
           </TouchableOpacity>
-        ))}
+
+          <TouchableOpacity 
+            style={styles.articleCard}
+            onPress={() => router.push('/education/lifestyle')}
+          >
+            <View style={styles.articleImagePlaceholder}>
+              <Activity size={32} color="#10B981" />
+            </View>
+            <Text style={styles.articleTitle}>Lifestyle Changes</Text>
+            <Text style={styles.articleDescription}>
+              Natural ways to manage symptoms
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.articleCard}
+            onPress={() => router.push('/education/sleep')}
+          >
+            <View style={styles.articleImagePlaceholder}>
+              <Moon size={32} color="#6366F1" />
+            </View>
+            <Text style={styles.articleTitle}>Better Sleep</Text>
+            <Text style={styles.articleDescription}>
+              Tips for managing night sweats
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
 
-      {/* Expert Recommendations */}
-      <Text style={styles.sectionTitle}>Personalized Care</Text>
-      
-      <View style={styles.recommendationsGrid}>
-        <TouchableOpacity 
-          style={[styles.recommendationCard, { backgroundColor: '#F0FDF4' }]}
-          onPress={() => router.push('/experts')}
-        >
-          <Users size={24} color="#10B981" />
-          <Text style={styles.recommendationTitle}>Talk to Expert</Text>
-          <Text style={styles.recommendationDesc}>Get personalized advice for your cycle phase</Text>
-        </TouchableOpacity>
+      {/* Appointment Reminder */}
+      {profile.nextAppointment && (
+        <View style={styles.appointmentCard}>
+          <View style={styles.appointmentHeader}>
+            <Calendar size={20} color="#3B82F6" />
+            <Text style={styles.appointmentTitle}>Upcoming Appointment</Text>
+          </View>
+          <Text style={styles.appointmentDate}>
+            {profile.nextAppointment.toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </Text>
+          <TouchableOpacity 
+            style={styles.appointmentButton}
+            onPress={() => router.push('/telehealth/appointment')}
+          >
+            <Text style={styles.appointmentButtonText}>View Details</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-        <TouchableOpacity 
-          style={[styles.recommendationCard, { backgroundColor: '#FEF3F2' }]}
-          onPress={() => Alert.alert('Supplements', 'Recommended supplements for your current phase:\n\n' + hormoneService.getSupplementRecommendations().slice(0, 4).join('\n'))}
-        >
-          <Zap size={24} color="#EF4444" />
-          <Text style={styles.recommendationTitle}>Supplements</Text>
-          <Text style={styles.recommendationDesc}>Essential nutrients for your phase</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Quick Actions */}
-      <Text style={styles.sectionTitle}>Track Your Health</Text>
-
-      <View style={styles.actionGrid}>
-        <TouchableOpacity
-          style={[styles.actionCard, { backgroundColor: '#fff5f7' }]}
-          onPress={() => router.push('/log/period')}
-        >
-          <Droplet size={32} color="#e91e63" />
-          <Text style={styles.actionText}>Log Period</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.actionCard, { backgroundColor: '#f3f9ff' }]}
-          onPress={() => router.push('/log/symptoms')}
-        >
-          <Heart size={32} color="#2196f3" />
-          <Text style={styles.actionText}>Log Symptoms</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.actionCard, { backgroundColor: '#f1f8f4' }]}
-          onPress={() => router.push('/fertility')}
-        >
-          <TrendingUp size={32} color="#4caf50" />
-          <Text style={styles.actionText}>View Insights</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.actionCard, { backgroundColor: '#f0fdf4' }]}
-          onPress={() => router.push('/experts')}
-        >
-          <Users size={32} color="#10B981" />
-          <Text style={styles.actionText}>Talk to Expert</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Privacy Notice */}
-      <View style={styles.privacyNotice}>
-        <Shield size={16} color="#9CA3AF" />
-        <Text style={styles.privacyText}>Your data is private, encrypted, and never sold.</Text>
-      </View>
-
+      {/* Bottom Spacing */}
+      <View style={{ height: 32 }} />
     </ScrollView>
   );
 }
@@ -230,341 +266,313 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FEFEFE',
+    backgroundColor: '#FAF9F7',
   },
-  welcomeHeader: {
-    padding: 24,
+  // Hero Banner with warm gradient feel
+  heroBanner: {
+    backgroundColor: '#8B5A8F',
     paddingTop: 60,
-    alignItems: 'center',
-    backgroundColor: '#FEFEFE',
+    paddingBottom: 32,
+    paddingHorizontal: 20,
+    position: 'relative',
+    overflow: 'hidden',
   },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  logoIcon: {
-    marginRight: 12,
+  heroContent: {
+    zIndex: 1,
   },
   appName: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#1F2937',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    letterSpacing: 1,
   },
-  tagline: {
+  heroTagline: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#374151',
-    textAlign: 'center',
-    marginBottom: 8,
+    color: '#FFFFFF',
+    marginBottom: 6,
   },
-  subtitle: {
+  heroSubtext: {
     fontSize: 14,
-    color: '#9CA3AF',
-    textAlign: 'center',
+    color: 'rgba(255, 255, 255, 0.9)',
     lineHeight: 20,
   },
-  phaseCard: {
-    margin: 24,
-    marginTop: 16,
+  decorativeElements: {
+    position: 'absolute',
+    right: -40,
+    top: 40,
+    flexDirection: 'row',
+    gap: 20,
+  },
+  decorativeCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+  // Current Stage Card
+  stageCard: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 20,
+    marginTop: -16,
+    marginBottom: 20,
     padding: 24,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#F3F4F6',
     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#E8D5E8',
+  },
+  stageHeader: {
+    marginBottom: 12,
+  },
+  stageBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#F3E8F3',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  stageBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#8B5A8F',
+    letterSpacing: 1,
+  },
+  stageTitle: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#5A3A5A',
+    marginBottom: 8,
+  },
+  stageDescription: {
+    fontSize: 15,
+    color: '#6B7280',
+    lineHeight: 22,
+  },
+  // Daily Tip Card
+  dailyTipCard: {
+    backgroundColor: '#FFF5F7',
+    marginHorizontal: 20,
+    marginBottom: 24,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#F8E4E8',
+  },
+  tipHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  tipTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#8B5A8F',
+  },
+  tipText: {
+    fontSize: 14,
+    color: '#5A3A5A',
+    lineHeight: 21,
+  },
+  section: {
+    marginBottom: 32,
+    paddingHorizontal: 20,
+  },
+  sectionTitle: {
+    fontSize: 21,
+    fontWeight: '700',
+    color: '#5A3A5A',
+    marginBottom: 6,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: '#8B7280',
+    marginBottom: 18,
+    lineHeight: 20,
+  },
+  actionCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 18,
+    borderRadius: 16,
+    marginBottom: 12,
+    gap: 12,
+    borderWidth: 1.5,
+    borderColor: '#E8D5E8',
+    shadowColor: '#8B5A8F',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
-  phaseHeader: {
-    flexDirection: 'row',
+  actionIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'center',
   },
-  phaseIcon: {
-    fontSize: 48,
-    marginRight: 16,
-  },
-  phaseInfo: {
+  actionContent: {
     flex: 1,
   },
-  phaseName: {
-    fontSize: 24,
+  actionTitle: {
+    fontSize: 16,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#5A3A5A',
     marginBottom: 4,
   },
-  phaseDescription: {
-    fontSize: 14,
-    color: '#666',
+  actionSubtitle: {
+    fontSize: 13,
+    color: '#8B7280',
+    lineHeight: 18,
   },
-  progressBarContainer: {
-    marginTop: 8,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  progressLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  progressLabel: {
-    fontSize: 10,
-    color: '#999',
-  },
-  focusCard: {
-    margin: 24,
-    marginTop: 0,
-    padding: 20,
-    backgroundColor: '#fffbf0',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#ffe082',
-  },
-  focusTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 12,
-  },
-  focusContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  focusIcon: {
-    fontSize: 32,
-    marginRight: 12,
-  },
-  focusText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 21,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1F2937',
-    paddingHorizontal: 24,
-    marginBottom: 16,
-    marginTop: 8,
-  },
-  actionGrid: {
+  symptomGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: 24,
-    gap: 16,
-    marginBottom: 24,
-  },
-  actionCard: {
-    width: '47%',
-    padding: 20,
-    borderRadius: 16,
-    alignItems: 'center',
     gap: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    marginBottom: 16,
+  },
+  symptomCard: {
+    alignItems: 'center',
+    width: '30%',
+    padding: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: '#E8D5E8',
+    shadowColor: '#8B5A8F',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
     elevation: 1,
   },
-  actionText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1F2937',
+  symptomIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  symptomLabel: {
+    fontSize: 11,
+    color: '#6B7280',
     textAlign: 'center',
+    lineHeight: 14,
+    fontWeight: '500',
+  },
+  viewAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#8B5A8F',
+    backgroundColor: '#F9F5F9',
+    gap: 6,
+  },
+  viewAllText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#8B5A8F',
   },
   insightCard: {
-    margin: 24,
-    marginTop: 0,
-    padding: 24,
-    backgroundColor: '#f3f9ff',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#bbdefb',
-  },
-  chipsRow: {
     flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: 24,
-    marginBottom: 8,
-  },
-  chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    alignItems: 'center',
+    backgroundColor: '#F0FDF4',
+    marginHorizontal: 20,
+    padding: 18,
     borderRadius: 16,
-    borderWidth: 1,
+    marginBottom: 24,
+    gap: 12,
+    borderWidth: 1.5,
+    borderColor: '#D1FAE5',
   },
-  chipText: {
-    fontSize: 13,
-    fontWeight: '600',
+  articleScroll: {
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
   },
-  insightTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 16,
+  articleCard: {
+    width: 200,
+    marginRight: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1.5,
+    borderColor: '#E8D5E8',
+    shadowColor: '#8B5A8F',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  miniChartWrap: {
+  articleImagePlaceholder: {
+    height: 120,
+    backgroundColor: '#F9F5F9',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
   },
-  healthGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 24,
-    gap: 12,
-    marginBottom: 16,
-  },
-  healthCard: {
-    width: '47%',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
+  articleTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1F2937',
     padding: 12,
+    paddingBottom: 6,
   },
-  healthCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 6,
+  articleDescription: {
+    fontSize: 13,
+    color: '#6B7280',
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+    lineHeight: 18,
   },
-  healthIcon: { fontSize: 20 },
-  healthScore: { fontSize: 16, fontWeight: '700', color: '#111827' },
-  healthCategory: { fontSize: 14, fontWeight: '600', color: '#111827' },
-  healthTrend: { fontSize: 12, color: '#6b7280', marginTop: 4 },
-  recommendationsContainer: {
-    gap: 10,
-  },
-  recommendationItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  recommendationText: {
-    fontSize: 14,
-    color: '#1f2937',
-    flex: 1,
-  },
-  scoreContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  score: {
-    fontSize: 56,
-    fontWeight: '700',
-    color: '#2196f3',
-    marginRight: 20,
-  },
-  scoreDetails: {
-    flex: 1,
-  },
-  scoreLabel: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  scoreDesc: {
-    fontSize: 14,
-    color: '#666',
-  },
-  predictionsContainer: {
-    paddingHorizontal: 24,
+  appointmentCard: {
+    backgroundColor: '#EFF6FF',
+    marginHorizontal: 20,
     marginBottom: 24,
+    padding: 22,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: '#BFDBFE',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
   },
-  predictionCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
+  appointmentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  appointmentTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  appointmentDate: {
+    fontSize: 15,
+    color: '#3B82F6',
     marginBottom: 12,
-    borderLeftWidth: 4,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    fontWeight: '500',
   },
-  predictionHeader: {
-    flexDirection: 'row',
+  appointmentButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 12,
+    borderRadius: 10,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
   },
-  predictionIcon: {
-    fontSize: 24,
-  },
-  predictionScore: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  scoreNumber: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  predictionCategory: {
-    fontSize: 16,
+  appointmentButtonText: {
+    fontSize: 15,
     fontWeight: '600',
-    color: '#1a1a1a',
-    marginBottom: 8,
-  },
-  predictionTrend: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  trendText: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  recommendationsGrid: {
-    flexDirection: 'row',
-    paddingHorizontal: 24,
-    gap: 12,
-    marginBottom: 24,
-  },
-  recommendationCard: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  recommendationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginTop: 8,
-    marginBottom: 4,
-  },
-  recommendationDesc: {
-    fontSize: 12,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  privacyNotice: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    marginBottom: 24,
-  },
-  privacyText: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginLeft: 8,
+    color: '#FFFFFF',
   },
 });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
-import { Settings, Bell, Clock, Heart, MessageCircle, TrendingUp, AlertTriangle, Sun } from 'lucide-react-native';
+import { Settings, Bell, Clock, Heart, MessageCircle, TrendingUp, AlertTriangle, Sun, Zap, Brain } from 'lucide-react-native';
 import { NotificationService, NotificationPreferences } from '@/services/NotificationService';
 
 export default function NotificationSettingsScreen() {
@@ -124,6 +124,101 @@ export default function NotificationSettingsScreen() {
         <Settings size={24} color="#EC4899" />
         <Text style={styles.headerTitle}>Notification Settings</Text>
         <Text style={styles.headerSubtitle}>Customize your wellness reminders</Text>
+      </View>
+
+      {/* Active Notifications Preview */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeaderRow}>
+          <Zap size={20} color="#EC4899" />
+          <Text style={styles.sectionTitle}>Active Notifications</Text>
+        </View>
+        <Text style={styles.sectionDescription}>Your scheduled smart notifications</Text>
+        
+        <View style={styles.notificationCards}>
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIconContainer}>
+              <Clock size={20} color="#EC4899" />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Period Reminder</Text>
+              <Text style={styles.notificationSubtitle}>Expected in 3 days</Text>
+              <Text style={styles.notificationTime}>Tomorrow at 8:00 AM</Text>
+            </View>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.badgeText}>Active</Text>
+            </View>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIconContainer}>
+              <Heart size={20} color="#EC4899" />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Fertile Window</Text>
+              <Text style={styles.notificationSubtitle}>Peak fertility days</Text>
+              <Text style={styles.notificationTime}>Daily at 9:00 AM</Text>
+            </View>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.badgeText}>Active</Text>
+            </View>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIconContainer}>
+              <Brain size={20} color="#EC4899" />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Health Check-in</Text>
+              <Text style={styles.notificationSubtitle}>Log symptoms & mood</Text>
+              <Text style={styles.notificationTime}>Daily at 7:00 PM</Text>
+            </View>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.badgeText}>Active</Text>
+            </View>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIconContainer}>
+              <Text style={styles.emojiIcon}>✨</Text>
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Skin Health</Text>
+              <Text style={styles.notificationSubtitle}>Cycle-based skincare tips</Text>
+              <Text style={styles.notificationTime}>Daily at 2:00 PM</Text>
+            </View>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.badgeText}>Active</Text>
+            </View>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIconContainer}>
+              <Text style={styles.emojiIcon}>💇‍♀️</Text>
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Hair Care</Text>
+              <Text style={styles.notificationSubtitle}>Hormone-friendly hair tips</Text>
+              <Text style={styles.notificationTime}>Daily at 3:00 PM</Text>
+            </View>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.badgeText}>Active</Text>
+            </View>
+          </View>
+
+          <View style={styles.notificationCard}>
+            <View style={styles.notificationIconContainer}>
+              <Text style={styles.emojiIcon}>⚖️</Text>
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationTitle}>Weight Management</Text>
+              <Text style={styles.notificationSubtitle}>Cycle-aware nutrition tips</Text>
+              <Text style={styles.notificationTime}>Daily at 4:00 PM</Text>
+            </View>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.badgeText}>Active</Text>
+            </View>
+          </View>
+        </View>
       </View>
 
       {/* Period & Cycle Reminders */}
@@ -533,5 +628,70 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  sectionDescription: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  notificationCards: {
+    gap: 12,
+  },
+  notificationCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEFEFE',
+    borderWidth: 1,
+    borderColor: '#FCE7F3',
+    borderRadius: 12,
+    padding: 12,
+    gap: 12,
+  },
+  notificationIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFF5F7',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emojiIcon: {
+    fontSize: 20,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 2,
+  },
+  notificationSubtitle: {
+    fontSize: 13,
+    color: '#6b7280',
+    marginBottom: 2,
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: '#9CA3AF',
+  },
+  notificationBadge: {
+    backgroundColor: '#D1FAE5',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#065F46',
   },
 });
