@@ -5,9 +5,45 @@ import { useUser } from '@/contexts/UserContext';
 
 export default function ProvidersScreen() {
   const router = useRouter();
-  const { profile, updateProfile } = useUser();
 
-  const providers = [
+  const { profile } = useUser();
+  const isPCOS = profile.healthCondition === 'pcos' || profile.healthCondition === 'pcod';
+
+  const providers = isPCOS ? [
+    {
+      id: 1,
+      name: 'Dr. Prarabdha Soni',
+      title: 'Endocrinologist, PCOS Specialist',
+      rating: 4.9,
+      reviews: 234,
+      experience: '15+ years',
+      specialties: ['PCOS', 'Insulin Resistance', 'Hormone Balance'],
+      nextAvailable: 'Tomorrow at 2:00 PM',
+      price: '₹2,400',
+    },
+    {
+      id: 2,
+      name: 'Dr. Prarabdha Soni',
+      title: 'Gynecologist, Fertility Expert',
+      rating: 4.8,
+      reviews: 189,
+      experience: '12+ years',
+      specialties: ['PCOS', 'Fertility', 'Cycle Regulation'],
+      nextAvailable: 'Today at 5:30 PM',
+      price: '₹2,800',
+    },
+    {
+      id: 3,
+      name: 'Dr. Prarabdha Soni',
+      title: 'Nutritionist & Lifestyle Coach',
+      rating: 5.0,
+      reviews: 156,
+      experience: '10+ years',
+      specialties: ['PCOS Diet', 'Weight Management', 'Lifestyle Changes'],
+      nextAvailable: 'Tomorrow at 10:00 AM',
+      price: '₹2,200',
+    },
+  ] : [
     {
       id: 1,
       name: 'Dr. Prarabdha Soni',
@@ -43,6 +79,8 @@ export default function ProvidersScreen() {
     },
   ];
 
+  const { updateProfile } = useUser();
+
   const handleBookAppointment = (provider: typeof providers[0]) => {
     updateProfile({ hasProvider: true });
     router.push('/telehealth/booking');
@@ -51,20 +89,22 @@ export default function ProvidersScreen() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header Banner */}
-      <View style={styles.headerBanner}>
-        <Video size={32} color="#FFFFFF" />
-        <Text style={styles.headerTitle}>Talk to Providers</Text>
-        <Text style={styles.headerSubtitle}>
-          Board-certified menopause specialists
-        </Text>
-      </View>
+             <View style={styles.headerBanner}>
+               <Video size={32} color="#FFFFFF" />
+               <Text style={styles.headerTitle}>Talk to Providers</Text>
+               <Text style={styles.headerSubtitle}>
+                 {isPCOS ? 'Board-certified PCOS specialists' : 'Board-certified menopause specialists'}
+               </Text>
+             </View>
 
       {/* Providers List */}
-      <View style={[styles.section, styles.firstSection]}>
-        <Text style={styles.sectionTitle}>Available Specialists</Text>
-        <Text style={styles.sectionSubtitle}>
-          Board-certified menopause experts ready to help
-        </Text>
+             <View style={[styles.section, styles.firstSection]}>
+               <Text style={styles.sectionTitle}>Available Specialists</Text>
+               <Text style={styles.sectionSubtitle}>
+                 {isPCOS 
+                   ? 'Board-certified PCOS experts ready to help'
+                   : 'Board-certified menopause experts ready to help'}
+               </Text>
           
         {providers.map((provider) => (
             <View key={provider.id} style={styles.providerCard}>

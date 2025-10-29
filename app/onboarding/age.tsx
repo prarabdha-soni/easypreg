@@ -12,7 +12,7 @@ export default function AgeScreen() {
   const handleContinue = () => {
     if (age && parseInt(age) >= 18) {
       updateProfile({ age: parseInt(age) });
-      router.push('/onboarding/stage');
+      router.push('/onboarding/condition');
     }
   };
 

@@ -17,6 +17,7 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding/preferences" />
         <Stack.Screen name="onboarding/welcome" />
         <Stack.Screen name="onboarding/age" />
+        <Stack.Screen name="onboarding/condition" />
         <Stack.Screen name="onboarding/stage" />
         <Stack.Screen name="onboarding/symptoms" />
         <Stack.Screen name="(tabs)" />
@@ -26,6 +27,7 @@ export default function RootLayout() {
         <Stack.Screen name="log/flow-mood" />
         <Stack.Screen name="symptoms/tracker" />
         <Stack.Screen name="treatment/hrt" />
+        <Stack.Screen name="treatment/pcos" />
         <Stack.Screen name="telehealth/providers" />
         <Stack.Screen name="telehealth/booking" />
         <Stack.Screen name="telehealth/appointment" />
@@ -36,6 +38,8 @@ export default function RootLayout() {
         <Stack.Screen name="education/hrt" />
         <Stack.Screen name="education/lifestyle" />
         <Stack.Screen name="education/sleep" />
+        <Stack.Screen name="education/pcos-diet" />
+        <Stack.Screen name="education/pcos-exercise" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

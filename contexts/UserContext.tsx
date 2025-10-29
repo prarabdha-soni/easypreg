@@ -5,6 +5,7 @@ import { NotificationService } from '@/services/NotificationService';
 interface UserProfile {
   age: number | null;
   menopauseStage: 'perimenopause' | 'menopause' | 'postmenopause' | null;
+  healthCondition: 'menopause' | 'pcos' | 'pcod' | null;
   lastPeriodDate: Date | null;
   symptomsStartDate: Date | null;
   hasCompletedOnboarding: boolean;
@@ -28,6 +29,7 @@ interface UserContextType {
 const defaultProfile: UserProfile = {
   age: null,
   menopauseStage: null,
+  healthCondition: null,
   lastPeriodDate: null,
   symptomsStartDate: null,
   hasCompletedOnboarding: false,

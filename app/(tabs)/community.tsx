@@ -8,6 +8,28 @@ export default function CircleScreen() {
   const stageGroups = [
     {
       id: 1,
+      name: 'PCOS Warriors',
+      members: '32.5K',
+      online: '2,456',
+      description: 'Managing PCOS with strength',
+      color: '#EC4899',
+      bg: '#FDF2F8',
+      emoji: '💖',
+      stage: 'pcos',
+    },
+    {
+      id: 2,
+      name: 'PCOD Support Circle',
+      members: '18.7K',
+      online: '1,567',
+      description: 'Together for hormonal balance',
+      color: '#F59E0B',
+      bg: '#FFFBEB',
+      emoji: '💗',
+      stage: 'pcod',
+    },
+    {
+      id: 3,
       name: 'Perimenopause Circle',
       members: '15.2K',
       online: '1,234',
@@ -18,7 +40,7 @@ export default function CircleScreen() {
       stage: 'perimenopause',
     },
     {
-      id: 2,
+      id: 4,
       name: 'Menopause Warriors',
       members: '22.8K',
       online: '2,103',
@@ -29,7 +51,7 @@ export default function CircleScreen() {
       stage: 'menopause',
     },
     {
-      id: 3,
+      id: 5,
       name: 'Postmenopause Thrivers',
       members: '8.5K',
       online: '678',
@@ -45,6 +67,15 @@ export default function CircleScreen() {
     {
       id: 1,
       expert: 'Dr. Prarabdha Soni',
+      title: 'PCOS Diet & Nutrition Tips',
+      specialty: 'Endocrinologist',
+      date: 'Today, 4:00 PM',
+      registered: 312,
+      color: '#EC4899',
+    },
+    {
+      id: 2,
+      expert: 'Dr. Prarabdha Soni',
       title: 'Managing Hot Flashes Naturally',
       specialty: 'OB-GYN',
       date: 'Tomorrow, 2:00 PM',
@@ -52,7 +83,7 @@ export default function CircleScreen() {
       color: '#EF4444',
     },
     {
-      id: 2,
+      id: 3,
       expert: 'Dr. Prarabdha Soni',
       title: 'Sleep Solutions for Menopause',
       specialty: 'Sleep Specialist',
@@ -65,6 +96,16 @@ export default function CircleScreen() {
   const upliftingStories = [
     {
       id: 1,
+      author: 'Priya, 28',
+      title: 'Lost 8kg with PCOS!',
+      preview: 'Through consistent low-GI diet and exercise, I finally feel in control of my body again...',
+      likes: 487,
+      comments: 92,
+      time: '6 hours ago',
+      stage: 'pcos',
+    },
+    {
+      id: 2,
       author: 'Jessica, 48',
       title: 'Hot Flashes Reduced by 70%',
       preview: 'After 6 months of lifestyle changes and HRT, my quality of life is transformed...',
@@ -74,7 +115,17 @@ export default function CircleScreen() {
       stage: 'perimenopause',
     },
     {
-      id: 2,
+      id: 3,
+      author: 'Anjali, 32',
+      title: 'My PCOD Journey to Balance',
+      preview: 'It took time, but I finally found the right combination of treatment and self-care...',
+      likes: 356,
+      comments: 78,
+      time: '1 day ago',
+      stage: 'pcod',
+    },
+    {
+      id: 4,
       author: 'Linda, 52',
       title: 'Finding Myself Again',
       preview: 'Menopause was tough, but I came out stronger. Here\'s what helped me...',
@@ -84,7 +135,7 @@ export default function CircleScreen() {
       stage: 'menopause',
     },
     {
-      id: 3,
+      id: 5,
       author: 'Carol, 55',
       title: 'Thriving at 55',
       preview: 'Postmenopause has been liberating! My energy is back and I feel amazing...',
@@ -96,7 +147,8 @@ export default function CircleScreen() {
   ];
 
   const trendingTopics = [
-    { tag: 'HRT Success Stories', posts: 456, color: '#EC4899' },
+    { tag: 'PCOS Diet Tips', posts: 523, color: '#EC4899' },
+    { tag: 'HRT Success Stories', posts: 456, color: '#8B5A8F' },
     { tag: 'Natural Remedies', posts: 389, color: '#10B981' },
     { tag: 'Sleep Tips', posts: 324, color: '#6366F1' },
     { tag: 'Exercise Routines', posts: 267, color: '#F59E0B' },

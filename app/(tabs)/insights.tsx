@@ -10,7 +10,45 @@ export default function StageInsights() {
   const router = useRouter();
   const { profile } = useUser();
 
-  const stageInsights = [
+  const isPCOS = profile.healthCondition === 'pcos' || profile.healthCondition === 'pcod';
+
+  const pcosInsights = [
+    {
+      id: 1,
+      title: 'Weight Trend Analysis',
+      description: 'You\'ve lost 1.2kg this month! Your consistent exercise and low-GI diet are working.',
+      action: 'View Plan',
+      actionRoute: '/education/pcos-diet',
+      icon: Activity,
+      color: '#10B981',
+      bg: '#ECFDF5',
+      severity: 'positive',
+    },
+    {
+      id: 2,
+      title: 'Cycle Regularity Improving',
+      description: 'Your cycle has regulated to 28-30 days. This is a great sign of hormonal balance!',
+      action: 'Continue Tracking',
+      actionRoute: null,
+      icon: Heart,
+      color: '#EC4899',
+      bg: '#FDF2F8',
+      severity: 'positive',
+    },
+    {
+      id: 3,
+      title: 'Blood Sugar Management',
+      description: 'Post-meal walks have helped reduce cravings by 40%. Keep up this habit!',
+      action: 'Learn More',
+      actionRoute: '/treatment/pcos',
+      icon: Sparkles,
+      color: '#F59E0B',
+      bg: '#FFFBEB',
+      severity: 'moderate',
+    },
+  ];
+
+  const menopauseInsights = [
     {
       id: 1,
       title: 'Sleep Issues Increased',
@@ -46,7 +84,22 @@ export default function StageInsights() {
     },
   ];
 
-  const hormoneEducation = [
+  const stageInsights = isPCOS ? pcosInsights : menopauseInsights;
+
+  const pcosEducation = [
+    {
+      title: 'Understanding Insulin Resistance',
+      description: 'PCOS often involves insulin resistance, which affects weight, energy, and hormone balance. Diet and exercise are powerful tools.',
+      stage: profile.healthCondition,
+    },
+    {
+      title: 'Androgen Balance',
+      description: 'Elevated androgens cause symptoms like acne, hair growth, and irregular periods. Treatment helps restore balance.',
+      stage: profile.healthCondition,
+    },
+  ];
+
+  const menopauseEducation = [
     {
       title: 'Understanding Estrogen Decline',
       description: 'During perimenopause, estrogen levels fluctuate irregularly before declining. This affects sleep, mood, and temperature regulation.',
@@ -61,25 +114,38 @@ export default function StageInsights() {
     },
   ];
 
-  const symptomTrends = [
-    { symptom: 'Hot Flashes', thisWeek: 12, lastWeek: 15, change: -20, color: '#EF4444' },
-    { symptom: 'Night Sweats', thisWeek: 8, lastWeek: 10, change: -20, color: '#6366F1' },
-    { symptom: 'Brain Fog', thisWeek: 5, lastWeek: 5, change: 0, color: '#F59E0B' },
-    { symptom: 'Mood Swings', thisWeek: 4, lastWeek: 6, change: -33, color: '#EC4899' },
+  const hormoneEducation = isPCOS ? pcosEducation : menopauseEducation;
+
+  const pcosSymptomTrends = [
+    { symptom: 'Weight', thisWeek: 65.5, lastWeek: 66.7, change: -1.8, color: '#10B981', unit: 'kg' },
+    { symptom: 'Energy Level', thisWeek: 7, lastWeek: 6, change: 16.7, color: '#F59E0B', unit: '/10' },
+    { symptom: 'Mood Score', thisWeek: 8, lastWeek: 7, change: 14.3, color: '#EC4899', unit: '/10' },
+    { symptom: 'Sleep Hours', thisWeek: 7.5, lastWeek: 6.5, change: 15.4, color: '#6366F1', unit: 'hrs' },
   ];
+
+  const menopauseSymptomTrends = [
+    { symptom: 'Hot Flashes', thisWeek: 12, lastWeek: 15, change: -20, color: '#EF4444', unit: 'count' },
+    { symptom: 'Night Sweats', thisWeek: 8, lastWeek: 10, change: -20, color: '#6366F1', unit: 'count' },
+    { symptom: 'Brain Fog', thisWeek: 5, lastWeek: 5, change: 0, color: '#F59E0B', unit: 'count' },
+    { symptom: 'Mood Swings', thisWeek: 4, lastWeek: 6, change: -33, color: '#EC4899', unit: 'count' },
+  ];
+
+  const symptomTrends = isPCOS ? pcosSymptomTrends : menopauseSymptomTrends;
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header Banner */}
       <View style={styles.headerBanner}>
         <Brain size={32} color="#FFFFFF" />
-        <Text style={styles.headerTitle}>Stage Insights</Text>
+        <Text style={styles.headerTitle}>{isPCOS ? 'PCOS Insights' : 'Stage Insights'}</Text>
         <Text style={styles.headerSubtitle}>
           Personalized analysis for {
-            profile.menopauseStage === 'perimenopause' ? 'perimenopause'
-            : profile.menopauseStage === 'menopause' ? 'menopause'
-            : profile.menopauseStage === 'postmenopause' ? 'postmenopause'
-            : 'your journey'
+            isPCOS
+              ? (profile.healthCondition === 'pcos' ? 'PCOS management' : 'PCOD management')
+              : (profile.menopauseStage === 'perimenopause' ? 'perimenopause'
+                  : profile.menopauseStage === 'menopause' ? 'menopause'
+                  : profile.menopauseStage === 'postmenopause' ? 'postmenopause'
+                  : 'your journey')
           }
         </Text>
       </View>

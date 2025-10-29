@@ -127,7 +127,7 @@ export default function ExpertCareScreen() {
         <Video size={32} color="#FFFFFF" />
         <Text style={styles.headerTitle}>Expert Care</Text>
         <Text style={styles.headerSubtitle}>
-          Connect with menopause specialists
+          Connect with PCOS, PCOD, menopause & perimenopause specialists
         </Text>
       </View>
 

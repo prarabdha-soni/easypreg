@@ -8,11 +8,21 @@ import { useUser } from '@/contexts/UserContext';
 export default function MyWellnessProfile() {
   const { profile } = useUser();
 
-  const myGoals = [
+  const isPCOS = profile.healthCondition === 'pcos' || profile.healthCondition === 'pcod';
+
+  const pcosGoals = [
+    { id: 1, goal: 'Lose 5kg through healthy habits', progress: 40, color: '#10B981' },
+    { id: 2, goal: 'Regular 30-day cycles', progress: 75, color: '#EC4899' },
+    { id: 3, goal: 'Daily symptom tracking', progress: 90, color: '#F59E0B' },
+  ];
+
+  const menopauseGoals = [
     { id: 1, goal: 'Reduce hot flashes by 50%', progress: 65, color: '#EF4444' },
     { id: 2, goal: 'Sleep 7+ hours nightly', progress: 80, color: '#6366F1' },
     { id: 3, goal: 'Daily symptom tracking', progress: 90, color: '#10B981' },
   ];
+
+  const myGoals = isPCOS ? pcosGoals : menopauseGoals;
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -33,26 +43,30 @@ export default function MyWellnessProfile() {
       <View style={styles.stageCard}>
         <View style={styles.stageHeader}>
           <View style={styles.stageBadge}>
-            <Text style={styles.stageBadgeText}>MY CURRENT STAGE</Text>
+            <Text style={styles.stageBadgeText}>{isPCOS ? 'MY CONDITION' : 'MY CURRENT STAGE'}</Text>
           </View>
         </View>
         <Text style={styles.stageTitle}>
-          {profile.menopauseStage === 'perimenopause' 
-            ? '🌸 Perimenopause' 
-            : profile.menopauseStage === 'menopause'
-            ? '🌙 Menopause'
-            : profile.menopauseStage === 'postmenopause'
-            ? '✨ Postmenopause'
-            : '💜 Not Set'}
+          {isPCOS
+            ? (profile.healthCondition === 'pcos' ? '💖 PCOS' : '💗 PCOD')
+            : (profile.menopauseStage === 'perimenopause' 
+                ? '🌸 Perimenopause' 
+                : profile.menopauseStage === 'menopause'
+                ? '🌙 Menopause'
+                : profile.menopauseStage === 'postmenopause'
+                ? '✨ Postmenopause'
+                : '💜 Not Set')}
         </Text>
         <Text style={styles.stageDescription}>
-          {profile.menopauseStage === 'perimenopause' 
-            ? 'Navigating the transition with irregular cycles' 
-            : profile.menopauseStage === 'menopause'
-            ? 'Managing symptoms and hormonal changes'
-            : profile.menopauseStage === 'postmenopause'
-            ? 'Thriving beyond menopause'
-            : 'Update your stage to get personalized support'}
+          {isPCOS
+            ? 'Managing hormonal balance with personalized care'
+            : (profile.menopauseStage === 'perimenopause' 
+                ? 'Navigating the transition with irregular cycles' 
+                : profile.menopauseStage === 'menopause'
+                ? 'Managing symptoms and hormonal changes'
+                : profile.menopauseStage === 'postmenopause'
+                ? 'Thriving beyond menopause'
+                : 'Update your stage to get personalized support')}
         </Text>
         
         {profile.lastPeriodDate && (
@@ -65,7 +79,7 @@ export default function MyWellnessProfile() {
         )}
 
         <TouchableOpacity style={styles.updateStageButton}>
-          <Text style={styles.updateStageText}>Update Stage or Details</Text>
+          <Text style={styles.updateStageText}>Update {isPCOS ? 'Condition' : 'Stage'} or Details</Text>
         </TouchableOpacity>
       </View>
 
@@ -113,11 +127,15 @@ export default function MyWellnessProfile() {
         </View>
 
         <View style={styles.carePlanCard}>
-          {profile.interestedInHRT ? (
+          {profile.interestedInHRT || isPCOS ? (
             <View style={styles.carePlanActive}>
-              <Text style={styles.carePlanTitle}>Hormone Replacement Therapy</Text>
+              <Text style={styles.carePlanTitle}>
+                {isPCOS ? 'PCOS/PCOD Treatment Plan' : 'Hormone Replacement Therapy'}
+              </Text>
               <Text style={styles.carePlanDescription}>
-                Exploring HRT options with menopause specialist
+                {isPCOS 
+                  ? 'Managing PCOS with medications, diet, and lifestyle changes'
+                  : 'Exploring HRT options with menopause specialist'}
               </Text>
               <TouchableOpacity style={styles.carePlanButton}>
                 <Text style={styles.carePlanButtonText}>View Treatment Plan</Text>
@@ -143,7 +161,9 @@ export default function MyWellnessProfile() {
             </View>
             <View style={styles.providerInfo}>
               <Text style={styles.providerLabel}>Connected Provider</Text>
-              <Text style={styles.providerName}>Menopause Specialist</Text>
+              <Text style={styles.providerName}>
+                {isPCOS ? 'PCOS Specialist' : 'Menopause Specialist'}
+              </Text>
             </View>
             <ChevronRight size={20} color="#9CA3AF" />
           </View>

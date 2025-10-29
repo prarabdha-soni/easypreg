@@ -8,7 +8,7 @@ export default function InsuranceScreen() {
       id: 1,
       name: 'Future Generali Health POWHER',
       company: 'Future Generali',
-      coverage: ['Menopause consultations', 'Puberty support', 'Infertility consults', 'Diagnostic tests'],
+      coverage: ['Menopause & Perimenopause consultations', 'PCOS/PCOD treatment', 'Hormone therapy coverage', 'Diagnostic tests & screening'],
       color: '#3B82F6',
       bg: '#EFF6FF',
       premium: '₹8,000/year',
@@ -18,7 +18,7 @@ export default function InsuranceScreen() {
       id: 2,
       name: 'Tata AIG Women Health',
       company: 'Tata AIG',
-      coverage: ['Consultation add-ons', 'Diagnostic tests', 'Mental wellness counseling', 'Annual health checkups'],
+      coverage: ['PCOS/PCOD specialist consultations', 'Menopause care', 'Mental wellness counseling', 'Annual hormonal health checkups'],
       color: '#EC4899',
       bg: '#FDF2F8',
       premium: '₹10,500/year',
@@ -28,7 +28,7 @@ export default function InsuranceScreen() {
       id: 3,
       name: 'HDFC Ergo Women Suraksha',
       company: 'HDFC Ergo',
-      coverage: ['Menopause treatments', 'Mental wellness support', 'HRT coverage', 'Preventive care'],
+      coverage: ['Menopause & HRT coverage', 'PCOS/PCOD treatments', 'Mental wellness support', 'Preventive care & supplements'],
       color: '#10B981',
       bg: '#ECFDF5',
       premium: '₹9,200/year',
@@ -38,7 +38,7 @@ export default function InsuranceScreen() {
       id: 4,
       name: 'Star Women Care Insurance',
       company: 'Star Health',
-      coverage: ['Critical illness cover', 'Menopause support', 'Maternity benefits', 'Day care procedures'],
+      coverage: ['Critical illness cover', 'Menopause, Perimenopause, PCOS support', 'Fertility treatments', 'Day care procedures'],
       color: '#F59E0B',
       bg: '#FFFBEB',
       premium: '₹7,500/year',
@@ -57,7 +57,7 @@ export default function InsuranceScreen() {
         <Shield size={32} color="#FFFFFF" />
         <Text style={styles.headerTitle}>Insurance</Text>
         <Text style={styles.headerSubtitle}>
-          Coverage for menopause care
+          Coverage for hormonal health care
         </Text>
       </View>
 
@@ -65,7 +65,7 @@ export default function InsuranceScreen() {
       <View style={styles.infoCard}>
         <Text style={styles.infoTitle}>Why Insurance Matters</Text>
         <Text style={styles.infoText}>
-          Menopause care can be expensive. These specialized women's health insurance plans cover consultations, treatments, and wellness support.
+          PCOS, PCOD, menopause, and perimenopause care can be expensive. These specialized women's health insurance plans cover consultations, treatments, and wellness support.
         </Text>
       </View>
 
@@ -73,7 +73,7 @@ export default function InsuranceScreen() {
       <View style={[styles.section, styles.firstSection]}>
         <Text style={styles.sectionTitle}>Available Plans</Text>
         <Text style={styles.sectionSubtitle}>
-          Compare coverage options for menopause care
+          Compare coverage options for PCOS, PCOD, menopause & perimenopause
         </Text>
 
         {insurancePlans.map((plan) => (

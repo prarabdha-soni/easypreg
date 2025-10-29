@@ -11,7 +11,9 @@ export default function HomeScreen() {
   const { profile } = useUser();
   const router = useRouter();
 
-  // Menopause-specific symptoms (forhers.com style)
+  const isPCOS = profile.healthCondition === 'pcos' || profile.healthCondition === 'pcod';
+
+  // Menopause-specific symptoms
   const menopauseSymptoms = [
     { id: 'hot-flashes', label: 'Hot Flashes', icon: Flame, color: '#EF4444', bg: '#FEF2F2' },
     { id: 'night-sweats', label: 'Night Sweats', icon: Moon, color: '#6366F1', bg: '#EEF2FF' },
@@ -19,9 +21,19 @@ export default function HomeScreen() {
     { id: 'sleep-issues', label: 'Sleep Issues', icon: Moon, color: '#8B5CF6', bg: '#F5F3FF' },
     { id: 'vaginal-dryness', label: 'Vaginal Dryness', icon: Droplets, color: '#10B981', bg: '#ECFDF5' },
     { id: 'brain-fog', label: 'Brain Fog', icon: Brain, color: '#F59E0B', bg: '#FFFBEB' },
-    { id: 'fatigue', label: 'Fatigue', icon: Wind, color: '#6B7280', bg: '#F9FAFB' },
-    { id: 'joint-pain', label: 'Joint Pain', icon: Activity, color: '#EF4444', bg: '#FEF2F2' },
   ];
+
+  // PCOS/PCOD-specific symptoms
+  const pcosSymptoms = [
+    { id: 'irregular-periods', label: 'Irregular Periods', icon: Calendar, color: '#EC4899', bg: '#FDF2F8' },
+    { id: 'weight-gain', label: 'Weight Changes', icon: Activity, color: '#F59E0B', bg: '#FFFBEB' },
+    { id: 'acne', label: 'Acne', icon: Flame, color: '#EF4444', bg: '#FEF2F2' },
+    { id: 'hair-growth', label: 'Hair Growth', icon: TrendingUp, color: '#6366F1', bg: '#EEF2FF' },
+    { id: 'mood-swings', label: 'Mood Swings', icon: Heart, color: '#EC4899', bg: '#FDF2F8' },
+    { id: 'fatigue', label: 'Fatigue', icon: Wind, color: '#6B7280', bg: '#F9FAFB' },
+  ];
+
+  const symptoms = isPCOS ? pcosSymptoms : menopauseSymptoms;
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -30,16 +42,18 @@ export default function HomeScreen() {
         <View style={styles.heroContent}>
           <Text style={styles.appName}>Gloww</Text>
           <Text style={styles.heroTagline}>
-            Your Menopause & Perimenopause Companion
+            PCOS, PCOD, Menopause & Perimenopause
           </Text>
           <Text style={styles.heroSubtext}>
-            Tailored support for every stage of your hormonal journey
+            {isPCOS
+              ? 'Personalized support for PCOS/PCOD management'
+              : 'Expert care for Menopause & Perimenopause'}
           </Text>
         </View>
         {/* Decorative Elements */}
         <View style={styles.decorativeElements}>
-          <View style={[styles.decorativeCircle, { backgroundColor: '#D4A5D4', opacity: 0.3 }]} />
-          <View style={[styles.decorativeCircle, { backgroundColor: '#F08080', opacity: 0.2 }]} />
+          <View style={[styles.decorativeCircle, { backgroundColor: isPCOS ? '#FCD34D' : '#D4A5D4', opacity: 0.3 }]} />
+          <View style={[styles.decorativeCircle, { backgroundColor: isPCOS ? '#F472B6' : '#F08080', opacity: 0.2 }]} />
         </View>
       </View>
 
@@ -47,62 +61,74 @@ export default function HomeScreen() {
       <View style={styles.stageCard}>
         <View style={styles.stageHeader}>
           <View style={styles.stageBadge}>
-            <Text style={styles.stageBadgeText}>YOUR STAGE</Text>
+            <Text style={styles.stageBadgeText}>{isPCOS ? 'YOUR CONDITION' : 'YOUR STAGE'}</Text>
           </View>
         </View>
         <Text style={styles.stageTitle}>
-          {profile.menopauseStage === 'perimenopause' 
-            ? '🌸 Perimenopause' 
-            : profile.menopauseStage === 'menopause'
-            ? '🌙 Menopause'
-            : profile.menopauseStage === 'postmenopause'
-            ? '✨ Postmenopause'
-            : '💜 Your Journey'}
+          {isPCOS
+            ? (profile.healthCondition === 'pcos' ? '💖 PCOS Support' : '💗 PCOD Support')
+            : (profile.menopauseStage === 'perimenopause' 
+                ? '🌸 Perimenopause' 
+                : profile.menopauseStage === 'menopause'
+                ? '🌙 Menopause'
+                : profile.menopauseStage === 'postmenopause'
+                ? '✨ Postmenopause'
+                : '💜 Your Journey')}
         </Text>
         <Text style={styles.stageDescription}>
-          {profile.menopauseStage === 'perimenopause' 
-            ? 'Navigating the transition with irregular cycles and changing hormones' 
-            : profile.menopauseStage === 'menopause'
-            ? 'Managing symptoms and adapting to hormonal changes'
-            : profile.menopauseStage === 'postmenopause'
-            ? 'Thriving beyond menopause with continued wellness support'
-            : 'Understanding and supporting your unique hormonal journey'}
+          {isPCOS
+            ? 'Managing hormonal balance with personalized care and lifestyle support'
+            : (profile.menopauseStage === 'perimenopause' 
+                ? 'Navigating the transition with irregular cycles and changing hormones' 
+                : profile.menopauseStage === 'menopause'
+                ? 'Managing symptoms and adapting to hormonal changes'
+                : profile.menopauseStage === 'postmenopause'
+                ? 'Thriving beyond menopause with continued wellness support'
+                : 'Understanding and supporting your unique hormonal journey')}
         </Text>
       </View>
 
-      {/* Daily Menopause Tip */}
+      {/* Daily Tip */}
       <View style={styles.dailyTipCard}>
         <View style={styles.tipHeader}>
-          <Sparkles size={20} color="#8B5A8F" />
-          <Text style={styles.tipTitle}>Today's Menopause Tip</Text>
+          <Sparkles size={20} color={isPCOS ? '#EC4899' : '#8B5A8F'} />
+          <Text style={styles.tipTitle}>{isPCOS ? 'Today\'s PCOS Wellness Tip' : 'Today\'s Menopause Tip'}</Text>
         </View>
         <Text style={styles.tipText}>
-          {profile.menopauseStage === 'perimenopause'
-            ? 'Keep a cool bedroom (65-68°F) to help manage night sweats and improve sleep quality'
-            : 'Regular weight-bearing exercise helps maintain bone density during menopause'}
+          {isPCOS
+            ? 'Start your day with a protein-rich breakfast to help stabilize blood sugar and reduce cravings throughout the day'
+            : (profile.menopauseStage === 'perimenopause'
+                ? 'Keep a cool bedroom (65-68°F) to help manage night sweats and improve sleep quality'
+                : 'Regular weight-bearing exercise helps maintain bone density during menopause')}
         </Text>
       </View>
 
-      {/* Quick Actions - forhers.com style */}
+      {/* Quick Actions */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Menopause Care Options</Text>
+        <Text style={styles.sectionTitle}>{isPCOS ? 'PCOS/PCOD Care Options' : 'Menopause Care Options'}</Text>
         <Text style={styles.sectionSubtitle}>
-          Evidence-based treatments designed for your stage
+          {isPCOS 
+            ? 'Evidence-based treatments for hormonal balance'
+            : 'Evidence-based treatments designed for your stage'}
         </Text>
         
         <TouchableOpacity 
           style={styles.actionCard}
-          onPress={() => router.push('/treatment/hrt')}
+          onPress={() => router.push(isPCOS ? '/treatment/pcos' : '/treatment/hrt')}
         >
           <View style={[styles.actionIcon, { backgroundColor: '#FFF5F7' }]}>
             <Pill size={24} color="#EC4899" />
           </View>
           <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>Hormone Replacement Therapy</Text>
+            <Text style={styles.actionTitle}>
+              {isPCOS ? 'PCOS Treatment Plan' : 'Hormone Replacement Therapy'}
+            </Text>
             <Text style={styles.actionSubtitle}>
-              {profile.interestedInHRT 
-                ? 'View your treatment plan' 
-                : 'Explore HRT options & get started'}
+              {isPCOS
+                ? 'Medications, supplements & lifestyle changes'
+                : (profile.interestedInHRT
+                    ? 'View your treatment plan'
+                    : 'Explore HRT options & get started')}
             </Text>
           </View>
           <ChevronRight size={20} color="#9CA3AF" />
@@ -130,18 +156,20 @@ export default function HomeScreen() {
       {/* Symptom Tracking */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {profile.menopauseStage === 'perimenopause' 
-            ? 'Track My Perimenopause' 
-            : profile.menopauseStage === 'menopause'
-            ? 'Track My Menopause'
-            : 'Track Symptoms'}
+          {isPCOS
+            ? 'Track My PCOS/PCOD'
+            : (profile.menopauseStage === 'perimenopause'
+                ? 'Track My Perimenopause'
+                : profile.menopauseStage === 'menopause'
+                ? 'Track My Menopause'
+                : 'Track Symptoms')}
         </Text>
         <Text style={styles.sectionSubtitle}>
           Monitor patterns to better understand your unique hormonal journey
         </Text>
-        
+
         <View style={styles.symptomGrid}>
-          {menopauseSymptoms.slice(0, 6).map((symptom) => (
+          {symptoms.slice(0, 6).map((symptom) => (
             <TouchableOpacity
               key={symptom.id}
               style={styles.symptomCard}
@@ -184,53 +212,102 @@ export default function HomeScreen() {
       {/* Educational Content - forhers style */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>
-          {profile.menopauseStage === 'perimenopause' 
-            ? 'Understanding Perimenopause' 
-            : 'Learn About Menopause'}
+          {isPCOS
+            ? 'Understanding PCOS/PCOD'
+            : (profile.menopauseStage === 'perimenopause' 
+                ? 'Understanding Perimenopause' 
+                : 'Learn About Menopause')}
         </Text>
         <Text style={styles.sectionSubtitle}>
-          Knowledge is power—educate yourself about this natural transition
+          {isPCOS
+            ? 'Evidence-based information to manage your condition'
+            : 'Knowledge is power—educate yourself about this natural transition'}
         </Text>
         
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.articleScroll}>
-          <TouchableOpacity 
-            style={styles.articleCard}
-            onPress={() => router.push('/education/hrt')}
-          >
-            <View style={styles.articleImagePlaceholder}>
-              <Pill size={32} color="#EC4899" />
-            </View>
-            <Text style={styles.articleTitle}>Understanding HRT</Text>
-            <Text style={styles.articleDescription}>
-              What to expect from hormone replacement therapy
-            </Text>
-          </TouchableOpacity>
+          {isPCOS ? (
+            <>
+              <TouchableOpacity 
+                style={styles.articleCard}
+                onPress={() => router.push('/treatment/pcos')}
+              >
+                <View style={styles.articleImagePlaceholder}>
+                  <Pill size={32} color="#EC4899" />
+                </View>
+                <Text style={styles.articleTitle}>Treatment Options</Text>
+                <Text style={styles.articleDescription}>
+                  Medications, supplements & therapies
+                </Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.articleCard}
-            onPress={() => router.push('/education/lifestyle')}
-          >
-            <View style={styles.articleImagePlaceholder}>
-              <Activity size={32} color="#10B981" />
-            </View>
-            <Text style={styles.articleTitle}>Lifestyle Changes</Text>
-            <Text style={styles.articleDescription}>
-              Natural ways to manage symptoms
-            </Text>
-          </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.articleCard}
+                onPress={() => router.push('/education/pcos-diet')}
+              >
+                <View style={styles.articleImagePlaceholder}>
+                  <Activity size={32} color="#10B981" />
+                </View>
+                <Text style={styles.articleTitle}>PCOS Diet Guide</Text>
+                <Text style={styles.articleDescription}>
+                  Foods to eat and avoid for balance
+                </Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.articleCard}
-            onPress={() => router.push('/education/sleep')}
-          >
-            <View style={styles.articleImagePlaceholder}>
-              <Moon size={32} color="#6366F1" />
-            </View>
-            <Text style={styles.articleTitle}>Better Sleep</Text>
-            <Text style={styles.articleDescription}>
-              Tips for managing night sweats
-            </Text>
-          </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.articleCard}
+                onPress={() => router.push('/education/pcos-exercise')}
+              >
+                <View style={styles.articleImagePlaceholder}>
+                  <Activity size={32} color="#F59E0B" />
+                </View>
+                <Text style={styles.articleTitle}>Exercise for PCOS</Text>
+                <Text style={styles.articleDescription}>
+                  Best workouts to manage symptoms
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity 
+                style={styles.articleCard}
+                onPress={() => router.push('/education/hrt')}
+              >
+                <View style={styles.articleImagePlaceholder}>
+                  <Pill size={32} color="#8B5A8F" />
+                </View>
+                <Text style={styles.articleTitle}>Understanding HRT</Text>
+                <Text style={styles.articleDescription}>
+                  What to expect from hormone replacement therapy
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.articleCard}
+                onPress={() => router.push('/education/lifestyle')}
+              >
+                <View style={styles.articleImagePlaceholder}>
+                  <Activity size={32} color="#6366F1" />
+                </View>
+                <Text style={styles.articleTitle}>Lifestyle Changes</Text>
+                <Text style={styles.articleDescription}>
+                  Natural ways to manage symptoms
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.articleCard}
+                onPress={() => router.push('/education/sleep')}
+              >
+                <View style={styles.articleImagePlaceholder}>
+                  <Moon size={32} color="#F59E0B" />
+                </View>
+                <Text style={styles.articleTitle}>Better Sleep</Text>
+                <Text style={styles.articleDescription}>
+                  Tips for managing night sweats
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         </ScrollView>
       </View>
 

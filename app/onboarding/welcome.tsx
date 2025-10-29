@@ -16,7 +16,7 @@ export default function WelcomeScreen() {
         {/* Title */}
         <Text style={styles.title}>Welcome to Gloww</Text>
         <Text style={styles.subtitle}>
-          Your personalized support system for navigating perimenopause and menopause with confidence
+          Your personalized support system for PCOS, PCOD, Menopause, and Perimenopause
         </Text>
 
         {/* Benefits */}
@@ -27,7 +27,7 @@ export default function WelcomeScreen() {
           </View>
           <View style={styles.benefitItem}>
             <View style={styles.benefitDot} />
-            <Text style={styles.benefitText}>Access expert menopause specialists</Text>
+            <Text style={styles.benefitText}>Access specialized healthcare providers</Text>
           </View>
           <View style={styles.benefitItem}>
             <View style={styles.benefitDot} />
@@ -35,7 +35,7 @@ export default function WelcomeScreen() {
           </View>
           <View style={styles.benefitItem}>
             <View style={styles.benefitDot} />
-            <Text style={styles.benefitText}>Learn about HRT and natural options</Text>
+            <Text style={styles.benefitText}>Learn about treatments and lifestyle changes</Text>
           </View>
         </View>
       </View>

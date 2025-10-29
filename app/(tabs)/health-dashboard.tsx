@@ -10,6 +10,8 @@ export default function MyHormonalJourney() {
   const router = useRouter();
   const { profile } = useUser();
 
+  const isPCOS = profile.healthCondition === 'pcos' || profile.healthCondition === 'pcod';
+
   const lastPeriodDays = profile.lastPeriodDate 
     ? Math.floor((new Date().getTime() - profile.lastPeriodDate.getTime()) / (1000 * 60 * 60 * 24))
     : null;
@@ -25,17 +27,34 @@ export default function MyHormonalJourney() {
     { id: 'joint-pain', label: 'Joint Pain', icon: Activity, color: '#EF4444', bg: '#FEF2F2', tracked: false },
   ];
 
+  const pcosSymptoms = [
+    { id: 'irregular-periods', label: 'Period Tracking', icon: Calendar, color: '#EC4899', bg: '#FDF2F8', tracked: true },
+    { id: 'weight', label: 'Weight', icon: Activity, color: '#F59E0B', bg: '#FFFBEB', tracked: true },
+    { id: 'acne', label: 'Acne', icon: Flame, color: '#EF4444', bg: '#FEF2F2', tracked: false },
+    { id: 'hair-growth', label: 'Hair Growth', icon: TrendingUp, color: '#6366F1', bg: '#EEF2FF', tracked: false },
+    { id: 'mood', label: 'Mood', icon: Heart, color: '#EC4899', bg: '#FDF2F8', tracked: true },
+    { id: 'energy', label: 'Energy', icon: Wind, color: '#10B981', bg: '#ECFDF5', tracked: true },
+    { id: 'sleep', label: 'Sleep', icon: Moon, color: '#8B5CF6', bg: '#F5F3FF', tracked: false },
+    { id: 'cravings', label: 'Cravings', icon: Brain, color: '#F59E0B', bg: '#FFFBEB', tracked: true },
+  ];
+
+  const symptoms = isPCOS ? pcosSymptoms : menopauseSymptoms;
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header Banner */}
       <View style={styles.headerBanner}>
         <Text style={styles.headerTitle}>My Hormonal Journey</Text>
         <Text style={styles.headerSubtitle}>
-          {profile.menopauseStage === 'perimenopause' 
-            ? 'Tracking your perimenopause transition'
-            : profile.menopauseStage === 'menopause'
-            ? 'Monitoring your menopause experience'
-            : 'Understanding your hormonal changes'}
+          {isPCOS
+            ? (profile.healthCondition === 'pcos' 
+                ? 'Tracking your PCOS management'
+                : 'Monitoring your PCOD journey')
+            : (profile.menopauseStage === 'perimenopause' 
+                ? 'Tracking your perimenopause transition'
+                : profile.menopauseStage === 'menopause'
+                ? 'Monitoring your menopause experience'
+                : 'Understanding your hormonal changes')}
         </Text>
       </View>
 
@@ -43,7 +62,7 @@ export default function MyHormonalJourney() {
       <View style={styles.cycleStatusCard}>
         <View style={styles.cycleHeader}>
           <Calendar size={24} color="#8B5A8F" />
-          <Text style={styles.cycleTitle}>Cycle Status</Text>
+          <Text style={styles.cycleTitle}>{isPCOS ? 'Cycle Tracking' : 'Cycle Status'}</Text>
         </View>
         
         <View style={styles.cycleContent}>
@@ -57,25 +76,29 @@ export default function MyHormonalJourney() {
           <View style={styles.cycleRow}>
             <Text style={styles.cycleLabel}>Status:</Text>
             <Text style={styles.cycleValue}>
-              {profile.menopauseStage === 'perimenopause' 
-                ? 'Irregular cycles expected'
-                : profile.menopauseStage === 'menopause'
-                ? 'No period for 12+ months'
-                : 'Tracking'}
+              {isPCOS
+                ? 'Irregular cycles common with PCOS'
+                : (profile.menopauseStage === 'perimenopause' 
+                    ? 'Irregular cycles expected'
+                    : profile.menopauseStage === 'menopause'
+                    ? 'No period for 12+ months'
+                    : 'Tracking')}
             </Text>
           </View>
 
           <View style={styles.cycleRow}>
-            <Text style={styles.cycleLabel}>Stage:</Text>
+            <Text style={styles.cycleLabel}>{isPCOS ? 'Condition:' : 'Stage:'}</Text>
             <View style={styles.stagePill}>
               <Text style={styles.stagePillText}>
-                {profile.menopauseStage === 'perimenopause' 
-                  ? '🌸 Perimenopause'
-                  : profile.menopauseStage === 'menopause'
-                  ? '🌙 Menopause'
-                  : profile.menopauseStage === 'postmenopause'
-                  ? '✨ Postmenopause'
-                  : '💜 Your Journey'}
+                {isPCOS
+                  ? (profile.healthCondition === 'pcos' ? '💖 PCOS' : '💗 PCOD')
+                  : (profile.menopauseStage === 'perimenopause' 
+                      ? '🌸 Perimenopause'
+                      : profile.menopauseStage === 'menopause'
+                      ? '🌙 Menopause'
+                      : profile.menopauseStage === 'postmenopause'
+                      ? '✨ Postmenopause'
+                      : '💜 Your Journey')}
               </Text>
             </View>
           </View>
@@ -93,9 +116,11 @@ export default function MyHormonalJourney() {
           <Text style={styles.tipTitle}>Today's Wellness Tip</Text>
         </View>
         <Text style={styles.tipText}>
-          {profile.menopauseStage === 'perimenopause'
-            ? 'Layer your clothing to easily adjust to temperature changes throughout the day'
-            : 'Stay hydrated—aim for 8 glasses of water daily to support overall wellness'}
+          {isPCOS
+            ? 'Add cinnamon to your morning coffee or oatmeal—it helps improve insulin sensitivity'
+            : (profile.menopauseStage === 'perimenopause'
+                ? 'Layer your clothing to easily adjust to temperature changes throughout the day'
+                : 'Stay hydrated—aim for 8 glasses of water daily to support overall wellness')}
         </Text>
       </View>
 
@@ -107,7 +132,7 @@ export default function MyHormonalJourney() {
         </Text>
 
         <View style={styles.symptomGrid}>
-          {menopauseSymptoms.map((symptom) => {
+          {symptoms.map((symptom) => {
             const IconComponent = symptom.icon;
             return (
               <TouchableOpacity
@@ -147,44 +172,89 @@ export default function MyHormonalJourney() {
         </View>
 
         <View style={styles.trendCard}>
-          <View style={styles.trendRow}>
-            <View style={styles.trendIcon}>
-              <Flame size={20} color="#EF4444" />
-            </View>
-            <View style={styles.trendContent}>
-              <Text style={styles.trendTitle}>Hot Flashes</Text>
-              <Text style={styles.trendDescription}>Decreased by 20% this week</Text>
-            </View>
-            <View style={[styles.trendBadge, { backgroundColor: '#D1FAE5' }]}>
-              <Text style={[styles.trendBadgeText, { color: '#065F46' }]}>Better</Text>
-            </View>
-          </View>
+          {isPCOS ? (
+            <>
+              <View style={styles.trendRow}>
+                <View style={styles.trendIcon}>
+                  <Activity size={20} color="#F59E0B" />
+                </View>
+                <View style={styles.trendContent}>
+                  <Text style={styles.trendTitle}>Weight Management</Text>
+                  <Text style={styles.trendDescription}>Down 1.2 kg this month</Text>
+                </View>
+                <View style={[styles.trendBadge, { backgroundColor: '#D1FAE5' }]}>
+                  <Text style={[styles.trendBadgeText, { color: '#065F46' }]}>Better</Text>
+                </View>
+              </View>
 
-          <View style={styles.trendRow}>
-            <View style={styles.trendIcon}>
-              <Moon size={20} color="#6366F1" />
-            </View>
-            <View style={styles.trendContent}>
-              <Text style={styles.trendTitle}>Sleep Quality</Text>
-              <Text style={styles.trendDescription}>Improved - averaging 7 hours</Text>
-            </View>
-            <View style={[styles.trendBadge, { backgroundColor: '#D1FAE5' }]}>
-              <Text style={[styles.trendBadgeText, { color: '#065F46' }]}>Better</Text>
-            </View>
-          </View>
+              <View style={styles.trendRow}>
+                <View style={styles.trendIcon}>
+                  <Calendar size={20} color="#EC4899" />
+                </View>
+                <View style={styles.trendContent}>
+                  <Text style={styles.trendTitle}>Cycle Regularity</Text>
+                  <Text style={styles.trendDescription}>28-day cycle this month</Text>
+                </View>
+                <View style={[styles.trendBadge, { backgroundColor: '#D1FAE5' }]}>
+                  <Text style={[styles.trendBadgeText, { color: '#065F46' }]}>Better</Text>
+                </View>
+              </View>
 
-          <View style={styles.trendRow}>
-            <View style={styles.trendIcon}>
-              <Brain size={20} color="#F59E0B" />
-            </View>
-            <View style={styles.trendContent}>
-              <Text style={styles.trendTitle}>Brain Fog</Text>
-              <Text style={styles.trendDescription}>Stable compared to last week</Text>
-            </View>
-            <View style={[styles.trendBadge, { backgroundColor: '#FEF3C7' }]}>
-              <Text style={[styles.trendBadgeText, { color: '#92400E' }]}>Stable</Text>
-            </View>
-          </View>
+              <View style={styles.trendRow}>
+                <View style={styles.trendIcon}>
+                  <Wind size={20} color="#10B981" />
+                </View>
+                <View style={styles.trendContent}>
+                  <Text style={styles.trendTitle}>Energy Levels</Text>
+                  <Text style={styles.trendDescription}>Improved with exercise</Text>
+                </View>
+                <View style={[styles.trendBadge, { backgroundColor: '#D1FAE5' }]}>
+                  <Text style={[styles.trendBadgeText, { color: '#065F46' }]}>Better</Text>
+                </View>
+              </View>
+            </>
+          ) : (
+            <>
+              <View style={styles.trendRow}>
+                <View style={styles.trendIcon}>
+                  <Flame size={20} color="#EF4444" />
+                </View>
+                <View style={styles.trendContent}>
+                  <Text style={styles.trendTitle}>Hot Flashes</Text>
+                  <Text style={styles.trendDescription}>Decreased by 20% this week</Text>
+                </View>
+                <View style={[styles.trendBadge, { backgroundColor: '#D1FAE5' }]}>
+                  <Text style={[styles.trendBadgeText, { color: '#065F46' }]}>Better</Text>
+                </View>
+              </View>
+
+              <View style={styles.trendRow}>
+                <View style={styles.trendIcon}>
+                  <Moon size={20} color="#6366F1" />
+                </View>
+                <View style={styles.trendContent}>
+                  <Text style={styles.trendTitle}>Sleep Quality</Text>
+                  <Text style={styles.trendDescription}>Improved - averaging 7 hours</Text>
+                </View>
+                <View style={[styles.trendBadge, { backgroundColor: '#D1FAE5' }]}>
+                  <Text style={[styles.trendBadgeText, { color: '#065F46' }]}>Better</Text>
+                </View>
+              </View>
+
+              <View style={styles.trendRow}>
+                <View style={styles.trendIcon}>
+                  <Brain size={20} color="#F59E0B" />
+                </View>
+                <View style={styles.trendContent}>
+                  <Text style={styles.trendTitle}>Brain Fog</Text>
+                  <Text style={styles.trendDescription}>Stable compared to last week</Text>
+                </View>
+                <View style={[styles.trendBadge, { backgroundColor: '#FEF3C7' }]}>
+                  <Text style={[styles.trendBadgeText, { color: '#92400E' }]}>Stable</Text>
+                </View>
+              </View>
+            </>
+          )}
         </View>
 
         <TouchableOpacity 
