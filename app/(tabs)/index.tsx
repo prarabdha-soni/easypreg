@@ -103,54 +103,239 @@ export default function HomeScreen() {
         </Text>
       </View>
 
-      {/* Quick Actions */}
+      {/* Our Top Products */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{isPCOS ? 'PCOS/PCOD Care Options' : 'Menopause Care Options'}</Text>
+        <View style={styles.productsBadge}>
+          <Sparkles size={16} color="#F59E0B" />
+          <Text style={styles.productsBadgeText}>OUR TOP PRODUCTS</Text>
+        </View>
+        <Text style={styles.sectionTitle}>Comprehensive Care Programs</Text>
         <Text style={styles.sectionSubtitle}>
-          {isPCOS 
-            ? 'Evidence-based treatments for hormonal balance'
-            : 'Evidence-based treatments designed for your stage'}
+          Complete solutions for your hormonal health journey
         </Text>
         
-        <TouchableOpacity 
-          style={styles.actionCard}
-          onPress={() => router.push(isPCOS ? '/treatment/pcos' : '/treatment/hrt')}
+        {/* Product 1: Personalized Care Programs */}
+        <TouchableOpacity
+          style={styles.productCard}
+          onPress={() => router.push('/products/care-programs' as any)}
         >
-          <View style={[styles.actionIcon, { backgroundColor: '#FFF5F7' }]}>
-            <Pill size={24} color="#EC4899" />
+          <View style={styles.productHeader}>
+            <View style={[styles.productIcon, { backgroundColor: '#FFF5F7' }]}>
+              <Heart size={28} color="#EC4899" />
+            </View>
+            <View style={styles.productBadge}>
+              <Text style={styles.productBadgeText}>MOST POPULAR</Text>
+            </View>
           </View>
-          <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>
-              {isPCOS ? 'PCOS Treatment Plan' : 'Hormone Replacement Therapy'}
-            </Text>
-            <Text style={styles.actionSubtitle}>
-              {isPCOS
-                ? 'Medications, supplements & lifestyle changes'
-                : (profile.interestedInHRT
-                    ? 'View your treatment plan'
-                    : 'Explore HRT options & get started')}
-            </Text>
+          <Text style={styles.productTitle}>Personalized Care Programs</Text>
+          <Text style={styles.productDescription}>
+            Tailored hormone health support plans with licensed providers, including HRT prescription and management.
+          </Text>
+          <View style={styles.productFeatures}>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Custom treatment plans</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Licensed provider support</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>HRT management</Text>
+            </View>
           </View>
-          <ChevronRight size={20} color="#9CA3AF" />
+          <View style={styles.productFooter}>
+            <Text style={styles.productPrice}>Starting at ₹2,999/month</Text>
+            <View style={styles.productButton}>
+              <Text style={styles.productButtonText}>Learn More</Text>
+              <ChevronRight size={16} color="#FFFFFF" />
+            </View>
+          </View>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={styles.actionCard}
-          onPress={() => router.push('/telehealth/providers')}
+        {/* Product 2: Expert Telehealth */}
+        <TouchableOpacity
+          style={styles.productCard}
+          onPress={() => router.push('/products/telehealth' as any)}
         >
-          <View style={[styles.actionIcon, { backgroundColor: '#EFF6FF' }]}>
-            <Video size={24} color="#3B82F6" />
+          <View style={styles.productHeader}>
+            <View style={[styles.productIcon, { backgroundColor: '#EFF6FF' }]}>
+              <Video size={28} color="#3B82F6" />
+            </View>
           </View>
-          <View style={styles.actionContent}>
-            <Text style={styles.actionTitle}>Talk to a Provider</Text>
-            <Text style={styles.actionSubtitle}>
-              {profile.hasProvider 
-                ? 'Schedule your next visit' 
-                : 'Connect with menopause specialists'}
-            </Text>
+          <Text style={styles.productTitle}>Expert Telehealth Consultations</Text>
+          <Text style={styles.productDescription}>
+            24/7 virtual access to menopause specialists and women's health experts for personalized guidance.
+          </Text>
+          <View style={styles.productFeatures}>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Available 24/7</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Certified specialists</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Video & chat support</Text>
+            </View>
           </View>
-          <ChevronRight size={20} color="#9CA3AF" />
+          <View style={styles.productFooter}>
+            <Text style={styles.productPrice}>₹599 per consultation</Text>
+            <View style={styles.productButton}>
+              <Text style={styles.productButtonText}>Book Now</Text>
+              <ChevronRight size={16} color="#FFFFFF" />
+            </View>
+          </View>
         </TouchableOpacity>
+
+        {/* Product 3: Symptom Tracking & Education */}
+        <TouchableOpacity
+          style={styles.productCard}
+          onPress={() => router.push('/products/tracking-education' as any)}
+        >
+          <View style={styles.productHeader}>
+            <View style={[styles.productIcon, { backgroundColor: '#F0FDF4' }]}>
+              <Activity size={28} color="#10B981" />
+            </View>
+          </View>
+          <Text style={styles.productTitle}>Symptom Tracking & Education</Text>
+          <Text style={styles.productDescription}>
+            Integrated symptom trackers with educational content to understand and manage your symptoms effectively.
+          </Text>
+          <View style={styles.productFeatures}>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Daily symptom logging</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>AI-powered insights</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Expert resources</Text>
+            </View>
+          </View>
+          <View style={styles.productFooter}>
+            <Text style={styles.productPrice}>Free with membership</Text>
+            <View style={styles.productButton}>
+              <Text style={styles.productButtonText}>Start Tracking</Text>
+              <ChevronRight size={16} color="#FFFFFF" />
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* Product 4: Prescription Delivery */}
+        <TouchableOpacity
+          style={styles.productCard}
+          onPress={() => router.push('/products/prescription-delivery' as any)}
+        >
+          <View style={styles.productHeader}>
+            <View style={[styles.productIcon, { backgroundColor: '#F5F3FF' }]}>
+              <Pill size={28} color="#8B5CF6" />
+            </View>
+            <View style={[styles.productBadge, { backgroundColor: '#10B981' }]}>
+              <Text style={styles.productBadgeText}>NEW</Text>
+            </View>
+          </View>
+          <Text style={styles.productTitle}>Prescription Delivery Service</Text>
+          <Text style={styles.productDescription}>
+            Convenient direct-to-door medication and supplement delivery with discreet packaging and subscriptions.
+          </Text>
+          <View style={styles.productFeatures}>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Free home delivery</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Discreet packaging</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Auto-refill options</Text>
+            </View>
+          </View>
+          <View style={styles.productFooter}>
+            <Text style={styles.productPrice}>Free delivery on orders ₹500+</Text>
+            <View style={styles.productButton}>
+              <Text style={styles.productButtonText}>View Options</Text>
+              <ChevronRight size={16} color="#FFFFFF" />
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* Product 5: Holistic Wellness */}
+        <TouchableOpacity
+          style={styles.productCard}
+          onPress={() => router.push('/products/holistic-wellness' as any)}
+        >
+          <View style={styles.productHeader}>
+            <View style={[styles.productIcon, { backgroundColor: '#FFFBEB' }]}>
+              <Sparkles size={28} color="#F59E0B" />
+            </View>
+          </View>
+          <Text style={styles.productTitle}>Holistic Wellness Support</Text>
+          <Text style={styles.productDescription}>
+            Lifestyle coaching, wellness tips, and mental health support for menopause symptoms and quality of life.
+          </Text>
+          <View style={styles.productFeatures}>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Personal wellness coach</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Mental health support</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Sparkles size={14} color="#8B5A8F" />
+              <Text style={styles.featureText}>Lifestyle guidance</Text>
+            </View>
+          </View>
+          <View style={styles.productFooter}>
+            <Text style={styles.productPrice}>₹1,499/month</Text>
+            <View style={styles.productButton}>
+              <Text style={styles.productButtonText}>Get Started</Text>
+              <ChevronRight size={16} color="#FFFFFF" />
+            </View>
+          </View>
+        </TouchableOpacity>
+
+      </View>
+
+      {/* Why Choose Us */}
+      <View style={styles.whyChooseSection}>
+        <Text style={styles.whyChooseTitle}>Why Choose Gloww?</Text>
+        <View style={styles.benefitsList}>
+          <View style={styles.benefitItem}>
+            <View style={styles.benefitIcon}>
+              <Activity size={20} color="#10B981" />
+            </View>
+            <Text style={styles.benefitText}>Evidence-based treatments</Text>
+          </View>
+          <View style={styles.benefitItem}>
+            <View style={styles.benefitIcon}>
+              <Heart size={20} color="#EC4899" />
+            </View>
+            <Text style={styles.benefitText}>Personalized care plans</Text>
+          </View>
+          <View style={styles.benefitItem}>
+            <View style={styles.benefitIcon}>
+              <Video size={20} color="#3B82F6" />
+            </View>
+            <Text style={styles.benefitText}>24/7 expert access</Text>
+          </View>
+          <View style={styles.benefitItem}>
+            <View style={styles.benefitIcon}>
+              <Sparkles size={20} color="#F59E0B" />
+            </View>
+            <Text style={styles.benefitText}>Holistic approach</Text>
+          </View>
+        </View>
       </View>
 
       {/* Symptom Tracking */}
@@ -508,6 +693,154 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#8B7280',
     lineHeight: 18,
+  },
+  productsBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFFBEB',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 6,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+  },
+  productsBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#92400E',
+    letterSpacing: 0.5,
+  },
+  productCard: {
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 18,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#E8D5E8',
+    shadowColor: '#8B5A8F',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  productHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  productIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  productBadge: {
+    backgroundColor: '#EC4899',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+  },
+  productBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
+  productTitle: {
+    fontSize: 19,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 10,
+    lineHeight: 26,
+  },
+  productDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 21,
+    marginBottom: 16,
+  },
+  productFeatures: {
+    gap: 8,
+    marginBottom: 18,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  featureText: {
+    fontSize: 13,
+    color: '#374151',
+    fontWeight: '500',
+  },
+  productFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  productPrice: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#8B5A8F',
+  },
+  productButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#8B5A8F',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 6,
+  },
+  productButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  whyChooseSection: {
+    backgroundColor: '#F9F5F9',
+    marginHorizontal: 20,
+    padding: 24,
+    borderRadius: 18,
+    marginBottom: 24,
+    borderWidth: 1.5,
+    borderColor: '#E8D5E8',
+  },
+  whyChooseTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 18,
+    textAlign: 'center',
+  },
+  benefitsList: {
+    gap: 14,
+  },
+  benefitItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  benefitIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  benefitText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#374151',
   },
   symptomGrid: {
     flexDirection: 'row',

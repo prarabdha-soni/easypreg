@@ -6,6 +6,10 @@
   "devCommand": "npx expo start --web",
   "rewrites": [
     {
+      "source": "/education",
+      "destination": "/index.html"
+    },
+    {
       "source": "/insurance",
       "destination": "/index.html"
     },

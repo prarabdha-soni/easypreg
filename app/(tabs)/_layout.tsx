@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Activity, Pill, Stethoscope, Shield } from 'lucide-react-native';
+import { Home, Activity, Pill, Stethoscope, Brain } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -47,12 +47,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="education"
+        options={{
+          title: 'Learn',
+          tabBarIcon: ({ size, color }) => (
+            <Brain size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="insurance"
         options={{
-          title: 'Insurance',
-          tabBarIcon: ({ size, color }) => (
-            <Shield size={size} color={color} />
-          ),
+          href: null,
         }}
       />
             <Tabs.Screen
