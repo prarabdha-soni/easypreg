@@ -40,10 +40,10 @@ export default function BookingScreen() {
         {/* Provider Info */}
         <View style={styles.providerSection}>
           <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarInitials}>PS</Text>
+            <Text style={styles.avatarInitials}>AM</Text>
           </View>
           <View>
-            <Text style={styles.providerName}>Dr. Prarabdha Soni</Text>
+            <Text style={styles.providerName}>Dr. Anuj Mehta</Text>
             <Text style={styles.providerTitle}>OB-GYN, Menopause Specialist</Text>
           </View>
         </View>

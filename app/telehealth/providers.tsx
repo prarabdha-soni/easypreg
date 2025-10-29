@@ -12,7 +12,7 @@ export default function ProvidersScreen() {
   const providers = isPCOS ? [
     {
       id: 1,
-      name: 'Dr. Prarabdha Soni',
+      name: 'Dr. Anuj Mehta',
       title: 'Endocrinologist, PCOS Specialist',
       rating: 4.9,
       reviews: 234,
@@ -23,7 +23,7 @@ export default function ProvidersScreen() {
     },
     {
       id: 2,
-      name: 'Dr. Prarabdha Soni',
+      name: 'Dr. Anuj Mehta',
       title: 'Gynecologist, Fertility Expert',
       rating: 4.8,
       reviews: 189,
@@ -34,7 +34,7 @@ export default function ProvidersScreen() {
     },
     {
       id: 3,
-      name: 'Dr. Prarabdha Soni',
+      name: 'Dr. Anuj Mehta',
       title: 'Nutritionist & Lifestyle Coach',
       rating: 5.0,
       reviews: 156,
@@ -46,7 +46,7 @@ export default function ProvidersScreen() {
   ] : [
     {
       id: 1,
-      name: 'Dr. Prarabdha Soni',
+      name: 'Dr. Anuj Mehta',
       title: 'OB-GYN, Menopause Specialist',
       rating: 4.9,
       reviews: 234,
@@ -57,7 +57,7 @@ export default function ProvidersScreen() {
     },
     {
       id: 2,
-      name: 'Dr. Prarabdha Soni',
+      name: 'Dr. Anuj Mehta',
       title: 'Endocrinologist',
       rating: 4.8,
       reviews: 189,
@@ -68,7 +68,7 @@ export default function ProvidersScreen() {
     },
     {
       id: 3,
-      name: 'Dr. Prarabdha Soni',
+      name: 'Dr. Anuj Mehta',
       title: 'Women Health Specialist',
       rating: 5.0,
       reviews: 156,
