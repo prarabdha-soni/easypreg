@@ -103,208 +103,68 @@ export default function HomeScreen() {
         </Text>
       </View>
 
-      {/* Our Top Products */}
+      
+
+      {/* Healthcare Partners */}
       <View style={styles.section}>
-        <View style={styles.productsBadge}>
-          <Sparkles size={16} color="#F59E0B" />
-          <Text style={styles.productsBadgeText}>OUR TOP PRODUCTS</Text>
-        </View>
-        <Text style={styles.sectionTitle}>Comprehensive Care Programs</Text>
+        <Text style={styles.sectionTitle}>Trusted Healthcare Partners</Text>
         <Text style={styles.sectionSubtitle}>
-          Complete solutions for your hormonal health journey
+          Connect with India's leading healthcare providers
         </Text>
-        
-        {/* Product 1: Personalized Care Programs */}
+
         <TouchableOpacity
-          style={styles.productCard}
-          onPress={() => router.push('/products/care-programs' as any)}
+          style={styles.partnerCard}
+          onPress={() => router.push('/integrations/tata-1mg' as any)}
         >
-          <View style={styles.productHeader}>
-            <View style={[styles.productIcon, { backgroundColor: '#FFF5F7' }]}>
-              <Heart size={28} color="#EC4899" />
+          <View style={styles.partnerHeader}>
+            <View style={styles.partnerLogo}>
+              <Text style={styles.partnerLogoText}>1mg</Text>
             </View>
-            <View style={styles.productBadge}>
-              <Text style={styles.productBadgeText}>MOST POPULAR</Text>
+            <View style={styles.partnerBadge}>
+              <Text style={styles.partnerBadgeText}>VERIFIED</Text>
             </View>
           </View>
-          <Text style={styles.productTitle}>Personalized Care Programs</Text>
-          <Text style={styles.productDescription}>
-            Tailored hormone health support plans with licensed providers, including HRT prescription and management.
+          <Text style={styles.partnerTitle}>Tata 1mg</Text>
+          <Text style={styles.partnerDescription}>
+            Consult doctors, order medicines, book lab tests - all in one place
           </Text>
-          <View style={styles.productFeatures}>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Custom treatment plans</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Licensed provider support</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>HRT management</Text>
-            </View>
+          <View style={styles.partnerFeatures}>
+            <Text style={styles.partnerFeature}>• Video consultations from ₹299</Text>
+            <Text style={styles.partnerFeature}>• Medicine delivery in 2-4 hours</Text>
+            <Text style={styles.partnerFeature}>• Lab tests at home</Text>
           </View>
-          <View style={styles.productFooter}>
-            <Text style={styles.productPrice}>Starting at ₹2,999/month</Text>
-            <View style={styles.productButton}>
-              <Text style={styles.productButtonText}>Learn More</Text>
-              <ChevronRight size={16} color="#FFFFFF" />
-            </View>
+          <View style={styles.partnerFooter}>
+            <Text style={styles.partnerPrice}>Starting at ₹199</Text>
+            <ChevronRight size={20} color="#00BFA5" />
           </View>
         </TouchableOpacity>
 
-        {/* Product 2: Expert Telehealth */}
         <TouchableOpacity
-          style={styles.productCard}
-          onPress={() => router.push('/products/telehealth' as any)}
+          style={styles.partnerCard}
+          onPress={() => router.push('/integrations/apollo-247' as any)}
         >
-          <View style={styles.productHeader}>
-            <View style={[styles.productIcon, { backgroundColor: '#EFF6FF' }]}>
-              <Video size={28} color="#3B82F6" />
+          <View style={styles.partnerHeader}>
+            <View style={[styles.partnerLogo, { backgroundColor: '#1E40AF' }]}>
+              <Text style={styles.partnerLogoText}>Apollo</Text>
+            </View>
+            <View style={[styles.partnerBadge, { backgroundColor: '#1E40AF' }]}>
+              <Text style={styles.partnerBadgeText}>TRUSTED</Text>
             </View>
           </View>
-          <Text style={styles.productTitle}>Expert Telehealth Consultations</Text>
-          <Text style={styles.productDescription}>
-            24/7 virtual access to menopause specialists and women's health experts for personalized guidance.
+          <Text style={styles.partnerTitle}>Apollo 247</Text>
+          <Text style={styles.partnerDescription}>
+            India's most trusted healthcare network with 10,000+ doctors
           </Text>
-          <View style={styles.productFeatures}>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Available 24/7</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Certified specialists</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Video & chat support</Text>
-            </View>
+          <View style={styles.partnerFeatures}>
+            <Text style={styles.partnerFeature}>• 24/7 emergency care</Text>
+            <Text style={styles.partnerFeature}>• Prescription delivery in 2-4 hours</Text>
+            <Text style={styles.partnerFeature}>• Multi-language support</Text>
           </View>
-          <View style={styles.productFooter}>
-            <Text style={styles.productPrice}>₹599 per consultation</Text>
-            <View style={styles.productButton}>
-              <Text style={styles.productButtonText}>Book Now</Text>
-              <ChevronRight size={16} color="#FFFFFF" />
-            </View>
+          <View style={styles.partnerFooter}>
+            <Text style={styles.partnerPrice}>Starting at ₹199</Text>
+            <ChevronRight size={20} color="#1E40AF" />
           </View>
         </TouchableOpacity>
-
-        {/* Product 3: Symptom Tracking & Education */}
-        <TouchableOpacity
-          style={styles.productCard}
-          onPress={() => router.push('/products/tracking-education' as any)}
-        >
-          <View style={styles.productHeader}>
-            <View style={[styles.productIcon, { backgroundColor: '#F0FDF4' }]}>
-              <Activity size={28} color="#10B981" />
-            </View>
-          </View>
-          <Text style={styles.productTitle}>Symptom Tracking & Education</Text>
-          <Text style={styles.productDescription}>
-            Integrated symptom trackers with educational content to understand and manage your symptoms effectively.
-          </Text>
-          <View style={styles.productFeatures}>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Daily symptom logging</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>AI-powered insights</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Expert resources</Text>
-            </View>
-          </View>
-          <View style={styles.productFooter}>
-            <Text style={styles.productPrice}>Free with membership</Text>
-            <View style={styles.productButton}>
-              <Text style={styles.productButtonText}>Start Tracking</Text>
-              <ChevronRight size={16} color="#FFFFFF" />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        {/* Product 4: Prescription Delivery */}
-        <TouchableOpacity
-          style={styles.productCard}
-          onPress={() => router.push('/products/prescription-delivery' as any)}
-        >
-          <View style={styles.productHeader}>
-            <View style={[styles.productIcon, { backgroundColor: '#F5F3FF' }]}>
-              <Pill size={28} color="#8B5CF6" />
-            </View>
-            <View style={[styles.productBadge, { backgroundColor: '#10B981' }]}>
-              <Text style={styles.productBadgeText}>NEW</Text>
-            </View>
-          </View>
-          <Text style={styles.productTitle}>Prescription Delivery Service</Text>
-          <Text style={styles.productDescription}>
-            Convenient direct-to-door medication and supplement delivery with discreet packaging and subscriptions.
-          </Text>
-          <View style={styles.productFeatures}>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Free home delivery</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Discreet packaging</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Auto-refill options</Text>
-            </View>
-          </View>
-          <View style={styles.productFooter}>
-            <Text style={styles.productPrice}>Free delivery on orders ₹500+</Text>
-            <View style={styles.productButton}>
-              <Text style={styles.productButtonText}>View Options</Text>
-              <ChevronRight size={16} color="#FFFFFF" />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        {/* Product 5: Holistic Wellness */}
-        <TouchableOpacity
-          style={styles.productCard}
-          onPress={() => router.push('/products/holistic-wellness' as any)}
-        >
-          <View style={styles.productHeader}>
-            <View style={[styles.productIcon, { backgroundColor: '#FFFBEB' }]}>
-              <Sparkles size={28} color="#F59E0B" />
-            </View>
-          </View>
-          <Text style={styles.productTitle}>Holistic Wellness Support</Text>
-          <Text style={styles.productDescription}>
-            Lifestyle coaching, wellness tips, and mental health support for menopause symptoms and quality of life.
-          </Text>
-          <View style={styles.productFeatures}>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Personal wellness coach</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Mental health support</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Sparkles size={14} color="#8B5A8F" />
-              <Text style={styles.featureText}>Lifestyle guidance</Text>
-            </View>
-          </View>
-          <View style={styles.productFooter}>
-            <Text style={styles.productPrice}>₹1,499/month</Text>
-            <View style={styles.productButton}>
-              <Text style={styles.productButtonText}>Get Started</Text>
-              <ChevronRight size={16} color="#FFFFFF" />
-            </View>
-          </View>
-        </TouchableOpacity>
-
       </View>
 
       {/* Why Choose Us */}
@@ -338,44 +198,7 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Symptom Tracking */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>
-          {isPCOS
-            ? 'Track My PCOS/PCOD'
-            : (profile.menopauseStage === 'perimenopause'
-                ? 'Track My Perimenopause'
-                : profile.menopauseStage === 'menopause'
-                ? 'Track My Menopause'
-                : 'Track Symptoms')}
-        </Text>
-        <Text style={styles.sectionSubtitle}>
-          Monitor patterns to better understand your unique hormonal journey
-        </Text>
-
-        <View style={styles.symptomGrid}>
-          {symptoms.slice(0, 6).map((symptom) => (
-            <TouchableOpacity
-              key={symptom.id}
-              style={styles.symptomCard}
-              onPress={() => router.push('/symptoms/tracker')}
-            >
-              <View style={[styles.symptomIcon, { backgroundColor: symptom.bg }]}>
-                <symptom.icon size={20} color={symptom.color} />
-              </View>
-              <Text style={styles.symptomLabel}>{symptom.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <TouchableOpacity 
-          style={styles.viewAllButton}
-          onPress={() => router.push('/symptoms/tracker')}
-        >
-          <Text style={styles.viewAllText}>Track All Symptoms</Text>
-          <ChevronRight size={16} color="#8B5A8F" />
-        </TouchableOpacity>
-      </View>
+      
 
       {/* Insights & Progress */}
       <TouchableOpacity 
@@ -841,6 +664,81 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#374151',
+  },
+  partnerCard: {
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#E8D5E8',
+    shadowColor: '#8B5A8F',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  partnerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  partnerLogo: {
+    backgroundColor: '#00BFA5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  partnerLogoText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  partnerBadge: {
+    backgroundColor: '#00BFA5',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  partnerBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
+  partnerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  partnerDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  partnerFeatures: {
+    marginBottom: 16,
+  },
+  partnerFeature: {
+    fontSize: 13,
+    color: '#374151',
+    marginBottom: 4,
+  },
+  partnerFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  partnerPrice: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#8B5A8F',
   },
   symptomGrid: {
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal, Platform, Linking } from 'react-native';
 import { 
   Brain, Video, Play, X
 } from 'lucide-react-native';
@@ -64,6 +64,7 @@ export default function EducationScreen() {
 
   // PCOS/PCOD Videos
   const pcosVideos = [
+    // English
     {
       id: 1,
       title: 'Explaining PCOD',
@@ -74,7 +75,7 @@ export default function EducationScreen() {
     },
     {
       id: 2,
-      title: 'What is PCOS? Symptoms & Treatment',
+      title: 'What is PCOS? Symptoms, Infertility, Causes, Treatment',
       expert: 'Medical Animation',
       url: 'https://medshadow.org/videos/pcos-medical-animation-video/',
       thumbnail: '🎬',
@@ -90,7 +91,7 @@ export default function EducationScreen() {
     },
     {
       id: 4,
-      title: 'PCOS Made Easy',
+      title: 'PCOS Made Easy (PCOS Explained)',
       expert: 'Medical Education',
       url: 'https://www.youtube.com/watch?v=YVQzolMgNp0',
       thumbnail: '🎬',
@@ -98,11 +99,36 @@ export default function EducationScreen() {
     },
     {
       id: 5,
-      title: 'PCOS by Nucleus Health',
+      title: 'PCOS | Nucleus Health',
       expert: 'Nucleus Health',
       url: 'https://www.youtube.com/watch?v=FsNKyKS7M_s',
       thumbnail: '🎬',
       description: 'Detailed medical explanation',
+    },
+    // Hindi
+    {
+      id: 6,
+      title: 'PCOD को सिर्फ 3 महीने में जड़ से ख़तम करें | PCOD Treatment',
+      expert: 'Hindi Health',
+      url: 'https://www.youtube.com/watch?v=wD7R9BWZIw4',
+      thumbnail: '🎬',
+      description: 'हिंदी में PCOD उपचार जानकारी',
+    },
+    {
+      id: 7,
+      title: 'PCOD/PCOS का मतलब, लक्षण और निदान | Dr Sajal Kamat',
+      expert: 'Dr Sajal Kamat',
+      url: 'https://www.youtube.com/watch?v=Bt8M_tYS8ss',
+      thumbnail: '🎬',
+      description: 'PCOD/PCOS के लक्षण और निदान (हिंदी)',
+    },
+    {
+      id: 8,
+      title: 'PCOS क्या है | Symptoms and Treatment (Hindi)',
+      expert: 'Health Education Hindi',
+      url: 'https://www.youtube.com/watch?v=nFICQc4tmdc',
+      thumbnail: '🎬',
+      description: 'PCOS के लक्षण और इलाज (हिंदी)',
     },
   ];
 
@@ -110,43 +136,43 @@ export default function EducationScreen() {
   const menopauseVideos = [
     {
       id: 1,
-      title: 'What Is Menopause?',
-      expert: 'Health Education',
-      url: 'https://www.youtube.com/watch?v=af-356SbCkY',
+      title: 'Menopause in Hindi | मेनोपॉज के लक्षण और उपचार',
+      expert: 'Hindi Health',
+      url: 'https://www.youtube.com/watch?v=f-IXOtjsjCo',
       thumbnail: '🎬',
-      description: 'Introduction to menopause',
+      description: 'मेनोपॉज के लक्षण और उपचार (हिंदी)',
     },
     {
       id: 2,
-      title: 'Managing Menopause',
-      expert: 'Women\'s Health',
-      url: 'https://www.youtube.com/watch?v=QNZfEtZ53RY',
+      title: 'Menopause Explained in Hindi (रजोनिवृत्ति हिंदी में)',
+      expert: 'Health Education Hindi',
+      url: 'https://www.youtube.com/watch?v=op8C9Ar6G_Q',
       thumbnail: '🎬',
-      description: 'Complete management guide',
+      description: 'रजोनिवृत्ति समझाया गया (हिंदी)',
     },
     {
       id: 3,
-      title: 'Menopause Explained (HealthSketch)',
-      expert: 'HealthSketch',
-      url: 'https://www.youtube.com/watch?v=NIhQT7VFT9A',
+      title: 'What Is Menopause? मीनोपॉज क्या और क्यों',
+      expert: 'Hindi Medical',
+      url: 'https://www.youtube.com/watch?v=yzAD9k8JoVA',
       thumbnail: '🎬',
-      description: 'Visual guide to menopause',
+      description: 'मीनोपॉज का परिचय (हिंदी)',
     },
     {
       id: 4,
-      title: 'Understanding Perimenopause',
-      expert: 'Medical Expert',
-      url: 'https://www.youtube.com/watch?v=gYJAPCw9qqA',
+      title: 'Menopause in Hindi by Dr Neeraj Pahlajani',
+      expert: 'Dr Neeraj Pahlajani',
+      url: 'https://www.youtube.com/watch?v=E3YZZaefjHw',
       thumbnail: '🎬',
-      description: 'Perimenopause & Menopause',
+      description: 'डॉ. नीरज पहलाजानी द्वारा मेनोपॉज (हिंदी)',
     },
     {
       id: 5,
-      title: 'Perimenopause: Myths & Management',
-      expert: 'Women\'s Health',
-      url: 'https://www.youtube.com/watch?v=vZFsjdzXBus',
+      title: 'Perimenopause क्या है? लक्षण और कारण',
+      expert: 'Hindi Women Health',
+      url: 'https://www.youtube.com/watch?v=TfV6Lph10hs',
       thumbnail: '🎬',
-      description: 'Debunking myths',
+      description: 'पेरिमेनोपॉज जानकारी (हिंदी)',
     },
   ];
 
@@ -154,11 +180,11 @@ export default function EducationScreen() {
 
   const handleVideoPress = (video: { id: number; title: string; url: string }) => {
     const videoId = getYouTubeVideoId(video.url);
-    setSelectedVideo({
-      id: videoId,
-      title: video.title,
-      url: video.url,
-    });
+    if (!videoId) {
+      Linking.openURL(video.url);
+      return;
+    }
+    setSelectedVideo({ id: videoId, title: video.title, url: video.url });
   };
 
   const closeVideoPlayer = () => {
@@ -189,33 +215,41 @@ export default function EducationScreen() {
         </Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.videosScroll}>
-          {featuredVideos.map((video) => (
-            <TouchableOpacity 
-              key={video.id} 
-              style={styles.videoCard}
-              onPress={() => handleVideoPress(video)}
-            >
-              <View style={styles.videoThumbnail}>
-                <Image 
-                  source={{ 
-                    uri: videoMetadata[getYouTubeVideoId(video.url)]?.thumbnail || getYouTubeThumbnail(video.url) 
-                  }}
-                  style={styles.thumbnailImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.playButton}>
-                  <Play size={28} color="#FFFFFF" fill="#FFFFFF" />
+          {featuredVideos.map((video) => {
+            const vid = getYouTubeVideoId(video.url);
+            const metaThumb = videoMetadata[vid]?.thumbnail;
+            return (
+              <TouchableOpacity 
+                key={video.id} 
+                style={styles.videoCard}
+                onPress={() => handleVideoPress(video)}
+              >
+                <View style={styles.videoThumbnail}>
+                  {vid ? (
+                    <Image 
+                      source={{ uri: metaThumb || getYouTubeThumbnail(video.url) }}
+                      style={styles.thumbnailImage}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <View style={styles.thumbnailPlaceholder}>
+                      <Text style={styles.thumbnailEmoji}>🎬</Text>
+                    </View>
+                  )}
+                  <View style={styles.playButton}>
+                    <Play size={28} color="#FFFFFF" fill="#FFFFFF" />
+                  </View>
                 </View>
-              </View>
-              <Text style={styles.videoTitle} numberOfLines={2}>
-                {videoMetadata[getYouTubeVideoId(video.url)]?.title || video.title}
-              </Text>
-              <Text style={styles.videoExpert}>
-                {videoMetadata[getYouTubeVideoId(video.url)]?.channelTitle || video.expert}
-              </Text>
-              <Text style={styles.videoDescription} numberOfLines={1}>{video.description}</Text>
-            </TouchableOpacity>
-          ))}
+                <Text style={styles.videoTitle} numberOfLines={2}>
+                  {videoMetadata[vid]?.title || video.title}
+                </Text>
+                <Text style={styles.videoExpert}>
+                  {videoMetadata[vid]?.channelTitle || video.expert}
+                </Text>
+                <Text style={styles.videoDescription} numberOfLines={1}>{video.description}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
 
@@ -230,33 +264,41 @@ export default function EducationScreen() {
         </Text>
 
         <View style={styles.videoLibrary}>
-          {featuredVideos.map((video, index) => (
-            <TouchableOpacity
-              key={video.id}
-              style={styles.videoListItem}
-              onPress={() => handleVideoPress(video)}
-            >
-              <Image 
-                source={{ 
-                  uri: videoMetadata[getYouTubeVideoId(video.url)]?.thumbnail || getYouTubeThumbnail(video.url) 
-                }}
-                style={styles.videoListThumbnail}
-                resizeMode="cover"
-              />
-              <View style={styles.videoListContent}>
-                <Text style={styles.videoListTitle}>
-                  {videoMetadata[getYouTubeVideoId(video.url)]?.title || video.title}
-                </Text>
-                <Text style={styles.videoListExpert}>
-                  {videoMetadata[getYouTubeVideoId(video.url)]?.channelTitle || video.expert}
-                </Text>
-                <Text style={styles.videoListDescription}>{video.description}</Text>
-              </View>
-              <View style={styles.videoListPlayIcon}>
-                <Play size={20} color="#FFFFFF" fill="#FFFFFF" />
-              </View>
-            </TouchableOpacity>
-          ))}
+          {featuredVideos.map((video, index) => {
+            const vid = getYouTubeVideoId(video.url);
+            const metaThumb = videoMetadata[vid]?.thumbnail;
+            return (
+              <TouchableOpacity
+                key={video.id}
+                style={styles.videoListItem}
+                onPress={() => handleVideoPress(video)}
+              >
+                {vid ? (
+                  <Image 
+                    source={{ uri: metaThumb || getYouTubeThumbnail(video.url) }}
+                    style={styles.videoListThumbnail}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={[styles.videoListThumbnail, { alignItems: 'center', justifyContent: 'center' }] }>
+                    <Text style={styles.thumbnailEmoji}>🎬</Text>
+                  </View>
+                )}
+                <View style={styles.videoListContent}>
+                  <Text style={styles.videoListTitle}>
+                    {videoMetadata[vid]?.title || video.title}
+                  </Text>
+                  <Text style={styles.videoListExpert}>
+                    {videoMetadata[vid]?.channelTitle || video.expert}
+                  </Text>
+                  <Text style={styles.videoListDescription}>{video.description}</Text>
+                </View>
+                <View style={styles.videoListPlayIcon}>
+                  <Play size={20} color="#FFFFFF" fill="#FFFFFF" />
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
 
@@ -428,6 +470,14 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
   },
+  thumbnailPlaceholder: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F3E8F3',
+  },
+  thumbnailEmoji: { fontSize: 32 },
   playButton: {
     position: 'absolute',
     width: 56,
