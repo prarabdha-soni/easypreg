@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useUser } from '@/contexts/UserContext';
-import { Calendar, Heart, Sunset, Flame } from 'lucide-react-native';
+import { Calendar } from 'lucide-react-native';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -54,7 +54,6 @@ export default function PeriodDateScreen() {
   const router = useRouter();
   const { updateProfile } = useUser();
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState<'control-cycle' | 'ease-perimenopause' | 'relieve-menopause' | null>(null);
   
   const today = new Date();
   // Set default to 7 days ago (typical cycle length)
@@ -72,22 +71,9 @@ export default function PeriodDateScreen() {
   };
 
   const handleComplete = () => {
-    if (!selectedGoal) {
-      return; // Don't proceed without a goal selected
-    }
-
     updateProfile({
-      gender: 'woman',
-      age: 25,
-      tryingToConceive: selectedGoal === 'control-cycle',
-      planningSoon: false,
-      language: 'english',
-      foodPreference: 'veg',
       lastPeriodDate: selectedDate,
-      cycleLength: 28,
-      isRegular: true,
       hasCompletedOnboarding: true,
-      healthGoal: selectedGoal,
     });
 
     router.replace('/(tabs)');
@@ -97,6 +83,21 @@ export default function PeriodDateScreen() {
   const years = generateYears();
   const monthList = generateMonths();
 
+  const addDays = (date: Date, daysToAdd: number) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + daysToAdd);
+    return d;
+  };
+
+  const formatDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  const phaseRanges = [
+    { name: 'Menstrual', start: 0, end: 4 },
+    { name: 'Follicular', start: 5, end: 12 },
+    { name: 'Ovulation', start: 13, end: 16 },
+    { name: 'Luteal', start: 17, end: 27 },
+  ];
+
   return (
     <View style={styles.outerContainer}>
       <ScrollView style={styles.container}>
@@ -105,10 +106,8 @@ export default function PeriodDateScreen() {
             <Calendar size={48} color="#e91e63" />
           </View>
           
-          <Text style={styles.title}>When was your last period?</Text>
-          <Text style={styles.subtitle}>
-            Select a past date to help us track your cycle and provide personalized insights
-          </Text>
+          <Text style={styles.title}>When did your last period start?</Text>
+          <Text style={styles.subtitle}>Select a past date and we’ll personalize your weekly routine</Text>
 
           <TouchableOpacity 
             style={styles.dateButton}
@@ -124,81 +123,23 @@ export default function PeriodDateScreen() {
             </Text>
           </TouchableOpacity>
 
-          {/* Health Goals */}
-          <Text style={styles.goalTitle}>What's your health goal?</Text>
-          <Text style={styles.goalSubtitle}>Choose one to personalize your experience</Text>
-
-          <View style={styles.goalOptions}>
-            <TouchableOpacity
-              style={[
-                styles.goalCard,
-                selectedGoal === 'control-cycle' && styles.goalCardSelected
-              ]}
-              onPress={() => setSelectedGoal('control-cycle')}
-            >
-              <View style={[styles.goalIconContainer, { backgroundColor: '#FFF5F7' }]}>
-                <Heart size={32} color="#EC4899" />
+          {/* Predicted Phases */}
+          <Text style={styles.goalTitle}>Next predicted phases</Text>
+          <Text style={styles.goalSubtitle}>Based on a 28‑day cycle</Text>
+          <View style={styles.phasesCard}>
+            {phaseRanges.map((p) => (
+              <View key={p.name} style={styles.phaseRow}>
+                <Text style={styles.phaseName}>{p.name}</Text>
+                <Text style={styles.phaseDates}>{formatDate(addDays(selectedDate, p.start))} — {formatDate(addDays(selectedDate, p.end))}</Text>
               </View>
-              <Text style={styles.goalCardTitle}>Control Cycle</Text>
-              <Text style={styles.goalCardDescription}>
-                Track your menstrual cycle, predict periods, and understand your fertility
-              </Text>
-              {selectedGoal === 'control-cycle' && (
-                <View style={styles.selectedBadge}>
-                  <Text style={styles.selectedBadgeText}>✓ Selected</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.goalCard,
-                selectedGoal === 'ease-perimenopause' && styles.goalCardSelected
-              ]}
-              onPress={() => setSelectedGoal('ease-perimenopause')}
-            >
-              <View style={[styles.goalIconContainer, { backgroundColor: '#FEF3F2' }]}>
-                <Sunset size={32} color="#F97316" />
-              </View>
-              <Text style={styles.goalCardTitle}>Ease Perimenopause</Text>
-              <Text style={styles.goalCardDescription}>
-                Manage symptoms, track changes, and get support during this transition
-              </Text>
-              {selectedGoal === 'ease-perimenopause' && (
-                <View style={styles.selectedBadge}>
-                  <Text style={styles.selectedBadgeText}>✓ Selected</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.goalCard,
-                selectedGoal === 'relieve-menopause' && styles.goalCardSelected
-              ]}
-              onPress={() => setSelectedGoal('relieve-menopause')}
-            >
-              <View style={[styles.goalIconContainer, { backgroundColor: '#FEF9F3' }]}>
-                <Flame size={32} color="#EAB308" />
-              </View>
-              <Text style={styles.goalCardTitle}>Relieve Menopause</Text>
-              <Text style={styles.goalCardDescription}>
-                Navigate hot flashes, mood changes, and other menopause symptoms
-              </Text>
-              {selectedGoal === 'relieve-menopause' && (
-                <View style={styles.selectedBadge}>
-                  <Text style={styles.selectedBadgeText}>✓ Selected</Text>
-                </View>
-              )}
-            </TouchableOpacity>
+            ))}
           </View>
 
           <TouchableOpacity
-            style={[styles.completeButton, !selectedGoal && styles.completeButtonDisabled]}
+            style={styles.completeButton}
             onPress={handleComplete}
-            disabled={!selectedGoal}
           >
-            <Text style={styles.completeButtonText}>Start My Journey</Text>
+            <Text style={styles.completeButtonText}>Save & Continue</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -364,6 +305,25 @@ const styles = StyleSheet.create({
     gap: 16,
     marginBottom: 32,
   },
+  phasesCard: {
+    width: '100%',
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#e9ecef',
+    padding: 16,
+    marginBottom: 28,
+  },
+  phaseRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f3f5',
+  },
+  phaseName: { fontSize: 15, fontWeight: '700', color: '#1a1a1a' },
+  phaseDates: { fontSize: 14, color: '#6B7280' },
   goalCard: {
     backgroundColor: '#ffffff',
     borderRadius: 16,

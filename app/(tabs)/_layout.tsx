@@ -1,17 +1,22 @@
 import { Tabs } from 'expo-router';
-import { Home, Activity, Pill, Stethoscope, Brain } from 'lucide-react-native';
+import { Home, Moon, Dumbbell, User, Sparkles } from 'lucide-react-native';
+import { useUser } from '@/contexts/UserContext';
+import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 
 export default function TabLayout() {
+  const { profile } = useUser();
+  const phaseKey: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal' = profile.lastPeriodDate ? getCurrentHormonalPhase(getCycleDay(profile.lastPeriodDate)) : 'Follicular';
+  const theme = themes[phaseKey];
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#8B5A8F', // Rich purple (menopause theme)
-        tabBarInactiveTintColor: '#B8A8BA', // Soft lavender
+        tabBarActiveTintColor: theme.accentColor,
+        tabBarInactiveTintColor: '#B8A8BA',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1.5,
-          borderTopColor: '#E8D5E8', // Lavender border
+          borderTopColor: theme.border,
           paddingTop: 8,
           paddingBottom: 8,
           height: 70,
@@ -32,89 +37,42 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="health-dashboard"
+        name="sleep"
         options={{
-          title: 'My Journey',
+          title: 'Sleep',
           tabBarIcon: ({ size, color }) => (
-            <Activity size={size} color={color} />
+            <Moon size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="insights"
+        name="workout"
         options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="education"
-        options={{
-          title: 'Learn',
+          title: 'Fitness',
           tabBarIcon: ({ size, color }) => (
-            <Brain size={size} color={color} />
+            <Dumbbell size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="insurance"
+        name="beauty"
         options={{
-          href: null,
-        }}
-      />
-            <Tabs.Screen
-              name="treatments"
-              options={{
-                title: 'Treatments',
-                tabBarIcon: ({ size, color }) => (
-                  <Pill size={size} color={color} />
-                ),
-              }}
-            />
-      <Tabs.Screen
-        name="store"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="experts"
-        options={{
-          title: 'Expert Care',
+          title: 'Beauty',
           tabBarIcon: ({ size, color }) => (
-            <Stethoscope size={size} color={color} />
+            <Sparkles size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          href: null,
+          title: 'Profile',
+          tabBarIcon: ({ size, color }) => (
+            <User size={size} color={color} />
+          ),
         }}
       />
-      <Tabs.Screen
-        name="community"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="notification-settings"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="fertility"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="ovulation"
-        options={{
-          href: null,
-        }}
-      />
+      {/** All other tabs removed */}
     </Tabs>
   );
 }
