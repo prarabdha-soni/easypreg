@@ -30,9 +30,9 @@ export default function MindScreen() {
         duration: '15 min',
         focus: 'Compassion & Rest',
         practices: [
-          { name: 'Body Scan for Comfort', duration: '10 min', focus: 'Pain relief and relaxation' },
-          { name: 'Self-Compassion Meditation', duration: '12 min', focus: 'Kindness to yourself' },
-          { name: 'Restorative Yoga Nidra', duration: '20 min', focus: 'Deep rest and healing' },
+          { name: 'Body Scan for Comfort', duration: '10 min', focus: 'Pain relief and relaxation', videoUrl: 'https://www.youtube.com/watch?v=inpok4MKVLM' },
+          { name: 'Self-Compassion Meditation', duration: '12 min', focus: 'Kindness to yourself', videoUrl: 'https://www.youtube.com/watch?v=inpok4MKVLM' },
+          { name: 'Restorative Yoga Nidra', duration: '20 min', focus: 'Deep rest and healing', videoUrl: 'https://www.youtube.com/watch?v=inpok4MKVLM' },
         ],
         videoUrl: 'https://www.youtube.com/watch?v=inpok4MKVLM',
       },
@@ -59,9 +59,9 @@ export default function MindScreen() {
         duration: '12 min',
         focus: 'Energy & Creativity',
         practices: [
-          { name: 'Moving Meditation Walk', duration: '15 min', focus: 'Energy activation' },
-          { name: 'Creative Visualization', duration: '10 min', focus: 'Goal setting and vision' },
-          { name: 'Mindful Movement Flow', duration: '20 min', focus: 'Body-mind connection' },
+          { name: 'Moving Meditation Walk', duration: '15 min', focus: 'Energy activation', videoUrl: 'https://www.youtube.com/watch?v=z6X5oEIg6Ak' },
+          { name: 'Creative Visualization', duration: '10 min', focus: 'Goal setting and vision', videoUrl: 'https://www.youtube.com/watch?v=z6X5oEIg6Ak' },
+          { name: 'Mindful Movement Flow', duration: '20 min', focus: 'Body-mind connection', videoUrl: 'https://www.youtube.com/watch?v=z6X5oEIg6Ak' },
         ],
         videoUrl: 'https://www.youtube.com/watch?v=z6X5oEIg6Ak',
       },
@@ -88,9 +88,9 @@ export default function MindScreen() {
         duration: '10 min',
         focus: 'Clarity & Confidence',
         practices: [
-          { name: 'Power Visualization', duration: '8 min', focus: 'Peak performance mindset' },
-          { name: 'Focused Attention Meditation', duration: '15 min', focus: 'Mental sharpness' },
-          { name: 'Confidence Building Practice', duration: '12 min', focus: 'Self-assurance' },
+          { name: 'Power Visualization', duration: '8 min', focus: 'Peak performance mindset', videoUrl: 'https://www.youtube.com/watch?v=U9YKY7fdwyg' },
+          { name: 'Focused Attention Meditation', duration: '15 min', focus: 'Mental sharpness', videoUrl: 'https://www.youtube.com/watch?v=U9YKY7fdwyg' },
+          { name: 'Confidence Building Practice', duration: '12 min', focus: 'Self-assurance', videoUrl: 'https://www.youtube.com/watch?v=U9YKY7fdwyg' },
         ],
         videoUrl: 'https://www.youtube.com/watch?v=U9YKY7fdwyg',
       },
@@ -117,9 +117,9 @@ export default function MindScreen() {
         duration: '18 min',
         focus: 'Calm & Stability',
         practices: [
-          { name: 'Loving-Kindness Meditation', duration: '15 min', focus: 'Self-compassion and emotional balance' },
-          { name: 'Grounding Body Scan', duration: '20 min', focus: 'Anxiety reduction' },
-          { name: 'Restorative Practice', duration: '25 min', focus: 'Preparing for rest' },
+          { name: 'Loving-Kindness Meditation', duration: '15 min', focus: 'Self-compassion and emotional balance', videoUrl: 'https://www.youtube.com/watch?v=it4MfjpB0fY' },
+          { name: 'Grounding Body Scan', duration: '20 min', focus: 'Anxiety reduction', videoUrl: 'https://www.youtube.com/watch?v=it4MfjpB0fY' },
+          { name: 'Restorative Practice', duration: '25 min', focus: 'Preparing for rest', videoUrl: 'https://www.youtube.com/watch?v=it4MfjpB0fY' },
         ],
         videoUrl: 'https://www.youtube.com/watch?v=it4MfjpB0fY',
       },
@@ -206,8 +206,9 @@ export default function MindScreen() {
                 key={index}
                 style={[styles.practiceCard, { borderColor: theme.border }]}
                 onPress={() => {
-                  if (content.meditation.videoUrl) {
-                    const videoId = extractVideoId(content.meditation.videoUrl);
+                  const videoUrl = practice.videoUrl || content.meditation.videoUrl;
+                  if (videoUrl) {
+                    const videoId = extractVideoId(videoUrl);
                     if (videoId) setPlayer({ id: videoId, type: 'video' });
                   }
                 }}

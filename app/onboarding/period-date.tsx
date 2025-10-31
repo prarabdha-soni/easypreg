@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@/contexts/UserContext';
 import { Calendar } from 'lucide-react-native';
 
@@ -35,13 +35,17 @@ const generateDays = (month: number, year: number) => {
   const currentMonth = today.getMonth();
   const currentDay = today.getDate();
   
-  // If it's the current year and month, only show days up to today
+  let days: number[];
+  
+  // If it's the current year and month, only show days up to today (descending)
   if (year === currentYear && month === currentMonth) {
-    return Array.from({ length: currentDay }, (_, i) => i + 1);
+    days = Array.from({ length: currentDay }, (_, i) => currentDay - i);
+  } else {
+    // For past months, show all days in descending order
+    days = Array.from({ length: daysInMonth }, (_, i) => daysInMonth - i);
   }
   
-  // For past months, show all days
-  return Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  return days;
 };
 
 const generateYears = () => {
@@ -56,13 +60,13 @@ export default function PeriodDateScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   
   const today = new Date();
-  // Set default to 7 days ago (typical cycle length)
-  const defaultDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  // Set default to today (latest date)
+  const defaultDate = today;
   const [selectedDate, setSelectedDate] = useState(defaultDate);
   
-  const [selectedMonth, setSelectedMonth] = useState(defaultDate.getMonth());
-  const [selectedDay, setSelectedDay] = useState(defaultDate.getDate());
-  const [selectedYear, setSelectedYear] = useState(defaultDate.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
+  const [selectedDay, setSelectedDay] = useState(today.getDate());
+  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
   const handleDateSelect = () => {
     const date = new Date(selectedYear, selectedMonth, selectedDay);
@@ -82,6 +86,37 @@ export default function PeriodDateScreen() {
   const days = generateDays(selectedMonth, selectedYear);
   const years = generateYears();
   const monthList = generateMonths();
+  const dayScrollViewRef = useRef<ScrollView>(null);
+
+  // Update selected day when month/year changes to ensure it's valid
+  useEffect(() => {
+    const maxDay = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    const today = new Date();
+    const isCurrentMonth = selectedYear === today.getFullYear() && selectedMonth === today.getMonth();
+    const maxAllowedDay = isCurrentMonth ? today.getDate() : maxDay;
+    
+    if (selectedDay > maxAllowedDay) {
+      setSelectedDay(maxAllowedDay);
+    }
+  }, [selectedMonth, selectedYear]);
+
+  // Scroll to selected day when days list changes
+  useEffect(() => {
+    if (dayScrollViewRef.current && days.length > 0) {
+      const index = days.indexOf(selectedDay);
+      if (index !== -1) {
+        // Calculate approximate scroll position (each item is ~52px tall with padding)
+        const itemHeight = 52;
+        const scrollOffset = index * itemHeight - 100; // Center the item
+        setTimeout(() => {
+          dayScrollViewRef.current?.scrollTo?.({
+            y: Math.max(0, scrollOffset),
+            animated: false,
+          });
+        }, 100);
+      }
+    }
+  }, [days, selectedDay]);
 
   const addDays = (date: Date, daysToAdd: number) => {
     const d = new Date(date);
@@ -184,6 +219,7 @@ export default function PeriodDateScreen() {
               </ScrollView>
 
               <ScrollView 
+                ref={dayScrollViewRef}
                 style={styles.pickerColumn}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.pickerContent}

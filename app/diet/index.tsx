@@ -1,11 +1,13 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions, TextInput, Modal, Platform } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, UtensilsCrossed, Search, Droplet, Plus, Minus, X, Heart, Clock, Calendar } from 'lucide-react-native';
+import { ArrowLeft, UtensilsCrossed, Search, Droplet, Plus, Minus, X, Heart, Clock, Calendar, Play } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// @ts-ignore: Only used on native
+import { WebView } from 'react-native-webview';
 
 const { width } = Dimensions.get('window');
 
@@ -30,6 +32,7 @@ export default function DietScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [recipeSearchQuery, setRecipeSearchQuery] = useState('');
   const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
+  const [dietPlayer, setDietPlayer] = useState<{ id: string; type: 'video' } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -121,23 +124,23 @@ export default function DietScreen() {
     ],
   };
 
-  // Indian Meal prep programs by phase
+  // Indian Meal prep programs by phase with YouTube videos
   const mealPrepPrograms = {
     Menstrual: [
-      { id: 'mp_m1', title: 'Iron-Rich Dal & Sabzi Prep', days: 3, meals: '9 meals', focus: 'Recovery Nutrition', description: 'Pre-made dal, palak dishes for easy recovery' },
-      { id: 'mp_m2', title: 'Comfort Khichdi & Paratha Prep', days: 5, meals: '15 meals', focus: 'Warming Meals', description: 'Batch cook khichdi, parathas for comfort' },
+      { id: 'mp_m1', title: 'Iron-Rich Dal & Sabzi Prep', days: 3, meals: '9 meals', focus: 'Recovery Nutrition', description: 'Pre-made dal, palak dishes for easy recovery', videoUrl: 'https://www.youtube.com/watch?v=3K35nXrhIRY' },
+      { id: 'mp_m2', title: 'Comfort Khichdi & Paratha Prep', days: 5, meals: '15 meals', focus: 'Warming Meals', description: 'Batch cook khichdi, parathas for comfort', videoUrl: 'https://www.youtube.com/watch?v=2U1FVLtZLk8' },
     ],
     Follicular: [
-      { id: 'mp_f1', title: 'High-Protein Paneer & Egg Prep', days: 7, meals: '21 meals', focus: 'Muscle Building', description: 'Paneer dishes, egg bhurji prep for strength' },
-      { id: 'mp_f2', title: 'Energy Breakfast Prep (Oats, Chilla)', days: 5, meals: '5 breakfasts', focus: 'Morning Fuel', description: 'Masala oats, moong chilla prep' },
+      { id: 'mp_f1', title: 'High-Protein Paneer & Egg Prep', days: 7, meals: '21 meals', focus: 'Muscle Building', description: 'Paneer dishes, egg bhurji prep for strength', videoUrl: 'https://www.youtube.com/watch?v=YSJubcbzJmo' },
+      { id: 'mp_f2', title: 'Energy Breakfast Prep (Oats, Chilla)', days: 5, meals: '5 breakfasts', focus: 'Morning Fuel', description: 'Masala oats, moong chilla prep', videoUrl: 'https://www.youtube.com/watch?v=YSJubcbzJmo' },
     ],
     Ovulation: [
-      { id: 'mp_o1', title: 'Peak Performance Meal Plan', days: 5, meals: '15 meals', focus: 'Optimal Nutrition', description: 'Ragi dosa, fish curry, sprout salads' },
-      { id: 'mp_o2', title: 'Zinc-Rich Snack Prep (Dhokla, Sprouts)', days: 4, meals: '12 meals', focus: 'Hormonal Support', description: 'Dhokla, sprout salad prep for zinc' },
+      { id: 'mp_o1', title: 'Peak Performance Meal Plan', days: 5, meals: '15 meals', focus: 'Optimal Nutrition', description: 'Ragi dosa, fish curry, sprout salads', videoUrl: 'https://www.youtube.com/watch?v=mfG0p1sv9OI' },
+      { id: 'mp_o2', title: 'Zinc-Rich Snack Prep (Dhokla, Sprouts)', days: 4, meals: '12 meals', focus: 'Hormonal Support', description: 'Dhokla, sprout salad prep for zinc', videoUrl: 'https://www.youtube.com/watch?v=YSJubcbzJmo' },
     ],
     Luteal: [
-      { id: 'mp_l1', title: 'PMS-Support Comfort Prep', days: 7, meals: '21 meals', focus: 'Mood & Energy', description: 'Khichdi, biryani, jowar roti prep' },
-      { id: 'mp_l2', title: 'Sustained Energy Meal Prep', days: 5, meals: '15 meals', focus: 'Stable Energy', description: 'Dalia, dosa prep for stable energy' },
+      { id: 'mp_l1', title: 'PMS-Support Comfort Prep', days: 7, meals: '21 meals', focus: 'Mood & Energy', description: 'Khichdi, biryani, jowar roti prep', videoUrl: 'https://www.youtube.com/playlist?list=PL4SJd-G_GUh20CvrfTIwKrjCS998C1jWe' },
+      { id: 'mp_l2', title: 'Sustained Energy Meal Prep', days: 5, meals: '15 meals', focus: 'Stable Energy', description: 'Dalia, dosa prep for stable energy', videoUrl: 'https://www.youtube.com/watch?v=mfG0p1sv9OI' },
     ],
   };
 
@@ -180,6 +183,11 @@ export default function DietScreen() {
       const todayKey = new Date().toISOString().slice(0, 10);
       await AsyncStorage.setItem(`@food_log:${todayKey}`, JSON.stringify(updated));
     }
+  };
+
+  const extractVideoId = (url: string) => {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
   };
 
   // Indian Quick food items (mock database)
@@ -313,16 +321,38 @@ export default function DietScreen() {
             <TouchableOpacity
               key={program.id}
               style={[styles.programCard, { borderColor: theme.border, backgroundColor: theme.surface }]}
+              onPress={() => {
+                if (program.videoUrl) {
+                  const videoId = extractVideoId(program.videoUrl);
+                  if (videoId) setDietPlayer({ id: videoId, type: 'video' });
+                }
+              }}
             >
               <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.programHeader}>
                 <Text style={styles.programTitle}>{program.title}</Text>
                 <Text style={styles.programMeta}>{program.days} days • {program.meals}</Text>
+                {program.videoUrl && (
+                  <View style={styles.videoBadge}>
+                    <Play color="#FFFFFF" size={12} />
+                    <Text style={styles.videoBadgeText}>Video Guide</Text>
+                  </View>
+                )}
               </LinearGradient>
               <View style={styles.programBody}>
                 <Text style={styles.programFocus}>{program.focus}</Text>
                 <Text style={styles.programDescription}>{program.description}</Text>
-                <TouchableOpacity style={[styles.programBtn, { backgroundColor: theme.accentColor }]}>
-                  <Text style={styles.programBtnText}>Start Meal Prep</Text>
+                <TouchableOpacity 
+                  style={[styles.programBtn, { backgroundColor: theme.accentColor }]}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    if (program.videoUrl) {
+                      const videoId = extractVideoId(program.videoUrl);
+                      if (videoId) setDietPlayer({ id: videoId, type: 'video' });
+                    }
+                  }}
+                >
+                  <Play color="#FFFFFF" size={14} />
+                  <Text style={styles.programBtnText}>Watch & Start</Text>
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
@@ -545,6 +575,51 @@ export default function DietScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Video Player Modal for Meal Prep Programs */}
+      <Modal visible={!!dietPlayer} transparent animationType="fade" onRequestClose={() => setDietPlayer(null)}>
+        <View style={styles.videoModalOverlay}>
+          <View style={styles.videoModalCard}>
+            <View style={styles.videoHeader}>
+              <Text style={styles.videoTitle}>Meal Prep Guide</Text>
+              <TouchableOpacity 
+                style={[styles.closeVideoBtn, { backgroundColor: 'rgba(255,255,255,0.2)' }]} 
+                onPress={() => setDietPlayer(null)}
+              >
+                <X color="#FFFFFF" size={20} />
+              </TouchableOpacity>
+            </View>
+            {dietPlayer && (
+              Platform.OS === 'web' ? (
+                <View style={styles.videoContainer}>
+                  {/* @ts-ignore */}
+                  <iframe
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    src={`https://www.youtube.com/embed/${dietPlayer.id}?autoplay=1&playsinline=1`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </View>
+              ) : (
+                <WebView
+                  source={{ uri: `https://www.youtube.com/embed/${dietPlayer.id}?autoplay=1&playsinline=1` }}
+                  style={styles.videoWebView}
+                  allowsInlineMediaPlayback={true}
+                  mediaPlaybackRequiresUserAction={false}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  startInLoadingState={true}
+                  onShouldStartLoadWithRequest={(request) => {
+                    return request.url.includes('youtube.com/embed');
+                  }}
+                />
+              )
+            )}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -645,7 +720,16 @@ const styles = StyleSheet.create({
   programBody: { padding: 16, backgroundColor: '#FFFFFF' },
   programFocus: { fontSize: 13, fontWeight: '700', color: '#111827', marginBottom: 6 },
   programDescription: { fontSize: 12, color: '#6B7280', marginBottom: 12, lineHeight: 18 },
-  programBtn: { paddingVertical: 10, borderRadius: 10, alignItems: 'center' },
+  programBtn: { paddingVertical: 10, borderRadius: 10, alignItems: 'center', flexDirection: 'row', gap: 6, justifyContent: 'center' },
   programBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 13 },
+  videoBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8, backgroundColor: 'rgba(255,255,255,0.2)', paddingVertical: 4, paddingHorizontal: 8, borderRadius: 8, alignSelf: 'flex-start' },
+  videoBadgeText: { color: '#FFFFFF', fontSize: 10, fontWeight: '700' },
+  videoModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
+  videoModalCard: { width: '100%', height: '100%', backgroundColor: '#000', justifyContent: 'center' },
+  videoHeader: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingTop: 56, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.5)' },
+  videoTitle: { fontSize: 18, fontWeight: '700', color: '#FFFFFF' },
+  closeVideoBtn: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  videoContainer: { flex: 1, width: '100%' },
+  videoWebView: { flex: 1, width: '100%', backgroundColor: '#000' },
 });
 

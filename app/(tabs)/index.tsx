@@ -44,9 +44,7 @@ export default function HomeScreen() {
         '🎯 Energy & Hormones: Estrogen and progesterone are at their lowest. Your body is focused on shedding and recovery.',
         '💪 Fitness: Prioritize rest and gentle movement. Yoga, stretching, and light walking help maintain mobility without strain.',
         '🥗 Nutrition: Focus on iron-rich foods (leafy greens, lentils, beans) and anti-inflammatory ingredients to support recovery.',
-        '😴 Sleep: Sleep may be lighter due to discomfort. Use warming techniques, meditation, and maintain consistent bedtime routines.',
-        '✨ Beauty: Skin may be more sensitive or dry. Use gentle, fragrance-free products and rich moisturizers for barrier repair.',
-        '🧘 Wellbeing: This is your natural rest phase. Perfect for reflection, planning, and self-compassion practices.'
+        '🧠 Mind: This is your natural rest phase. Perfect for reflection, planning, and self-compassion practices.'
       ]
     },
     Follicular: {
@@ -55,8 +53,6 @@ export default function HomeScreen() {
         '🎯 Energy & Hormones: Estrogen is rising, boosting energy, strength, and endurance. Your body is preparing for ovulation.',
         '💪 Fitness: Best time for high-intensity workouts! Try HIIT, strength training, cardio, and circuit training to build muscle.',
         '🥗 Nutrition: Focus on protein and fiber-rich meals. Great time for lean meats, legumes, whole grains, and fresh vegetables.',
-        '😴 Sleep: Sleep quality improves with more deep and REM sleep. Maintain regular sleep schedules and morning sunlight exposure.',
-        '✨ Beauty: Skin appears brighter and more resilient. Perfect time for exfoliation, antioxidant serums, and trying new treatments.',
         '🧠 Mind: Increased creativity and mental clarity. Ideal for starting new projects, brainstorming, and tackling challenging tasks.'
       ]
     },
@@ -66,8 +62,6 @@ export default function HomeScreen() {
         '🎯 Energy & Hormones: Peak estrogen and LH surge provide maximum strength, speed, coordination, and mental clarity.',
         '💪 Fitness: Peak performance phase! Ideal for high-intensity intervals, strength training, dance, and skill-based workouts.',
         '🥗 Nutrition: Focus on zinc and antioxidants. Include seafood, nuts, seeds, and colorful vegetables to support peak function.',
-        '😴 Sleep: Some may experience restlessness. Practice calming pre-sleep routines, keep room cool, and avoid screens before bed.',
-        '✨ Beauty: Natural radiance peaks thanks to high estrogen. Skin glows but may be slightly oilier—maintain regular cleansing.',
         '💡 Peak Fertility: Your most fertile window. Hormones support confidence, social energy, and peak cognitive performance.'
       ]
     },
@@ -77,9 +71,7 @@ export default function HomeScreen() {
         '🎯 Energy & Hormones: Progesterone rises, leading to lower energy and increased fatigue. Body temperature may be elevated.',
         '💪 Fitness: Focus on moderate, enjoyable workouts. Yoga, Pilates, light cardio, and walking support consistency without overexertion.',
         '🥗 Nutrition: Prioritize magnesium and complex carbs for stable mood and energy. Include dark leafy greens, whole grains, and seeds.',
-        '😴 Sleep: More awakenings and less restful sleep possible. Use CBT-I techniques, guided meditations, and maintain cooler room temperature.',
-        '✨ Beauty: Increased chance of breakouts due to hormonal changes. Use gentle exfoliants, non-comedogenic products, and calming skincare.',
-        '🌙 Self-Care: Focus on winding down, planning ahead, and supporting your body through PMS symptoms with rest and nourishment.'
+        '🧠 Mind: Focus on planning ahead and supporting your body through PMS symptoms with rest and nourishment.'
       ]
     },
   };
@@ -126,28 +118,6 @@ export default function HomeScreen() {
   const peakFertile = useMemo(() => getNextOvulationDate(profile.lastPeriodDate ?? null), [profile.lastPeriodDate]);
   const peakLabel = peakFertile ? peakFertile.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : null;
 
-  // Entry moment overlay (3 seconds)
-  const [showIntro, setShowIntro] = useState(true);
-  const pulse = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulse, { toValue: 1, duration: 900, useNativeDriver: true }),
-        Animated.timing(pulse, { toValue: 0, duration: 900, useNativeDriver: true }),
-      ])
-    );
-    loop.start();
-    const t = setTimeout(() => setShowIntro(false), 3000);
-    return () => { loop.stop(); clearTimeout(t); };
-  }, [pulse]);
-
-  const introByPhase: Record<'Menstrual'|'Follicular'|'Ovulation'|'Luteal', { gradient: [string,string]; message: string }> = {
-    Menstrual: { gradient: ['#3F2A58', '#5C1349'], message: 'Breathe in calm. Your body is restoring itself today.' },
-    Follicular: { gradient: ['#A9C6FF', '#E7A0F8'], message: 'Energy is rising 🌼 — open your heart to new flow.' },
-    Ovulation: { gradient: ['#FFD27A', '#FFB347'], message: 'You’re radiant ✨ — breathe in confidence.' },
-    Luteal: { gradient: ['#F1E0D6', '#D9BBA8'], message: 'Ease into calm — your body seeks gentleness now.' },
-  };
-  const intro = introByPhase[phaseKey];
 
   // Gloww Moment once per day (10s breath)
   useEffect(() => {
@@ -233,17 +203,6 @@ export default function HomeScreen() {
         </View>
         <Text style={styles.phaseAffirm}>{theme.phaseText}</Text>
       </LinearGradient>
-
-      {/* Intro overlay */}
-      {showIntro && (
-        <Modal transparent animationType="fade" visible={showIntro}>
-          <LinearGradient colors={intro.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.introLayer}>
-            <Text style={styles.introBrand}>GLOWW</Text>
-            <Text style={styles.introText}>{intro.message}</Text>
-            <Animated.View style={[styles.pulseCircle, { transform: [{ scale: pulse.interpolate({ inputRange: [0,1], outputRange: [1, 1.12] }) }], opacity: pulse.interpolate({ inputRange: [0,1], outputRange: [0.5, 1] }) }]} />
-          </LinearGradient>
-        </Modal>
-      )}
 
       {/* quick actions removed as requested */}
 
@@ -356,10 +315,6 @@ const styles = StyleSheet.create({
   close: { marginTop: 12, backgroundColor: '#8B5A8F', borderRadius: 10, paddingVertical: 10 },
   closeText: { color: '#FFF', fontWeight: '700', textAlign: 'center' },
 
-  introLayer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  introBrand: { color: 'rgba(255,255,255,0.85)', letterSpacing: 2, fontWeight: '800', marginBottom: 16 },
-  introText: { color: '#FFFFFF', fontSize: 18, fontWeight: '800', textAlign: 'center', paddingHorizontal: 28 },
-  pulseCircle: { position: 'absolute', width: 220, height: 220, borderRadius: 110, backgroundColor: 'rgba(255,255,255,0.15)' },
 
   momentCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 20, padding: 24, borderRadius: 20, borderWidth: 1, borderColor: '#E5E7EB', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
   momentHeader: { fontSize: 13, fontWeight: '700', color: '#4B5563', marginBottom: 10, letterSpacing: 1.2, textTransform: 'uppercase' },

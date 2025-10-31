@@ -30,6 +30,9 @@ export type PhaseTheme = {
   workoutWhy: string;
   fitnessSummary: string;
   workoutVideoURL?: string; // Optional video URL
+  workoutProgramVideos?: string[]; // Array of phase-specific workout video URLs
+  yogaVideoURL?: string; // Yoga video URL for current phase
+  danceVideoURL?: string; // Dance video URL for current phase
   workoutTime: string; // e.g., "35 min"
   workoutLevel: string; // e.g., "Advanced"
   // Diet fields
@@ -72,7 +75,12 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     workoutTypes: ['Cardio', 'Circuit training', 'Strength training', 'HIIT'],
     workoutWhy: 'Estrogen rises, boosting energy, strength, and endurance—great for intensity and muscle gains.',
     fitnessSummary: 'Energy and strength are rising—ideal for cardio, strength training and HIIT. Try new challenges and build muscle/endurance.',
-    workoutVideoURL: 'https://www.youtube.com/watch?v=YSJubcbzJmo',
+    workoutVideoURL: 'https://www.youtube.com/playlist?list=PLG9XM5PzrT1ddTYRCBLiGcEpxfw-S-imv',
+    yogaVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    danceVideoURL: 'https://www.youtube.com/watch?v=GQd6yeQ4-sI',
+    workoutProgramVideos: [
+      'https://www.youtube.com/playlist?list=PLG9XM5PzrT1ddTYRCBLiGcEpxfw-S-imv',
+    ],
     workoutTime: '30 min',
     workoutLevel: 'Intermediate',
     dietFocusTitle: 'Protein & Fiber Boost',
@@ -119,7 +127,12 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     workoutTypes: ['High‑intensity intervals', 'Skill‑based workouts', 'Tennis', 'Dance'],
     workoutWhy: 'Peak estrogen and LH provide maximum strength, speed, and coordination—ideal for performance.',
     fitnessSummary: 'Peak performance—focus on HIIT, dance, intense cardio or skill work. Social workouts feel rewarding.',
-    workoutVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    workoutVideoURL: 'https://www.youtube.com/watch?v=PBd2CZC-JIE',
+    yogaVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    danceVideoURL: 'https://www.youtube.com/watch?v=9EaLMMz2KsE',
+    workoutProgramVideos: [
+      'https://www.youtube.com/watch?v=PBd2CZC-JIE',
+    ],
     workoutTime: '25 min',
     workoutLevel: 'Advanced',
     dietFocusTitle: 'Zinc & Antioxidants',
@@ -166,7 +179,12 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     workoutTypes: ['Moderate cardio', 'Yoga', 'Pilates', 'Low‑impact strength'],
     workoutWhy: 'Progesterone rises causing lower energy and fatigue—prioritize restorative consistency.',
     fitnessSummary: 'Energy dips—favor moderate, enjoyable movement (yoga, Pilates, light cardio). Focus on recovery and hydration.',
-    workoutVideoURL: 'https://www.youtube.com/playlist?list=PL4SJd-G_GUh20CvrfTIwKrjCS998C1jWe',
+    workoutVideoURL: 'https://www.youtube.com/watch?v=4JaCcp39iVI',
+    yogaVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    danceVideoURL: 'https://www.youtube.com/watch?v=AhKQdriZJMI',
+    workoutProgramVideos: [
+      'https://www.youtube.com/watch?v=4JaCcp39iVI',
+    ],
     workoutTime: '35 min',
     workoutLevel: 'Beginner',
     dietFocusTitle: 'Magnesium & Complex Carbs',
@@ -213,7 +231,12 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     workoutTypes: ['Light walking', 'Yoga', 'Stretching', 'Restorative Pilates'],
     workoutWhy: 'Energy and estrogen are lower—gentle movement promotes blood flow and reduces discomfort.',
     fitnessSummary: 'Prioritize rest and low‑impact movement—gentle yoga, stretching, easy walks. No pressure for high intensity.',
-    workoutVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    workoutVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI', // Note: Dailymotion link not supported
+    yogaVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    danceVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    workoutProgramVideos: [
+      'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    ],
     workoutTime: '20 min',
     workoutLevel: 'Beginner',
     dietFocusTitle: 'Iron & Restorative Fats',

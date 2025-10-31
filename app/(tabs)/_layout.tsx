@@ -39,45 +39,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="workout"
         options={{
-          title: 'Workout',
+          title: 'Exercise',
           tabBarIcon: ({ size, color }) => (
             <Dumbbell size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="diet"
+        name="pcos"
         options={{
-          title: 'Diet',
-          tabBarIcon: ({ size, color }) => (
-            <UtensilsCrossed size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="beauty"
-        options={{
-          title: 'Beauty',
+          title: 'PCOS',
           tabBarIcon: ({ size, color }) => (
             <Sparkles size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="mind"
-        options={{
-          title: 'Mind',
-          tabBarIcon: ({ size, color }) => (
-            <Brain size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="store"
-        options={{
-          title: 'Store',
-          tabBarIcon: ({ size, color }) => (
-            <ShoppingBag size={size} color={color} />
           ),
         }}
       />
@@ -91,6 +64,10 @@ export default function TabLayout() {
         }}
       />
       {/* Hidden tabs */}
+      <Tabs.Screen name="diet" options={{ href: null }} />
+      <Tabs.Screen name="beauty" options={{ href: null }} />
+      <Tabs.Screen name="mind" options={{ href: null }} />
+      <Tabs.Screen name="store" options={{ href: null }} />
       <Tabs.Screen name="sleep" options={{ href: null }} />
       <Tabs.Screen name="treatments" options={{ href: null }} />
       <Tabs.Screen name="doctors" options={{ href: null }} />
