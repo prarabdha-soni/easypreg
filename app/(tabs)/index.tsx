@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Animated } from 'react-native';
 import { useUser } from '@/contexts/UserContext';
-import { Sparkles, Moon, Dumbbell } from 'lucide-react-native';
+import { Sparkles, Crown } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,6 +17,72 @@ export default function HomeScreen() {
   const [momentDone, setMomentDone] = useState(false);
   const breath = useRef(new Animated.Value(0)).current;
   const [weeklyCount, setWeeklyCount] = useState(0);
+  
+  // Mood Tracker
+  const [todayMood, setTodayMood] = useState<'😊' | '😐' | '😔' | null>(null);
+  const [showEducation, setShowEducation] = useState(true);
+  
+  useEffect(() => {
+    (async () => {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const mood = await AsyncStorage.getItem(`@mood:${todayKey}`);
+      if (mood) setTodayMood(mood as '😊' | '😐' | '😔');
+    })();
+  }, []);
+
+  const setMood = async (mood: '😊' | '😐' | '😔') => {
+    setTodayMood(mood);
+    const todayKey = new Date().toISOString().slice(0, 10);
+    await AsyncStorage.setItem(`@mood:${todayKey}`, mood);
+  };
+
+  // Comprehensive education insights by phase
+  const educationInsights = {
+    Menstrual: {
+      title: 'Menstrual Phase (Days 1-5)',
+      points: [
+        '🎯 Energy & Hormones: Estrogen and progesterone are at their lowest. Your body is focused on shedding and recovery.',
+        '💪 Fitness: Prioritize rest and gentle movement. Yoga, stretching, and light walking help maintain mobility without strain.',
+        '🥗 Nutrition: Focus on iron-rich foods (leafy greens, lentils, beans) and anti-inflammatory ingredients to support recovery.',
+        '😴 Sleep: Sleep may be lighter due to discomfort. Use warming techniques, meditation, and maintain consistent bedtime routines.',
+        '✨ Beauty: Skin may be more sensitive or dry. Use gentle, fragrance-free products and rich moisturizers for barrier repair.',
+        '🧘 Wellbeing: This is your natural rest phase. Perfect for reflection, planning, and self-compassion practices.'
+      ]
+    },
+    Follicular: {
+      title: 'Follicular Phase (Days 6-14)',
+      points: [
+        '🎯 Energy & Hormones: Estrogen is rising, boosting energy, strength, and endurance. Your body is preparing for ovulation.',
+        '💪 Fitness: Best time for high-intensity workouts! Try HIIT, strength training, cardio, and circuit training to build muscle.',
+        '🥗 Nutrition: Focus on protein and fiber-rich meals. Great time for lean meats, legumes, whole grains, and fresh vegetables.',
+        '😴 Sleep: Sleep quality improves with more deep and REM sleep. Maintain regular sleep schedules and morning sunlight exposure.',
+        '✨ Beauty: Skin appears brighter and more resilient. Perfect time for exfoliation, antioxidant serums, and trying new treatments.',
+        '🧠 Mind: Increased creativity and mental clarity. Ideal for starting new projects, brainstorming, and tackling challenging tasks.'
+      ]
+    },
+    Ovulation: {
+      title: 'Ovulation Phase (Days 15-17)',
+      points: [
+        '🎯 Energy & Hormones: Peak estrogen and LH surge provide maximum strength, speed, coordination, and mental clarity.',
+        '💪 Fitness: Peak performance phase! Ideal for high-intensity intervals, strength training, dance, and skill-based workouts.',
+        '🥗 Nutrition: Focus on zinc and antioxidants. Include seafood, nuts, seeds, and colorful vegetables to support peak function.',
+        '😴 Sleep: Some may experience restlessness. Practice calming pre-sleep routines, keep room cool, and avoid screens before bed.',
+        '✨ Beauty: Natural radiance peaks thanks to high estrogen. Skin glows but may be slightly oilier—maintain regular cleansing.',
+        '💡 Peak Fertility: Your most fertile window. Hormones support confidence, social energy, and peak cognitive performance.'
+      ]
+    },
+    Luteal: {
+      title: 'Luteal Phase (Days 18-28)',
+      points: [
+        '🎯 Energy & Hormones: Progesterone rises, leading to lower energy and increased fatigue. Body temperature may be elevated.',
+        '💪 Fitness: Focus on moderate, enjoyable workouts. Yoga, Pilates, light cardio, and walking support consistency without overexertion.',
+        '🥗 Nutrition: Prioritize magnesium and complex carbs for stable mood and energy. Include dark leafy greens, whole grains, and seeds.',
+        '😴 Sleep: More awakenings and less restful sleep possible. Use CBT-I techniques, guided meditations, and maintain cooler room temperature.',
+        '✨ Beauty: Increased chance of breakouts due to hormonal changes. Use gentle exfoliants, non-comedogenic products, and calming skincare.',
+        '🌙 Self-Care: Focus on winding down, planning ahead, and supporting your body through PMS symptoms with rest and nourishment.'
+      ]
+    },
+  };
 
   const phaseKey: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal' = useMemo(() => {
     if (!profile.lastPeriodDate) return 'Follicular';
@@ -181,49 +247,60 @@ export default function HomeScreen() {
 
       {/* quick actions removed as requested */}
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Daily streak</Text>
-        <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${Math.round((weeklyCount/7)*100)}%`, backgroundColor: theme.accentColor }]} /></View>
-        <Text style={styles.streakMeta}>{weeklyCount}/7 routines done</Text>
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.illusWrap}>
-          <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.illusCircle}>
-            <Moon color="#FFFFFF" size={18} />
-          </LinearGradient>
+      {/* Mood Tracker */}
+      <View style={[styles.moodCard, { borderColor: theme.border }]}>
+        <Text style={styles.moodTitle}>How do you feel today?</Text>
+        <View style={styles.moodRow}>
+          {(['😊', '😐', '😔'] as const).map((mood) => (
+            <TouchableOpacity
+              key={mood}
+              style={[
+                styles.moodBtn,
+                todayMood === mood && { backgroundColor: theme.accentColor, borderColor: theme.accentColor },
+                todayMood !== mood && { borderColor: theme.border }
+              ]}
+              onPress={() => setMood(mood)}
+            >
+              <Text style={styles.moodEmoji}>{mood}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
-        <Text style={styles.cardHeader}>SLEEP</Text>
-        <Text style={styles.cardTitle}>Improve sleep</Text>
-        <Text style={styles.cardDesc}>Wind down with a calming meditation</Text>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/sleep' as any)} style={[styles.cta, { backgroundColor: theme.accentColor }]}><Text style={styles.ctaText}>Start</Text></TouchableOpacity>
+        {todayMood && <Text style={styles.moodNote}>Thanks for checking in! 💙</Text>}
       </View>
 
-      <View style={styles.cardAlt}>
-        <View style={styles.illusWrap}>
-          <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.illusCircle}>
-            <Dumbbell color="#FFFFFF" size={18} />
-          </LinearGradient>
+      {/* Education Bubble */}
+      {showEducation && (
+        <View style={[styles.educationCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+          <View style={styles.educationHeader}>
+            <Sparkles color={theme.accentColor} size={18} />
+            <Text style={styles.educationTitle}>Did you know?</Text>
+            <TouchableOpacity onPress={() => setShowEducation(false)}>
+              <Text style={[styles.educationClose, { color: theme.accentColor }]}>✕</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.educationPhaseTitle}>{educationInsights[phaseKey].title}</Text>
+          <View style={styles.educationPoints}>
+            {educationInsights[phaseKey].points.map((point, index) => (
+              <View key={index} style={styles.educationPoint}>
+                <Text style={styles.educationPointText}>{point}</Text>
+              </View>
+            ))}
+          </View>
         </View>
-        <Text style={styles.cardHeaderAlt}>FITNESS</Text>
-        <Text style={styles.cardTitleAlt}>Workout</Text>
-        <Text style={styles.cardDescAlt}>Try a 20‑min cardio burst</Text>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/workout' as any)} style={[styles.ctaAlt, { backgroundColor: theme.accentColor }]}><Text style={styles.ctaAltText}>Play</Text></TouchableOpacity>
-      </View>
+      )}
 
-      <View style={styles.glowCard}>
-        <View style={styles.illusWrap}>
-          <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.illusCircle}>
-            <Sparkles color="#FFFFFF" size={18} strokeWidth={2} />
-          </LinearGradient>
-        </View>
-        <Text style={styles.glowHeader}>Hair / Skin Care</Text>
-        <Text style={styles.glowText}>Open for phase‑based skin and hair routines.</Text>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/beauty' as any)} style={styles.glowBtn}>
-          <Text style={[styles.glowBtnText, { color: theme.accentColor }]}>Open</Text>
-        </TouchableOpacity>
-      </View>
 
+      {/* Premium Upsell Card */}
+      <View style={[styles.premiumCard, { borderColor: theme.border }]}>
+        <LinearGradient colors={[theme.accentColor, theme.gradient[1]]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.premiumGradient}>
+          <Crown color="#FFFFFF" size={20} />
+          <Text style={styles.premiumTitle}>Unlock Premium</Text>
+          <Text style={styles.premiumSubtitle}>Cycle-based meal plans & advanced insights</Text>
+          <TouchableOpacity style={styles.premiumBtn}>
+            <Text style={styles.premiumBtnText}>Explore Premium</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </View>
 
       <View style={{ height: 40 }} />
     </ScrollView>
@@ -272,12 +349,6 @@ const styles = StyleSheet.create({
   illusWrap: { position: 'absolute', right: 12, top: 12 },
   illusCircle: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', opacity: 0.9 },
 
-  glowCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 14, padding: 22, borderRadius: 20, borderWidth: 1, borderColor: '#E5E7EB', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
-  glowHeader: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 6 },
-  glowText: { marginTop: 4, fontSize: 14, color: '#6B7280', lineHeight: 20 },
-  glowBtn: { alignSelf: 'flex-start', marginTop: 14, backgroundColor: '#F9FAFB', borderWidth: 1.5, borderColor: '#E5E7EB', paddingVertical: 9, paddingHorizontal: 18, borderRadius: 10 },
-  glowBtnText: { fontWeight: '700', fontSize: 13, letterSpacing: 0.3 },
-
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: 20 },
   modalContent: { backgroundColor: '#FFF', borderRadius: 16, padding: 20, width: '100%', maxWidth: 360, borderWidth: 1, borderColor: '#E5E7EB' },
   modalTitle: { fontSize: 16, fontWeight: '800', color: '#111827', marginBottom: 8 },
@@ -296,4 +367,24 @@ const styles = StyleSheet.create({
   momentPulse: { width: 140, height: 140, borderRadius: 70, backgroundColor: 'rgba(138,90,143,0.12)', marginVertical: 8 },
   momentBtn: { marginTop: 4, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
   momentBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 14, letterSpacing: 0.3 },
+  moodCard: { marginHorizontal: 20, marginTop: 20, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 18, borderWidth: 1 },
+  moodTitle: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 12 },
+  moodRow: { flexDirection: 'row', gap: 12, justifyContent: 'center' },
+  moodBtn: { width: 60, height: 60, borderRadius: 30, borderWidth: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F9FAFB' },
+  moodEmoji: { fontSize: 28 },
+  moodNote: { textAlign: 'center', marginTop: 12, fontSize: 12, color: '#6B7280', fontStyle: 'italic' },
+  educationCard: { marginHorizontal: 20, marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 18, borderWidth: 1 },
+  educationHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
+  educationTitle: { fontSize: 15, fontWeight: '700', color: '#111827', flex: 1 },
+  educationClose: { fontSize: 18, fontWeight: '700' },
+  educationPhaseTitle: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 12 },
+  educationPoints: { gap: 10 },
+  educationPoint: { marginBottom: 4 },
+  educationPointText: { fontSize: 13, color: '#374151', lineHeight: 20 },
+  premiumCard: { marginHorizontal: 20, marginTop: 16, borderRadius: 16, borderWidth: 1, overflow: 'hidden' },
+  premiumGradient: { padding: 20, alignItems: 'center', gap: 8 },
+  premiumTitle: { fontSize: 18, fontWeight: '700', color: '#FFFFFF', marginTop: 4 },
+  premiumSubtitle: { fontSize: 13, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginBottom: 4 },
+  premiumBtn: { marginTop: 8, backgroundColor: 'rgba(255,255,255,0.2)', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },
+  premiumBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 14 },
 });

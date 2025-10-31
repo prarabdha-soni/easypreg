@@ -22,12 +22,23 @@ export type PhaseTheme = {
   border: string; // subtle border color for cards
   phaseIcon: string;
   phaseText: string;
+  // Enhanced workout fields
   workoutRecommendation: string;
   workoutDetails: string;
   workoutFocus: string;
   workoutTypes: string[];
   workoutWhy: string;
   fitnessSummary: string;
+  workoutVideoURL?: string; // Optional video URL
+  workoutTime: string; // e.g., "35 min"
+  workoutLevel: string; // e.g., "Advanced"
+  // Diet fields
+  dietFocusTitle: string; // e.g., "Iron & Restorative Fats"
+  macroGoals: string; // e.g., "40% Carbs, 35% Protein, 25% Fat"
+  supplementRecommendation: string; // e.g., "Prioritize Magnesium"
+  featuredRecipeName: string; // e.g., "Hearty Lentil Soup"
+  dailyMealPlan: { meal: string; suggestion: string }[]; // Breakfast, Lunch, Dinner
+  // Legacy fields (kept for backward compatibility)
   sleepRecommendation: string;
   sleepDetails: string;
   sleepPattern: string;
@@ -55,12 +66,24 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     border: '#E8D5E8',
     phaseIcon: '🌸',
     phaseText: 'Your energy is rising this week.',
-    workoutRecommendation: '20-min cardio burst',
-    workoutDetails: 'High-intensity interval training to leverage rising energy.',
+    workoutRecommendation: 'Full-Body Strength & Cardio',
+    workoutDetails: 'Heavy lifting to leverage peak strength.',
     workoutFocus: 'Building strength and increasing intensity',
     workoutTypes: ['Cardio', 'Circuit training', 'Strength training', 'HIIT'],
     workoutWhy: 'Estrogen rises, boosting energy, strength, and endurance—great for intensity and muscle gains.',
     fitnessSummary: 'Energy and strength are rising—ideal for cardio, strength training and HIIT. Try new challenges and build muscle/endurance.',
+    workoutVideoURL: 'https://www.youtube.com/watch?v=YSJubcbzJmo',
+    workoutTime: '30 min',
+    workoutLevel: 'Intermediate',
+    dietFocusTitle: 'Protein & Fiber Boost',
+    macroGoals: '45% Carbs, 30% Protein, 25% Fat',
+    supplementRecommendation: 'B-Complex vitamins for energy',
+    featuredRecipeName: 'Power Breakfast Bowl',
+    dailyMealPlan: [
+      { meal: 'Breakfast', suggestion: 'Oats with Berries & Nuts' },
+      { meal: 'Lunch', suggestion: 'Quinoa Salad with Grilled Chicken' },
+      { meal: 'Dinner', suggestion: 'Salmon with Sweet Potato & Broccoli' },
+    ],
     sleepRecommendation: 'Meditation for morning freshness',
     sleepDetails: 'Calm your mind to maximize energy gain for the rising phase.',
     sleepPattern: 'Generally improved sleep quality with more deep and REM sleep.',
@@ -90,12 +113,24 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     border: '#F2D6C7',
     phaseIcon: '✨',
     phaseText: 'Peak energy & clarity!',
-    workoutRecommendation: 'Strength + Yoga flow',
-    workoutDetails: 'Build muscle and maintain flexibility at your strongest.',
+    workoutRecommendation: 'High-Intensity Power Flow',
+    workoutDetails: 'Explosive HIIT to maximize energy and endurance.',
     workoutFocus: 'Power and performance',
     workoutTypes: ['High‑intensity intervals', 'Skill‑based workouts', 'Tennis', 'Dance'],
     workoutWhy: 'Peak estrogen and LH provide maximum strength, speed, and coordination—ideal for performance.',
     fitnessSummary: 'Peak performance—focus on HIIT, dance, intense cardio or skill work. Social workouts feel rewarding.',
+    workoutVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    workoutTime: '25 min',
+    workoutLevel: 'Advanced',
+    dietFocusTitle: 'Zinc & Antioxidants',
+    macroGoals: '40% Carbs, 35% Protein, 25% Fat',
+    supplementRecommendation: 'Zinc for peak performance',
+    featuredRecipeName: 'Colorful Power Salad',
+    dailyMealPlan: [
+      { meal: 'Breakfast', suggestion: 'Greek Yogurt with Seeds & Honey' },
+      { meal: 'Lunch', suggestion: 'Mediterranean Bowl with Feta' },
+      { meal: 'Dinner', suggestion: 'Grilled Fish with Roasted Vegetables' },
+    ],
     sleepRecommendation: 'Short naps for clarity',
     sleepDetails: 'Use deep, short rest to maintain peak focus and energy.',
     sleepPattern: 'Possible restlessness or difficulty falling asleep due to hormonal surge.',
@@ -125,12 +160,24 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     border: '#E5D4F7',
     phaseIcon: '🧘‍♀️',
     phaseText: 'Focus on self-care & winding down.',
-    workoutRecommendation: 'Yin yoga or gentle stretching',
-    workoutDetails: 'Support your body with restorative movement as energy declines.',
+    workoutRecommendation: 'Balancing Flow & Recovery',
+    workoutDetails: 'Gentle movement to support mood and energy balance.',
     workoutFocus: 'Calm and recovery',
     workoutTypes: ['Moderate cardio', 'Yoga', 'Pilates', 'Low‑impact strength'],
     workoutWhy: 'Progesterone rises causing lower energy and fatigue—prioritize restorative consistency.',
     fitnessSummary: 'Energy dips—favor moderate, enjoyable movement (yoga, Pilates, light cardio). Focus on recovery and hydration.',
+    workoutVideoURL: 'https://www.youtube.com/playlist?list=PL4SJd-G_GUh20CvrfTIwKrjCS998C1jWe',
+    workoutTime: '35 min',
+    workoutLevel: 'Beginner',
+    dietFocusTitle: 'Magnesium & Complex Carbs',
+    macroGoals: '50% Carbs, 25% Protein, 25% Fat',
+    supplementRecommendation: 'Prioritize Magnesium',
+    featuredRecipeName: 'Hearty Lentil Soup',
+    dailyMealPlan: [
+      { meal: 'Breakfast', suggestion: 'Oats with Berries & Nuts' },
+      { meal: 'Lunch', suggestion: 'Lent Salad Spinach' },
+      { meal: 'Dinner', suggestion: 'Baked Salmon & Sweet Potato' },
+    ],
     sleepRecommendation: 'Magnesium + calming routine',
     sleepDetails: 'Warm, gentle routines to prepare for rest and ease tension.',
     sleepPattern: 'Increased need for sleep and more awakenings; higher body temperature.',
@@ -160,12 +207,24 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     border: '#F4D6DE',
     phaseIcon: '🩸',
     phaseText: 'Deep rest & introspection.',
-    workoutRecommendation: 'Gentle walk or active rest',
-    workoutDetails: 'Prioritize recovery and listen to your body.',
+    workoutRecommendation: 'Gentle Restorative Flow',
+    workoutDetails: 'Restorative movement to ease discomfort and promote recovery.',
     workoutFocus: 'Restorative and gentle movement',
     workoutTypes: ['Light walking', 'Yoga', 'Stretching', 'Restorative Pilates'],
     workoutWhy: 'Energy and estrogen are lower—gentle movement promotes blood flow and reduces discomfort.',
     fitnessSummary: 'Prioritize rest and low‑impact movement—gentle yoga, stretching, easy walks. No pressure for high intensity.',
+    workoutVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
+    workoutTime: '20 min',
+    workoutLevel: 'Beginner',
+    dietFocusTitle: 'Iron & Restorative Fats',
+    macroGoals: '40% Carbs, 30% Protein, 30% Fat',
+    supplementRecommendation: 'Iron with Vitamin C',
+    featuredRecipeName: 'Iron-Rich Spinach & Bean Bowl',
+    dailyMealPlan: [
+      { meal: 'Breakfast', suggestion: 'Iron-Fortified Oatmeal with Berries' },
+      { meal: 'Lunch', suggestion: 'Quinoa & Chickpea Salad' },
+      { meal: 'Dinner', suggestion: 'Hearty Lentil Stew' },
+    ],
     sleepRecommendation: 'Deep rest with flute sounds',
     sleepDetails: 'Long, deep sleep cycles support hormonal repair.',
     sleepPattern: 'Lighter, fragmented sleep; cramps may disrupt rest.',

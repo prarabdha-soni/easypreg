@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Moon, Dumbbell, User, Sparkles, Stethoscope } from 'lucide-react-native';
+import { Home, Dumbbell, User, UtensilsCrossed, ShoppingBag } from 'lucide-react-native';
 import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 
@@ -37,39 +37,29 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="sleep"
-        options={{
-          title: 'Sleep',
-          tabBarIcon: ({ size, color }) => (
-            <Moon size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="workout"
         options={{
-          title: 'Fitness',
+          title: 'Workout',
           tabBarIcon: ({ size, color }) => (
             <Dumbbell size={size} color={color} />
           ),
         }}
       />
-      <Tabs.Screen name="doctors" options={{ href: null }} />
       <Tabs.Screen
-        name="beauty"
+        name="diet"
         options={{
-          title: 'Beauty',
+          title: 'Diet',
           tabBarIcon: ({ size, color }) => (
-            <Sparkles size={size} color={color} />
+            <UtensilsCrossed size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="treatments"
+        name="store"
         options={{
-          title: 'Treatments',
+          title: 'Store',
           tabBarIcon: ({ size, color }) => (
-            <Stethoscope size={size} color={color} />
+            <ShoppingBag size={size} color={color} />
           ),
         }}
       />
@@ -82,7 +72,11 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/** All other tabs removed */}
+      {/* Hidden tabs */}
+      <Tabs.Screen name="sleep" options={{ href: null }} />
+      <Tabs.Screen name="beauty" options={{ href: null }} />
+      <Tabs.Screen name="treatments" options={{ href: null }} />
+      <Tabs.Screen name="doctors" options={{ href: null }} />
     </Tabs>
   );
 }
