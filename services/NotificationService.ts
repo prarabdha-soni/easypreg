@@ -87,7 +87,7 @@ const NOTIFICATION_CONTENT = {
   [NotificationType.HEALTH_TIP]: [
     "Sip warm water or herbal tea—gentle support for hormonal balance.",
     "Add leafy greens or seeds today for micronutrients your cycle loves.",
-    "5 minutes of deep breathing can calm cortisol and ease cramps.",
+    "Deep breathing can calm cortisol and ease cramps.",
     "A short walk outdoors may lift energy and stabilize mood.",
     "Prioritize consistent sleep windows; hormones thrive on routine.",
     "Include protein and healthy fats to steady energy across the day.",
@@ -360,7 +360,7 @@ export class NotificationService {
       const dummyNotifications = [
         "🌸 Your cycle is in the follicular phase - perfect time for gentle exercise!",
         "💧 Stay hydrated today! Your body needs extra water during this phase.",
-        "🧘‍♀️ Take 5 minutes for deep breathing - it helps balance your hormones.",
+        "🧘‍♀️ Take a moment for deep breathing - it helps balance your hormones.",
         "🥗 Add leafy greens to your next meal for iron and folate.",
         "🌙 Your body is preparing for ovulation - listen to your energy levels.",
         "✨ You're doing amazing! Trust your body's natural rhythm.",

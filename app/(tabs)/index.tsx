@@ -42,18 +42,14 @@ export default function HomeScreen() {
       title: 'Menstrual Phase (Days 1-5)',
       points: [
         '🎯 Energy & Hormones: Estrogen and progesterone are at their lowest. Your body is focused on shedding and recovery.',
-        '💪 Fitness: Prioritize rest and gentle movement. Yoga, stretching, and light walking help maintain mobility without strain.',
-        '🥗 Nutrition: Focus on iron-rich foods (leafy greens, lentils, beans) and anti-inflammatory ingredients to support recovery.',
-        '🧠 Mind: This is your natural rest phase. Perfect for reflection, planning, and self-compassion practices.'
+        '💪 Fitness: Prioritize rest and gentle movement. Yoga, stretching, and light walking help maintain mobility without strain.'
       ]
     },
     Follicular: {
       title: 'Follicular Phase (Days 6-14)',
       points: [
         '🎯 Energy & Hormones: Estrogen is rising, boosting energy, strength, and endurance. Your body is preparing for ovulation.',
-        '💪 Fitness: Best time for high-intensity workouts! Try HIIT, strength training, cardio, and circuit training to build muscle.',
-        '🥗 Nutrition: Focus on protein and fiber-rich meals. Great time for lean meats, legumes, whole grains, and fresh vegetables.',
-        '🧠 Mind: Increased creativity and mental clarity. Ideal for starting new projects, brainstorming, and tackling challenging tasks.'
+        '💪 Fitness: Best time for high-intensity workouts! Try HIIT, strength training, cardio, and circuit training to build muscle.'
       ]
     },
     Ovulation: {
@@ -61,7 +57,6 @@ export default function HomeScreen() {
       points: [
         '🎯 Energy & Hormones: Peak estrogen and LH surge provide maximum strength, speed, coordination, and mental clarity.',
         '💪 Fitness: Peak performance phase! Ideal for high-intensity intervals, strength training, dance, and skill-based workouts.',
-        '🥗 Nutrition: Focus on zinc and antioxidants. Include seafood, nuts, seeds, and colorful vegetables to support peak function.',
         '💡 Peak Fertility: Your most fertile window. Hormones support confidence, social energy, and peak cognitive performance.'
       ]
     },
@@ -69,9 +64,7 @@ export default function HomeScreen() {
       title: 'Luteal Phase (Days 18-28)',
       points: [
         '🎯 Energy & Hormones: Progesterone rises, leading to lower energy and increased fatigue. Body temperature may be elevated.',
-        '💪 Fitness: Focus on moderate, enjoyable workouts. Yoga, Pilates, light cardio, and walking support consistency without overexertion.',
-        '🥗 Nutrition: Prioritize magnesium and complex carbs for stable mood and energy. Include dark leafy greens, whole grains, and seeds.',
-        '🧠 Mind: Focus on planning ahead and supporting your body through PMS symptoms with rest and nourishment.'
+        '💪 Fitness: Focus on moderate, enjoyable workouts. Yoga, Pilates, light cardio, and walking support consistency without overexertion.'
       ]
     },
   };
@@ -189,7 +182,7 @@ export default function HomeScreen() {
           <Text style={styles.brand}>GLOWW</Text>
           {profile.lastPeriodDate && peakLabel ? (
             <View style={styles.fertilePill}>
-              <Text style={styles.fertilePillText}>Peak fertile: {peakLabel}</Text>
+              <Text style={styles.fertilePillText}>Peak fertile date: {peakLabel}</Text>
             </View>
           ) : null}
         </View>
@@ -274,7 +267,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 26, fontWeight: '700', color: '#FFF', marginBottom: 8, textAlign: 'left', lineHeight: 34 },
   subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.88)', marginBottom: 20, lineHeight: 22 },
   fertilePill: { backgroundColor: 'rgba(255,255,255,0.95)', paddingVertical: 6, paddingHorizontal: 14, borderRadius: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 4, elevation: 3 },
-  fertilePillText: { color: '#1F2937', fontWeight: '700', fontSize: 12, letterSpacing: 0.2 },
+  fertilePillText: { color: '#1F2937', fontWeight: '700', fontSize: 14, letterSpacing: 0.2 },
   phaseContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 4, marginBottom: 8 },
   phaseName: { fontSize: 28, fontWeight: '700', color: '#FFF', letterSpacing: 1 },
   phaseIconWrapper: { marginLeft: 8, width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },

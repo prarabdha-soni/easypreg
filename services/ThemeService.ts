@@ -75,11 +75,11 @@ export const themes: Record<HormonalPhase, PhaseTheme> = {
     workoutTypes: ['Cardio', 'Circuit training', 'Strength training', 'HIIT'],
     workoutWhy: 'Estrogen rises, boosting energy, strength, and endurance—great for intensity and muscle gains.',
     fitnessSummary: 'Energy and strength are rising—ideal for cardio, strength training and HIIT. Try new challenges and build muscle/endurance.',
-    workoutVideoURL: 'https://www.youtube.com/playlist?list=PLG9XM5PzrT1ddTYRCBLiGcEpxfw-S-imv',
+    workoutVideoURL: 'https://www.youtube.com/watch?v=xxa8IdKd8M0',
     yogaVideoURL: 'https://www.youtube.com/watch?v=mfG0p1sv9OI',
     danceVideoURL: 'https://www.youtube.com/watch?v=GQd6yeQ4-sI',
     workoutProgramVideos: [
-      'https://www.youtube.com/playlist?list=PLG9XM5PzrT1ddTYRCBLiGcEpxfw-S-imv',
+      'https://www.youtube.com/watch?v=xxa8IdKd8M0',
     ],
     workoutTime: '30 min',
     workoutLevel: 'Intermediate',

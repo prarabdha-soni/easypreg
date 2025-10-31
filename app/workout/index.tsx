@@ -122,31 +122,6 @@ export default function WorkoutScreen() {
     })();
   }, [theme.yogaVideoURL]);
 
-  // Fetch Third Yoga video thumbnail
-  useEffect(() => {
-    const videoId = extractVideoId(YOGA_VIDEO_3);
-    if (!videoId) {
-      setLoadingYogaThumb3(false);
-      return;
-    }
-    
-    setLoadingYogaThumb3(true);
-    (async () => {
-      try {
-        const resp = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YT_API_KEY}`);
-        const data = await resp.json();
-        const s = data?.items?.[0]?.snippet;
-        if (s) {
-          setYogaThumb3(s.thumbnails?.high?.url || s.thumbnails?.medium?.url || s.thumbnails?.default?.url);
-          setYogaTitle3(s.title || 'Yoga Video');
-        }
-      } catch (err) {
-        console.log('Third yoga thumbnail fetch error:', err);
-      }
-      finally { setLoadingYogaThumb3(false); }
-    })();
-  }, []);
-
   // Fetch Dance video thumbnail
   useEffect(() => {
     if (!theme.danceVideoURL) {
@@ -228,15 +203,10 @@ export default function WorkoutScreen() {
   // Yoga and Dance video thumbnails
   const [yogaThumb, setYogaThumb] = useState<string | null>(null);
   const [yogaTitle, setYogaTitle] = useState<string>('');
-  const [yogaThumb3, setYogaThumb3] = useState<string | null>(null);
-  const [yogaTitle3, setYogaTitle3] = useState<string>('');
   const [danceThumb, setDanceThumb] = useState<string | null>(null);
   const [danceTitle, setDanceTitle] = useState<string>('');
   const [loadingYogaThumb, setLoadingYogaThumb] = useState(true);
-  const [loadingYogaThumb3, setLoadingYogaThumb3] = useState(true);
   const [loadingDanceThumb, setLoadingDanceThumb] = useState(true);
-
-  const YOGA_VIDEO_3 = 'https://www.youtube.com/watch?v=5JvbjrLESPs';
 
   useEffect(() => {
     (async () => {
@@ -339,14 +309,6 @@ export default function WorkoutScreen() {
         setPlayerTitle(yogaTitle || 'Yoga Video');
         setPlayer({ id: videoId, type: 'video' });
       }
-    }
-  };
-
-  const handlePlayYoga3 = () => {
-    const videoId = extractVideoId(YOGA_VIDEO_3);
-    if (videoId) {
-      setPlayerTitle(yogaTitle3 || 'Yoga Video');
-      setPlayer({ id: videoId, type: 'video' });
     }
   };
 
@@ -524,35 +486,6 @@ export default function WorkoutScreen() {
           {yogaTitle && (
             <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface, marginHorizontal: 20 }]}>
               <Text style={styles.videoInfoText}>🧘 {yogaTitle}</Text>
-            </View>
-          )}
-
-          {/* Additional Yoga Video */}
-          <View style={[styles.videoCard, { borderColor: theme.border, marginTop: 20 }]}>
-            {loadingYogaThumb3 ? (
-              <View style={styles.videoPlaceholder}>
-                <ActivityIndicator color={theme.accentColor} size="large" />
-              </View>
-            ) : yogaThumb3 ? (
-              <Image source={{ uri: yogaThumb3 }} style={styles.videoThumbnail} />
-            ) : (
-              <View style={styles.videoPlaceholder}>
-                <Text style={styles.placeholderText}>Yoga Video</Text>
-              </View>
-            )}
-            
-            <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
-              <Text style={styles.phaseBadgeText}>Yoga Practice</Text>
-            </View>
-
-            <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.accentColor }]} onPress={handlePlayYoga3}>
-              <Play color="#FFFFFF" size={32} fill="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-          
-          {yogaTitle3 && (
-            <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface, marginHorizontal: 20 }]}>
-              <Text style={styles.videoInfoText}>🧘 {yogaTitle3}</Text>
             </View>
           )}
         </View>
