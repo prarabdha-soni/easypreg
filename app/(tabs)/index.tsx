@@ -27,17 +27,37 @@ export default function HomeScreen() {
 
   function getNextOvulationDate(last: Date | null): Date | null {
     if (!last) return null;
-    const msDay = 24 * 60 * 60 * 1000;
-    let ov = new Date(last);
-    ov.setDate(ov.getDate() + 14);
-    const now = new Date();
-    while (ov.getTime() < now.getTime() - msDay) {
-      ov = new Date(ov.getTime() + 28 * msDay);
+    
+    try {
+      // Ensure last is a valid Date object
+      const lastDate = last instanceof Date ? last : new Date(last);
+      if (isNaN(lastDate.getTime())) {
+        console.warn('Invalid lastPeriodDate:', last);
+        return null;
+      }
+      
+      const msDay = 24 * 60 * 60 * 1000;
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // Normalize to start of day
+      
+      // Calculate next ovulation (typically day 14 from last period start)
+      let ov = new Date(lastDate);
+      ov.setDate(ov.getDate() + 14);
+      ov.setHours(0, 0, 0, 0);
+      
+      // If ovulation has passed or is today, find the next one (add 28 days)
+      while (ov.getTime() <= now.getTime()) {
+        ov = new Date(ov.getTime() + 28 * msDay);
+      }
+      
+      return ov;
+    } catch (error) {
+      console.error('Error calculating ovulation date:', error);
+      return null;
     }
-    return ov;
   }
 
-  const peakFertile = getNextOvulationDate(profile.lastPeriodDate ?? null);
+  const peakFertile = useMemo(() => getNextOvulationDate(profile.lastPeriodDate ?? null), [profile.lastPeriodDate]);
   const peakLabel = peakFertile ? peakFertile.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : null;
 
   // Entry moment overlay (3 seconds)
@@ -131,11 +151,11 @@ export default function HomeScreen() {
       <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
         <View style={styles.heroTop}>
           <Text style={styles.brand}>GLOWW</Text>
-          {peakLabel && (
+          {profile.lastPeriodDate && peakLabel ? (
             <View style={styles.fertilePill}>
               <Text style={styles.fertilePillText}>Peak fertile: {peakLabel}</Text>
             </View>
-          )}
+          ) : null}
         </View>
         <Text style={styles.title}>Your hormones change every week.</Text>
         <Text style={styles.subtitle}>So should your sleep, fitness, and glow.</Text>
@@ -217,8 +237,8 @@ const styles = StyleSheet.create({
   brand: { fontSize: 18, color: 'rgba(255,255,255,0.95)', fontWeight: '700', letterSpacing: 3, fontFamily: 'System' },
   title: { fontSize: 26, fontWeight: '700', color: '#FFF', marginBottom: 8, textAlign: 'left', lineHeight: 34 },
   subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.88)', marginBottom: 20, lineHeight: 22 },
-  fertilePill: { backgroundColor: 'rgba(255,255,255,0.92)', paddingVertical: 5, paddingHorizontal: 12, borderRadius: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2 },
-  fertilePillText: { color: '#1F2937', fontWeight: '700', fontSize: 11, letterSpacing: 0.3 },
+  fertilePill: { backgroundColor: 'rgba(255,255,255,0.95)', paddingVertical: 6, paddingHorizontal: 14, borderRadius: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 4, elevation: 3 },
+  fertilePillText: { color: '#1F2937', fontWeight: '700', fontSize: 12, letterSpacing: 0.2 },
   phaseContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 4, marginBottom: 8 },
   phaseName: { fontSize: 28, fontWeight: '700', color: '#FFF', letterSpacing: 1 },
   phaseIconWrapper: { marginLeft: 8, width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
