@@ -6,6 +6,7 @@ import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 import { useEffect, useMemo, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 
@@ -21,6 +22,7 @@ export default function WorkoutScreen() {
   }, [profile.lastPeriodDate]);
 
   const theme = themes[phaseKey];
+  const [tab, setTab] = React.useState<'workout'|'nutrition'|'weightloss'>('workout');
 
   // Animated weekly streak progress (mock 4/7)
   const progress = useRef(new Animated.Value(0)).current;
@@ -32,6 +34,13 @@ export default function WorkoutScreen() {
   }, [target]);
 
   const widthInterpolate = progress.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] });
+
+  // Mark daily fitness completion
+  const completeToday = async () => {
+    const d = new Date();
+    const key = `@workout_done:${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    try { await AsyncStorage.setItem(key, '1'); } catch {}
+  };
 
   // YouTube resources with metadata fetch
   const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
@@ -115,6 +124,11 @@ export default function WorkoutScreen() {
         </TouchableOpacity>
       </View>
       <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}><Text style={styles.heroTitle}>Move with your hormones 💪</Text></LinearGradient>
+      <View style={styles.toggleRow}>
+        <TouchableOpacity style={[styles.toggleChip, tab==='nutrition' && { backgroundColor: '#111827' }]} onPress={() => setTab('nutrition')}><Text style={[styles.toggleChipText, tab==='nutrition' && { color: '#FFFFFF' }]}>Nutrition</Text></TouchableOpacity>
+        <TouchableOpacity style={[styles.toggleChip, tab==='weightloss' && { backgroundColor: '#111827' }]} onPress={() => setTab('weightloss')}><Text style={[styles.toggleChipText, tab==='weightloss' && { color: '#FFFFFF' }]}>Weight Loss</Text></TouchableOpacity>
+        <TouchableOpacity style={[styles.toggleChip, tab==='workout' && { backgroundColor: '#111827' }]} onPress={() => setTab('workout')}><Text style={[styles.toggleChipText, tab==='workout' && { color: '#FFFFFF' }]}>Workout</Text></TouchableOpacity>
+      </View>
 
       <Text style={styles.sectionLabel}>Weekly Streak</Text>
       <View style={styles.progressBar}>
@@ -122,17 +136,21 @@ export default function WorkoutScreen() {
       </View>
       <Text style={styles.streakText}>{completed}/{total} days completed</Text>
 
+      {tab === 'workout' && (
       <View style={styles.card}>
         <Text style={styles.cardHeader}>{theme.phaseIcon} {phaseKey} Phase</Text>
         <Text style={styles.title}>{theme.workoutRecommendation}</Text>
         <Text style={styles.subtitle}>{theme.workoutDetails}</Text>
-        <TouchableOpacity style={[styles.start, { backgroundColor: theme.accentColor }]}>
+        <TouchableOpacity style={[styles.start, { backgroundColor: theme.accentColor }]} onPress={completeToday}>
           <Text style={styles.startText}>Start Workout</Text>
         </TouchableOpacity>
       </View>
+      )}
 
+      {tab === 'workout' && (
       <View style={styles.guidanceCard}>
         <Text style={styles.sectionLabel}>For this phase</Text>
+        <Text style={styles.summaryText}>{theme.fitnessSummary}</Text>
         <Text style={styles.focusText}><Text style={{ fontWeight: '800' }}>Focus:</Text> {theme.workoutFocus}</Text>
         <Text style={[styles.sectionLabel, { marginTop: 10 }]}>Workout types</Text>
         <View style={styles.typeChips}>
@@ -142,6 +160,30 @@ export default function WorkoutScreen() {
         </View>
         <Text style={styles.whyText}><Text style={{ fontWeight: '800' }}>Why:</Text> {theme.workoutWhy}</Text>
       </View>
+      )}
+
+      {tab === 'nutrition' && (
+        <View style={styles.guidanceCard}>
+          <Text style={styles.sectionLabel}>Nutrition for this phase</Text>
+          <Text style={styles.summaryText}>{theme.nutritionSummary}</Text>
+          <View style={styles.typeChips}>
+            {theme.nutritionTips.map((t, i) => (
+              <View key={i} style={styles.typeChip}><Text style={styles.typeChipText}>{t}</Text></View>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {tab === 'weightloss' && (
+        <View style={styles.guidanceCard}>
+          <Text style={styles.sectionLabel}>Weight loss guidance</Text>
+          <View style={styles.typeChips}>
+            {theme.weightLossTips.map((t, i) => (
+              <View key={i} style={styles.typeChip}><Text style={styles.typeChipText}>{t}</Text></View>
+            ))}
+          </View>
+        </View>
+      )}
 
       <TouchableOpacity style={styles.exploreMore}>
         <Text style={styles.exploreText}>Explore More Workouts</Text>
@@ -253,6 +295,10 @@ const styles = StyleSheet.create({
   typeChip: { backgroundColor: '#FFF1E8', borderRadius: 14, paddingVertical: 6, paddingHorizontal: 10, borderWidth: 1, borderColor: '#F2D6C7' },
   typeChipText: { color: '#6B3A2E', fontWeight: '700' },
   whyText: { color: '#6B7280', marginTop: 10, lineHeight: 20 },
+  summaryText: { color: '#4B2D2F', marginBottom: 6 },
+  toggleRow: { flexDirection: 'row', gap: 10, marginTop: 10 },
+  toggleChip: { borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 18, paddingVertical: 8, paddingHorizontal: 14, backgroundColor: '#FFFFFF' },
+  toggleChipText: { color: '#111827', fontWeight: '700' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center', padding: 16 },
   modalCard: { width: '100%', maxWidth: 720, height: 400, backgroundColor: '#000', borderRadius: 12, overflow: 'hidden' },
   closeBtn: { position: 'absolute', bottom: 12, right: 12, borderRadius: 10, paddingVertical: 8, paddingHorizontal: 12 },

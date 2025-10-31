@@ -18,6 +18,7 @@ export default function SleepScreen() {
   const [ytLoading, setYtLoading] = useState<boolean>(true);
   const [ytItems, setYtItems] = useState<{ id: string; title: string; thumb: string; url: string; channel?: string; type: 'video'|'playlist' }[] | null>(null);
   const [player, setPlayer] = useState<{ id: string; type: 'video'|'playlist' } | null>(null);
+  const [tab, setTab] = useState<'meditation'|'songs'|'stories'>('meditation');
 
   const phaseKey: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal' = useMemo(() => {
     if (!profile.lastPeriodDate) return 'Follicular';
@@ -45,17 +46,32 @@ export default function SleepScreen() {
 
   // YouTube videos for sleep
   const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
-  const sleepVideos = [
-    { type: 'video' as const, url: 'https://www.youtube.com/watch?v=ZToicYcHIOU' }, // Headspace breathing
-    { type: 'video' as const, url: 'https://www.youtube.com/watch?v=aEqlQvczMJQ' }, // 10-min guided meditation
-  ];
+  function getSleepList(kind: 'meditation'|'songs'|'stories') {
+    if (kind === 'songs') {
+      return [
+        { type: 'video' as const, url: 'https://www.youtube.com/watch?v=1ZYbU82GVz4' }, // deep sleep music
+        { type: 'video' as const, url: 'https://www.youtube.com/watch?v=2OEL4P1Rz04' }, // calming piano
+      ];
+    }
+    if (kind === 'stories') {
+      return [
+        { type: 'video' as const, url: 'https://www.youtube.com/watch?v=6A2ZsWn1D9w' }, // sleep story
+        { type: 'video' as const, url: 'https://www.youtube.com/watch?v=2SH6b32bBps' }, // bedtime story
+      ];
+    }
+    return [
+      { type: 'video' as const, url: 'https://www.youtube.com/watch?v=ZToicYcHIOU' },
+      { type: 'video' as const, url: 'https://www.youtube.com/watch?v=aEqlQvczMJQ' },
+    ];
+  }
   function getParam(u: string, k: string) { try { const o = new URL(u); return o.searchParams.get(k); } catch { return null; } }
   function vid(u: string) { const v = getParam(u,'v'); if(v) return v; try{const o=new URL(u); if(o.hostname.includes('youtu.be')) return o.pathname.replace('/','');}catch{} return null; }
   useEffect(() => {
     (async () => {
       try {
         const out: any[] = [];
-        for (const r of sleepVideos) {
+        const list = getSleepList(tab);
+        for (const r of list) {
           const id = vid(r.url);
           if (!id) continue;
           const resp = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${YT_API_KEY}`);
@@ -67,7 +83,7 @@ export default function SleepScreen() {
       } catch { setYtItems([]); }
       finally { setYtLoading(false); }
     })();
-  }, []);
+  }, [tab]);
 
   // no-op animation removed for simpler pill CTA
 
@@ -87,6 +103,11 @@ export default function SleepScreen() {
       </View>
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>Sleep better this week 💫</Text>
+      </View>
+      <View style={styles.toggleRow}>
+        <TouchableOpacity style={[styles.toggleChip, tab==='meditation' && { backgroundColor: '#111827' }]} onPress={() => setTab('meditation')}><Text style={[styles.toggleChipText, tab==='meditation' && { color: '#FFFFFF' }]}>Meditation</Text></TouchableOpacity>
+        <TouchableOpacity style={[styles.toggleChip, tab==='songs' && { backgroundColor: '#111827' }]} onPress={() => setTab('songs')}><Text style={[styles.toggleChipText, tab==='songs' && { color: '#FFFFFF' }]}>Songs</Text></TouchableOpacity>
+        <TouchableOpacity style={[styles.toggleChip, tab==='stories' && { backgroundColor: '#111827' }]} onPress={() => setTab('stories')}><Text style={[styles.toggleChipText, tab==='stories' && { color: '#FFFFFF' }]}>Stories</Text></TouchableOpacity>
       </View>
 
       
@@ -121,6 +142,7 @@ export default function SleepScreen() {
       <View style={styles.whiteCard}>
         <Text style={styles.sectionTitle}>Sleep pattern this phase</Text>
         <Text style={styles.infoText}>{theme.sleepPattern}</Text>
+        <Text style={[styles.infoText, { marginTop: 8 }]}>{theme.sleepSummary}</Text>
       </View>
 
       <View style={styles.whiteCard}>
@@ -232,6 +254,9 @@ const styles = StyleSheet.create({
   modalCard: { width: '100%', maxWidth: 720, height: 400, backgroundColor: '#000', borderRadius: 12, overflow: 'hidden' },
   closeBtn: { position: 'absolute', bottom: 12, right: 12, borderRadius: 10, paddingVertical: 8, paddingHorizontal: 12 },
   closeText: { color: '#FFF', fontWeight: '800' },
+  toggleRow: { flexDirection: 'row', gap: 10, paddingHorizontal: 20, marginTop: 10 },
+  toggleChip: { borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 18, paddingVertical: 8, paddingHorizontal: 14, backgroundColor: '#FFFFFF' },
+  toggleChipText: { color: '#111827', fontWeight: '700' },
   bigPlayWrap: { alignItems: 'center', justifyContent: 'center', marginTop: 6, marginBottom: 20 },
   bigPulse: { position: 'absolute', width: 210, height: 210, borderRadius: 105, backgroundColor: '#E4D6EE' },
   bigPlay: { width: 200, height: 200, borderRadius: 100, backgroundColor: '#8B5A8F', alignItems: 'center', justifyContent: 'center', elevation: 4, shadowColor: '#000', shadowOpacity: 0.15, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } },

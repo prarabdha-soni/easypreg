@@ -19,6 +19,7 @@ export default function BeautyScreen() {
     return getCurrentHormonalPhase(getCycleDay(profile.lastPeriodDate));
   }, [profile.lastPeriodDate]);
   const theme = themes[phaseKey];
+  const [mode, setMode] = React.useState<'skin'|'hair'>('skin');
 
   const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
   const beautyVideos = [
@@ -57,36 +58,60 @@ export default function BeautyScreen() {
       </View>
       <Text style={styles.pageTitle}>Glow with your cycle ✨</Text>
 
-      <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cardGrad}>
-        <Text style={styles.phaseSmall}>🌿 Tip for the {phaseKey} Phase</Text>
-        <Text style={styles.titleBig}>{theme.beautyTip}</Text>
-        <Text style={styles.textDark}>{theme.beautyAction}</Text>
-        <TouchableOpacity style={[styles.pillCta, { backgroundColor: '#FFFFFF' }]}
-        >
-          <Text style={[styles.pillCtaText, { color: '#111827' }]}>See my recommended products</Text>
-        </TouchableOpacity>
-      </LinearGradient>
-
-      <View style={styles.whiteCard}>
-        <Text style={styles.sectionTitle}>Suggested routine today</Text>
-        {theme.beautyRoutine.map((step, i) => (
-          <View key={i} style={styles.routineRow}>
-            <View style={[styles.routineBadge, { backgroundColor: '#F3E8F3', borderColor: '#E8D5E8' }]}>
-              <Text style={styles.routineBadgeText}>{i + 1}</Text>
-            </View>
-            <Text style={styles.routineText}>{step}</Text>
-          </View>
-        ))}
+      <View style={styles.toggleRow}>
+        <TouchableOpacity style={[styles.toggleChip, mode==='skin' && { backgroundColor: '#111827' }]} onPress={() => setMode('skin')}><Text style={[styles.toggleChipText, mode==='skin' && { color: '#FFFFFF' }]}>Skin</Text></TouchableOpacity>
+        <TouchableOpacity style={[styles.toggleChip, mode==='hair' && { backgroundColor: '#111827' }]} onPress={() => setMode('hair')}><Text style={[styles.toggleChipText, mode==='hair' && { color: '#FFFFFF' }]}>Hair</Text></TouchableOpacity>
       </View>
 
-      <View style={styles.whiteCard}>
-        <Text style={styles.sectionTitle}>Common concerns this phase</Text>
-        <View style={styles.concernWrap}>
-          {theme.beautyConcerns.map((c, i) => (
-            <View key={i} style={styles.concernChip}><Text style={styles.concernChipText}>{c}</Text></View>
+      {mode === 'skin' ? (
+        <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cardGrad}>
+          <Text style={styles.phaseSmall}>🌿 Tip for the {phaseKey} Phase</Text>
+          <Text style={styles.titleBig}>{theme.beautyTip}</Text>
+          <Text style={styles.textDark}>{theme.beautyAction}</Text>
+          <TouchableOpacity style={[styles.pillCta, { backgroundColor: '#FFFFFF' }]}>
+            <Text style={[styles.pillCtaText, { color: '#111827' }]}>See my recommended products</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      ) : (
+        <View style={styles.whiteCard}>
+          <Text style={styles.sectionTitle}>Hair care this phase</Text>
+          <Text style={{ color: '#374151', marginBottom: 8 }}>{theme.hairSummary}</Text>
+          {theme.hairTips.map((t, i) => (
+            <View key={i} style={styles.hairRow}>
+              <View style={styles.hairDot} />
+              <Text style={styles.hairText}>{t}</Text>
+            </View>
           ))}
         </View>
-      </View>
+      )}
+
+      {mode === 'skin' && (
+        <View style={styles.whiteCard}>
+          <Text style={styles.sectionTitle}>Suggested routine today</Text>
+          <Text style={{ color: '#374151', marginBottom: 8 }}>{theme.beautySummary}</Text>
+          {theme.beautyRoutine.map((step, i) => (
+            <View key={i} style={styles.routineRow}>
+              <View style={[styles.routineBadge, { backgroundColor: '#F3E8F3', borderColor: '#E8D5E8' }]}>
+                <Text style={styles.routineBadgeText}>{i + 1}</Text>
+              </View>
+              <Text style={styles.routineText}>{step}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {mode === 'skin' && (
+        <View style={styles.whiteCard}>
+          <Text style={styles.sectionTitle}>Common concerns this phase</Text>
+          <View style={styles.concernWrap}>
+            {theme.beautyConcerns.map((c, i) => (
+              <View key={i} style={styles.concernChip}><Text style={styles.concernChipText}>{c}</Text></View>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {mode === 'hair' && null}
 
       <View style={styles.exploreBox}> 
         <Text style={styles.exploreTitle}>Explore products for this phase</Text>
@@ -177,6 +202,9 @@ const styles = StyleSheet.create({
   textDark: { fontSize: 15, color: '#1F2937', marginBottom: 16, lineHeight: 22 },
   pillCta: { alignSelf: 'center', paddingVertical: 14, paddingHorizontal: 24, borderRadius: 28, marginTop: 8 },
   pillCtaText: { fontWeight: '800' },
+  toggleRow: { flexDirection: 'row', gap: 10, paddingHorizontal: 20, marginTop: 10 },
+  toggleChip: { borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 18, paddingVertical: 8, paddingHorizontal: 14, backgroundColor: '#FFFFFF' },
+  toggleChipText: { color: '#111827', fontWeight: '700' },
   header: { fontSize: 13, color: '#8B5A8F', fontWeight: '800', marginBottom: 6 },
   title: { fontSize: 22, fontWeight: '800', color: '#1F2937', marginBottom: 8 },
   text: { fontSize: 15, color: '#6B7280', marginBottom: 14, lineHeight: 22 },
@@ -198,6 +226,7 @@ const styles = StyleSheet.create({
   concernWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   concernChip: { backgroundColor: '#F3F4F6', borderRadius: 14, paddingVertical: 6, paddingHorizontal: 10, borderWidth: 1, borderColor: '#E5E7EB' },
   concernChipText: { color: '#374151', fontWeight: '600' },
+  topBar: { paddingHorizontal: 16, paddingTop: 16 },
   resourcesCard: { backgroundColor: '#FFFFFF', borderRadius: 16, borderWidth: 1, borderColor: '#E8D5E8', padding: 16, marginHorizontal: 20, marginBottom: 20 },
   resourcesHeader: { fontSize: 15, fontWeight: '800', color: '#5A3A5A', marginBottom: 10 },
   vidRow: { flexDirection: 'row', gap: 12, marginBottom: 12, alignItems: 'center' },
@@ -210,6 +239,9 @@ const styles = StyleSheet.create({
   closeText: { color: '#FFF', fontWeight: '800' },
   resourceLink: { fontSize: 14, fontWeight: '700', marginTop: 8 },
   resourceMeta: { fontSize: 12, color: '#6B7280' },
+  hairRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: 6 },
+  hairDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#8B5A8F', marginTop: 7 },
+  hairText: { color: '#374151', flex: 1, lineHeight: 20 },
 });
 
 

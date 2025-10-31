@@ -16,6 +16,7 @@ export default function HomeScreen() {
   const [momentActive, setMomentActive] = useState(false);
   const [momentDone, setMomentDone] = useState(false);
   const breath = useRef(new Animated.Value(0)).current;
+  const [weeklyCount, setWeeklyCount] = useState(0);
 
   const phaseKey: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal' = useMemo(() => {
     if (!profile.lastPeriodDate) return 'Follicular';
@@ -23,6 +24,21 @@ export default function HomeScreen() {
   }, [profile.lastPeriodDate]);
 
   const theme = themes[phaseKey];
+
+  function getNextOvulationDate(last: Date | null): Date | null {
+    if (!last) return null;
+    const msDay = 24 * 60 * 60 * 1000;
+    let ov = new Date(last);
+    ov.setDate(ov.getDate() + 14);
+    const now = new Date();
+    while (ov.getTime() < now.getTime() - msDay) {
+      ov = new Date(ov.getTime() + 28 * msDay);
+    }
+    return ov;
+  }
+
+  const peakFertile = getNextOvulationDate(profile.lastPeriodDate ?? null);
+  const peakLabel = peakFertile ? peakFertile.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : null;
 
   // Entry moment overlay (3 seconds)
   const [showIntro, setShowIntro] = useState(true);
@@ -75,13 +91,60 @@ export default function HomeScreen() {
     return () => { loop.stop(); clearTimeout(t); };
   }, [momentActive, breath]);
 
+  // Compute 7‑day streak from stored completions (sleep/workout/gloww)
+  useEffect(() => {
+    (async () => {
+      const today = new Date();
+      const dates: Date[] = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        dates.push(d);
+      }
+      // Generate keys per date
+      const keys: string[] = [];
+      dates.forEach(d => {
+        const y = d.getFullYear(); const m = d.getMonth() + 1; const day = d.getDate();
+        keys.push(`@gloww_moment:${d.toISOString().slice(0,10)}`);
+        keys.push(`@sleep_done:${y}-${m}-${day}:Menstrual`);
+        keys.push(`@sleep_done:${y}-${m}-${day}:Follicular`);
+        keys.push(`@sleep_done:${y}-${m}-${day}:Ovulation`);
+        keys.push(`@sleep_done:${y}-${m}-${day}:Luteal`);
+        keys.push(`@workout_done:${y}-${m}-${day}`);
+      });
+      let count = 0;
+      try {
+        const results = await AsyncStorage.multiGet(keys);
+        for (let i = 0; i < dates.length; i++) {
+          const base = i * 6; // 6 keys per day
+          const slice = results.slice(base, base + 6).map(r => r[1]);
+          const any = slice.some(v => !!v);
+          if (any) count++;
+        }
+      } catch {}
+      setWeeklyCount(count);
+    })();
+  }, [momentDone]);
+
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.surface }]} showsVerticalScrollIndicator={false}>
       <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
-        <Text style={styles.brand}>GLOWW</Text>
+        <View style={styles.heroTop}>
+          <Text style={styles.brand}>GLOWW</Text>
+          {peakLabel && (
+            <View style={styles.fertilePill}>
+              <Text style={styles.fertilePillText}>Peak fertile: {peakLabel}</Text>
+            </View>
+          )}
+        </View>
         <Text style={styles.title}>Your hormones change every week.</Text>
         <Text style={styles.subtitle}>So should your sleep, fitness, and glow.</Text>
-        <Text style={styles.phaseName}>{phaseKey.toUpperCase()} {theme.phaseIcon}</Text>
+        <View style={styles.phaseContainer}>
+          <Text style={styles.phaseName}>{phaseKey.toUpperCase()}</Text>
+          <View style={styles.phaseIconWrapper}>
+            <Text style={styles.phaseIconText}>{theme.phaseIcon}</Text>
+          </View>
+        </View>
         <Text style={styles.phaseAffirm}>{theme.phaseText}</Text>
       </LinearGradient>
 
@@ -96,38 +159,12 @@ export default function HomeScreen() {
         </Modal>
       )}
 
-      {/* Gloww Moment card */}
-      {!momentDone && (
-        <View style={styles.momentCard}>
-          <Text style={styles.momentHeader}>Gloww Moment</Text>
-          <Text style={styles.momentText}>
-            {phaseKey === 'Menstrual' && '10‑sec belly breaths. Inhale 4, exhale 6.'}
-            {phaseKey === 'Follicular' && '10‑sec heart-opening breaths. Welcome new energy.'}
-            {phaseKey === 'Ovulation' && 'Shine breath: inhale confidence, exhale tension.'}
-            {phaseKey === 'Luteal' && 'Soft waves: longer exhales to ease the body.'}
-          </Text>
-          {momentActive ? (
-            <Animated.View style={[styles.momentPulse, { transform: [{ scale: breath.interpolate({ inputRange: [0,1], outputRange: [1, 1.12] }) }], opacity: breath.interpolate({ inputRange: [0,1], outputRange: [0.5, 1] }) }]} />
-          ) : null}
-          <TouchableOpacity onPress={() => setMomentActive(true)} disabled={momentActive} style={[styles.momentBtn, { backgroundColor: theme.accentColor, opacity: momentActive ? 0.7 : 1 }]}> 
-            <Text style={styles.momentBtnText}>{momentActive ? 'Breathing… 10s' : 'Start 10‑sec breath'}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      <View style={styles.quickRow}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
-          <TouchableOpacity style={[styles.quickChip, { borderColor: theme.border }]} onPress={() => router.push('/(tabs)/sleep' as any)}><Text style={styles.quickChipText}>Sleep</Text></TouchableOpacity>
-          <TouchableOpacity style={[styles.quickChip, { borderColor: theme.border }]} onPress={() => router.push('/(tabs)/workout' as any)}><Text style={styles.quickChipText}>Fitness</Text></TouchableOpacity>
-          <TouchableOpacity style={[styles.quickChip, { borderColor: theme.border }]} onPress={() => router.push('/(tabs)/beauty' as any)}><Text style={styles.quickChipText}>Glow</Text></TouchableOpacity>
-          <TouchableOpacity style={[styles.quickChip, { borderColor: theme.border }]} onPress={() => router.push('/(tabs)/profile' as any)}><Text style={styles.quickChipText}>Profile</Text></TouchableOpacity>
-        </ScrollView>
-      </View>
+      {/* quick actions removed as requested */}
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Daily streak</Text>
-        <View style={styles.progressBar}><View style={[styles.progressFill, { width: '57%', backgroundColor: theme.accentColor }]} /></View>
-        <Text style={styles.streakMeta}>4/7 routines done</Text>
+        <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${Math.round((weeklyCount/7)*100)}%`, backgroundColor: theme.accentColor }]} /></View>
+        <Text style={styles.streakMeta}>{weeklyCount}/7 routines done</Text>
       </View>
 
       <View style={styles.card}>
@@ -137,7 +174,7 @@ export default function HomeScreen() {
           </LinearGradient>
         </View>
         <Text style={styles.cardHeader}>SLEEP</Text>
-        <Text style={styles.cardTitle}>Nighty-night</Text>
+        <Text style={styles.cardTitle}>Improve sleep</Text>
         <Text style={styles.cardDesc}>Wind down with a calming meditation</Text>
         <TouchableOpacity onPress={() => router.push('/(tabs)/sleep' as any)} style={[styles.cta, { backgroundColor: theme.accentColor }]}><Text style={styles.ctaText}>Start</Text></TouchableOpacity>
       </View>
@@ -149,7 +186,7 @@ export default function HomeScreen() {
           </LinearGradient>
         </View>
         <Text style={styles.cardHeaderAlt}>FITNESS</Text>
-        <Text style={styles.cardTitleAlt}>Energize</Text>
+        <Text style={styles.cardTitleAlt}>Workout</Text>
         <Text style={styles.cardDescAlt}>Try a 20‑min cardio burst</Text>
         <TouchableOpacity onPress={() => router.push('/(tabs)/workout' as any)} style={[styles.ctaAlt, { backgroundColor: theme.accentColor }]}><Text style={styles.ctaAltText}>Play</Text></TouchableOpacity>
       </View>
@@ -157,20 +194,14 @@ export default function HomeScreen() {
       <View style={styles.glowCard}>
         <View style={styles.illusWrap}>
           <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.illusCircle}>
-            <Sparkles color="#FFFFFF" size={18} />
+            <Sparkles color="#FFFFFF" size={18} strokeWidth={2} />
           </LinearGradient>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Sparkles color="#8B5A8F" size={20} />
-          <Text style={styles.glowHeader}>Today’s Beauty Insight</Text>
-      </View>
-        <Text style={styles.glowText}>
-          {phaseKey === 'Menstrual' && 'Keep skin hydrated. Try rose water mist.'}
-          {phaseKey === 'Follicular' && 'Your glow peaks — exfoliate gently.'}
-          {phaseKey === 'Ovulation' && 'Natural radiance — skip foundation.'}
-          {phaseKey === 'Luteal' && 'Skin may break out — use calming mask.'}
-        </Text>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/beauty' as any)} style={[styles.glowBtn, { backgroundColor: '#F3E8F3' }]}><Text style={[styles.glowBtnText, { color: theme.accentColor } ]}>See tips</Text></TouchableOpacity>
+        <Text style={styles.glowHeader}>Hair / Skin Care</Text>
+        <Text style={styles.glowText}>Open for phase‑based skin and hair routines.</Text>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/beauty' as any)} style={styles.glowBtn}>
+          <Text style={[styles.glowBtnText, { color: theme.accentColor }]}>Open</Text>
+        </TouchableOpacity>
       </View>
 
 
@@ -181,46 +212,51 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FAF9F7' },
-  hero: { paddingTop: 60, paddingBottom: 28, paddingHorizontal: 20, borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
-  brand: { fontSize: 16, color: 'rgba(255,255,255,0.9)', fontWeight: '800', letterSpacing: 2, marginBottom: 8 },
-  title: { fontSize: 28, fontWeight: '800', color: '#FFF', marginBottom: 6, textAlign: 'left' },
-  subtitle: { fontSize: 16, color: 'rgba(255,255,255,0.9)', marginBottom: 16 },
-  moon: { alignSelf: 'center', marginVertical: 8 },
-  phaseName: { fontSize: 24, fontWeight: '800', color: '#FFF', textAlign: 'center', marginTop: 8 },
-  phaseAffirm: { fontSize: 16, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginTop: 6 },
+  hero: { paddingTop: 56, paddingBottom: 32, paddingHorizontal: 20, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
+  heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  brand: { fontSize: 18, color: 'rgba(255,255,255,0.95)', fontWeight: '700', letterSpacing: 3, fontFamily: 'System' },
+  title: { fontSize: 26, fontWeight: '700', color: '#FFF', marginBottom: 8, textAlign: 'left', lineHeight: 34 },
+  subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.88)', marginBottom: 20, lineHeight: 22 },
+  fertilePill: { backgroundColor: 'rgba(255,255,255,0.92)', paddingVertical: 5, paddingHorizontal: 12, borderRadius: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2 },
+  fertilePillText: { color: '#1F2937', fontWeight: '700', fontSize: 11, letterSpacing: 0.3 },
+  phaseContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 4, marginBottom: 8 },
+  phaseName: { fontSize: 28, fontWeight: '700', color: '#FFF', letterSpacing: 1 },
+  phaseIconWrapper: { marginLeft: 8, width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  phaseIconText: { fontSize: 20 },
+  phaseAffirm: { fontSize: 15, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginTop: 4, lineHeight: 22 },
 
   quickRow: { marginTop: 12 },
   quickChip: { borderWidth: 1, paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#FFFFFF' },
   quickChipText: { color: '#111827', fontWeight: '700' },
 
-  section: { marginTop: 10, paddingHorizontal: 20 },
-  sectionTitle: { fontSize: 14, fontWeight: '800', color: '#5A3A5A', marginBottom: 6 },
-  progressBar: { height: 10, backgroundColor: '#E8D5E8', borderRadius: 8, overflow: 'hidden' },
-  progressFill: { height: '100%' },
-  streakMeta: { color: '#6B7280', marginTop: 6, fontSize: 12 },
+  section: { marginTop: 18, paddingHorizontal: 20 },
+  sectionTitle: { fontSize: 13, fontWeight: '700', color: '#4B5563', marginBottom: 8, letterSpacing: 0.3 },
+  progressBar: { height: 6, backgroundColor: '#E5E7EB', borderRadius: 3, overflow: 'hidden' },
+  progressFill: { height: '100%', borderRadius: 3 },
+  streakMeta: { color: '#6B7280', marginTop: 8, fontSize: 12, fontWeight: '500' },
 
-  card: { backgroundColor: '#FFF', marginHorizontal: 20, marginTop: 18, padding: 20, borderRadius: 18, borderWidth: 1, borderColor: '#E8D5E8' },
-  cardHeader: { color: '#8B5A8F', fontSize: 12, fontWeight: '800', marginBottom: 6 },
-  cardTitle: { fontSize: 22, fontWeight: '800', color: '#1F2937' },
-  cardDesc: { fontSize: 14, color: '#6B7280', marginTop: 6 },
-  cta: { alignSelf: 'flex-end', marginTop: 12, backgroundColor: '#8B5A8F', paddingVertical: 10, paddingHorizontal: 18, borderRadius: 10 },
-  ctaText: { color: '#FFF', fontWeight: '700' },
+  card: { backgroundColor: '#FFF', marginHorizontal: 20, marginTop: 20, padding: 22, borderRadius: 20, borderWidth: 1, borderColor: '#E5E7EB', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
+  cardHeader: { color: '#6B7280', fontSize: 11, fontWeight: '700', marginBottom: 8, letterSpacing: 1.2, textTransform: 'uppercase' },
+  cardTitle: { fontSize: 20, fontWeight: '700', color: '#111827', lineHeight: 28 },
+  cardDesc: { fontSize: 14, color: '#6B7280', marginTop: 8, lineHeight: 20 },
+  cta: { alignSelf: 'flex-end', marginTop: 16, paddingVertical: 11, paddingHorizontal: 20, borderRadius: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
+  ctaText: { color: '#FFF', fontWeight: '700', fontSize: 14, letterSpacing: 0.3 },
 
-  cardAlt: { backgroundColor: '#FFF7F3', marginHorizontal: 20, marginTop: 12, padding: 20, borderRadius: 18, borderWidth: 1, borderColor: '#F2D6C7' },
-  cardHeaderAlt: { color: '#B76745', fontSize: 12, fontWeight: '800', marginBottom: 6 },
-  cardTitleAlt: { fontSize: 22, fontWeight: '800', color: '#6B3A2E' },
-  cardDescAlt: { fontSize: 14, color: '#8C6A60', marginTop: 6 },
-  ctaAlt: { alignSelf: 'flex-end', marginTop: 12, backgroundColor: '#E38B65', paddingVertical: 10, paddingHorizontal: 18, borderRadius: 10 },
-  ctaAltText: { color: '#FFF', fontWeight: '700' },
+  cardAlt: { backgroundColor: '#FFF', marginHorizontal: 20, marginTop: 14, padding: 22, borderRadius: 20, borderWidth: 1, borderColor: '#E5E7EB', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
+  cardHeaderAlt: { color: '#6B7280', fontSize: 11, fontWeight: '700', marginBottom: 8, letterSpacing: 1.2, textTransform: 'uppercase' },
+  cardTitleAlt: { fontSize: 20, fontWeight: '700', color: '#111827', lineHeight: 28 },
+  cardDescAlt: { fontSize: 14, color: '#6B7280', marginTop: 8, lineHeight: 20 },
+  ctaAlt: { alignSelf: 'flex-end', marginTop: 16, paddingVertical: 11, paddingHorizontal: 20, borderRadius: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
+  ctaAltText: { color: '#FFF', fontWeight: '700', fontSize: 14, letterSpacing: 0.3 },
 
   illusWrap: { position: 'absolute', right: 12, top: 12 },
   illusCircle: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', opacity: 0.9 },
 
-  glowCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 12, padding: 18, borderRadius: 16, borderWidth: 1, borderColor: '#E8D5E8' },
-  glowHeader: { fontSize: 15, fontWeight: '800', color: '#5A3A5A' },
-  glowText: { marginTop: 8, fontSize: 14, color: '#6B7280' },
-  glowBtn: { alignSelf: 'flex-start', marginTop: 10, backgroundColor: '#F3E8F3', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10 },
-  glowBtnText: { color: '#8B5A8F', fontWeight: '700' },
+  glowCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 14, padding: 22, borderRadius: 20, borderWidth: 1, borderColor: '#E5E7EB', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
+  glowHeader: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 6 },
+  glowText: { marginTop: 4, fontSize: 14, color: '#6B7280', lineHeight: 20 },
+  glowBtn: { alignSelf: 'flex-start', marginTop: 14, backgroundColor: '#F9FAFB', borderWidth: 1.5, borderColor: '#E5E7EB', paddingVertical: 9, paddingHorizontal: 18, borderRadius: 10 },
+  glowBtnText: { fontWeight: '700', fontSize: 13, letterSpacing: 0.3 },
 
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: 20 },
   modalContent: { backgroundColor: '#FFF', borderRadius: 16, padding: 20, width: '100%', maxWidth: 360, borderWidth: 1, borderColor: '#E5E7EB' },
@@ -234,10 +270,10 @@ const styles = StyleSheet.create({
   introText: { color: '#FFFFFF', fontSize: 18, fontWeight: '800', textAlign: 'center', paddingHorizontal: 28 },
   pulseCircle: { position: 'absolute', width: 220, height: 220, borderRadius: 110, backgroundColor: 'rgba(255,255,255,0.15)' },
 
-  momentCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 14, padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#E8D5E8', alignItems: 'center' },
-  momentHeader: { fontSize: 14, fontWeight: '800', color: '#5A3A5A', marginBottom: 6 },
-  momentText: { color: '#374151', textAlign: 'center', marginBottom: 10 },
-  momentPulse: { width: 140, height: 140, borderRadius: 70, backgroundColor: 'rgba(138,90,143,0.15)', marginVertical: 6 },
-  momentBtn: { marginTop: 8, borderRadius: 20, paddingVertical: 10, paddingHorizontal: 14 },
-  momentBtnText: { color: '#FFFFFF', fontWeight: '800' },
+  momentCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 20, padding: 24, borderRadius: 20, borderWidth: 1, borderColor: '#E5E7EB', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
+  momentHeader: { fontSize: 13, fontWeight: '700', color: '#4B5563', marginBottom: 10, letterSpacing: 1.2, textTransform: 'uppercase' },
+  momentText: { color: '#374151', textAlign: 'center', marginBottom: 16, fontSize: 15, lineHeight: 22, paddingHorizontal: 8 },
+  momentPulse: { width: 140, height: 140, borderRadius: 70, backgroundColor: 'rgba(138,90,143,0.12)', marginVertical: 8 },
+  momentBtn: { marginTop: 4, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
+  momentBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 14, letterSpacing: 0.3 },
 });
