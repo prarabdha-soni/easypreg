@@ -59,8 +59,26 @@ export default function BeautyScreen() {
       <Text style={styles.pageTitle}>Glow with your cycle ✨</Text>
 
       <View style={styles.toggleRow}>
-        <TouchableOpacity style={[styles.toggleChip, mode==='skin' && { backgroundColor: '#111827' }]} onPress={() => setMode('skin')}><Text style={[styles.toggleChipText, mode==='skin' && { color: '#FFFFFF' }]}>Skin</Text></TouchableOpacity>
-        <TouchableOpacity style={[styles.toggleChip, mode==='hair' && { backgroundColor: '#111827' }]} onPress={() => setMode('hair')}><Text style={[styles.toggleChipText, mode==='hair' && { color: '#FFFFFF' }]}>Hair</Text></TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.toggleChip, 
+            mode==='skin' && { backgroundColor: theme.accentColor, borderColor: theme.accentColor },
+            mode !== 'skin' && { borderColor: theme.border }
+          ]} 
+          onPress={() => setMode('skin')}
+        >
+          <Text style={[styles.toggleChipText, mode==='skin' && { color: '#FFFFFF' }, mode !== 'skin' && { color: '#111827' }]}>Skin</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.toggleChip, 
+            mode==='hair' && { backgroundColor: theme.accentColor, borderColor: theme.accentColor },
+            mode !== 'hair' && { borderColor: theme.border }
+          ]} 
+          onPress={() => setMode('hair')}
+        >
+          <Text style={[styles.toggleChipText, mode==='hair' && { color: '#FFFFFF' }, mode !== 'hair' && { color: '#111827' }]}>Hair</Text>
+        </TouchableOpacity>
       </View>
 
       {mode === 'skin' ? (
@@ -73,8 +91,8 @@ export default function BeautyScreen() {
           </TouchableOpacity>
         </LinearGradient>
       ) : (
-        <View style={styles.whiteCard}>
-          <Text style={styles.sectionTitle}>Hair care this phase</Text>
+        <View style={[styles.whiteCard, { borderColor: theme.border }]}>
+          <Text style={[styles.sectionTitle, { color: theme.accentColor }]}>Hair care this phase</Text>
           <Text style={{ color: '#374151', marginBottom: 8 }}>{theme.hairSummary}</Text>
           {theme.hairTips.map((t, i) => (
             <View key={i} style={styles.hairRow}>
@@ -86,8 +104,8 @@ export default function BeautyScreen() {
       )}
 
       {mode === 'skin' && (
-        <View style={styles.whiteCard}>
-          <Text style={styles.sectionTitle}>Suggested routine today</Text>
+        <View style={[styles.whiteCard, { borderColor: theme.border }]}>
+          <Text style={[styles.sectionTitle, { color: theme.accentColor }]}>Suggested routine today</Text>
           <Text style={{ color: '#374151', marginBottom: 8 }}>{theme.beautySummary}</Text>
           {theme.beautyRoutine.map((step, i) => (
             <View key={i} style={styles.routineRow}>
@@ -101,8 +119,8 @@ export default function BeautyScreen() {
       )}
 
       {mode === 'skin' && (
-        <View style={styles.whiteCard}>
-          <Text style={styles.sectionTitle}>Common concerns this phase</Text>
+        <View style={[styles.whiteCard, { borderColor: theme.border }]}>
+          <Text style={[styles.sectionTitle, { color: theme.accentColor }]}>Common concerns this phase</Text>
           <View style={styles.concernWrap}>
             {theme.beautyConcerns.map((c, i) => (
               <View key={i} style={styles.concernChip}><Text style={styles.concernChipText}>{c}</Text></View>
@@ -156,28 +174,46 @@ export default function BeautyScreen() {
         </TouchableOpacity>
       </View>
 
-      <Modal visible={!!player} transparent animationType="slide" onRequestClose={() => setPlayer(null)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
+      <Modal visible={!!player} transparent animationType="fade" onRequestClose={() => setPlayer(null)}>
+        <View style={styles.videoModalOverlay}>
+          <View style={styles.videoModalCard}>
+            <View style={styles.videoHeader}>
+              <Text style={styles.videoTitle}>Beauty Video</Text>
+              <TouchableOpacity 
+                style={[styles.closeVideoBtn, { backgroundColor: 'rgba(255,255,255,0.2)' }]} 
+                onPress={() => setPlayer(null)}
+              >
+                <Text style={styles.closeText}>✕</Text>
+              </TouchableOpacity>
+            </View>
             {player && (
               Platform.OS === 'web' ? (
-                // @ts-ignore
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={`https://www.youtube.com/embed/${player.id}`}
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
+                <View style={styles.videoContainer}>
+                  {/* @ts-ignore */}
+                  <iframe
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    src={`https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </View>
               ) : (
-                <WebView source={{ uri: `https://www.youtube.com/embed/${player.id}` }} style={{ flex: 1 }} allowsInlineMediaPlayback javaScriptEnabled />
+                <WebView 
+                  source={{ uri: `https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1` }} 
+                  style={styles.videoWebView}
+                  allowsInlineMediaPlayback={true}
+                  mediaPlaybackRequiresUserAction={false}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  startInLoadingState={true}
+                  onShouldStartLoadWithRequest={(request) => {
+                    return request.url.includes('youtube.com/embed');
+                  }}
+                />
               )
             )}
-            <TouchableOpacity style={[styles.closeBtn, { backgroundColor: theme.accentColor }]} onPress={() => setPlayer(null)}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -217,8 +253,8 @@ const styles = StyleSheet.create({
   tipsList: { flexDirection: 'row', gap: 10 },
   tipChip: { flex: 1, backgroundColor: '#F8F5FA', borderRadius: 20, paddingVertical: 10, paddingHorizontal: 12, borderWidth: 1, borderColor: '#E8D5E8', alignItems: 'center' },
   tipChipText: { color: '#374151', fontWeight: '600', textAlign: 'center' },
-  whiteCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 12, borderRadius: 20, padding: 16, borderWidth: 1, borderColor: '#E8D5E8' },
-  sectionTitle: { fontSize: 15, fontWeight: '800', color: '#5A3A5A', marginBottom: 10 },
+  whiteCard: { backgroundColor: '#FFFFFF', marginHorizontal: 20, marginTop: 12, borderRadius: 20, padding: 16, borderWidth: 1 },
+  sectionTitle: { fontSize: 15, fontWeight: '800', marginBottom: 10 },
   routineRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   routineBadge: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1, marginRight: 10 },
   routineBadgeText: { color: '#8B5A8F', fontWeight: '800' },
@@ -237,6 +273,13 @@ const styles = StyleSheet.create({
   modalCard: { width: '100%', maxWidth: 720, height: 400, backgroundColor: '#000', borderRadius: 12, overflow: 'hidden' },
   closeBtn: { position: 'absolute', bottom: 12, right: 12, borderRadius: 10, paddingVertical: 8, paddingHorizontal: 12 },
   closeText: { color: '#FFF', fontWeight: '800' },
+  videoModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
+  videoModalCard: { width: '100%', height: '100%', backgroundColor: '#000', justifyContent: 'center' },
+  videoHeader: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingTop: 56, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.5)' },
+  videoTitle: { fontSize: 18, fontWeight: '700', color: '#FFFFFF' },
+  closeVideoBtn: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  videoContainer: { flex: 1, width: '100%' },
+  videoWebView: { flex: 1, width: '100%', backgroundColor: '#000' },
   resourceLink: { fontSize: 14, fontWeight: '700', marginTop: 8 },
   resourceMeta: { fontSize: 12, color: '#6B7280' },
   hairRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: 6 },

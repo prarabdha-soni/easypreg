@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Dumbbell, User, UtensilsCrossed, ShoppingBag } from 'lucide-react-native';
+import { Home, Dumbbell, User, UtensilsCrossed, ShoppingBag, Sparkles, Brain } from 'lucide-react-native';
 import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 
@@ -55,6 +55,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="beauty"
+        options={{
+          title: 'Beauty',
+          tabBarIcon: ({ size, color }) => (
+            <Sparkles size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="mind"
+        options={{
+          title: 'Mind',
+          tabBarIcon: ({ size, color }) => (
+            <Brain size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="store"
         options={{
           title: 'Store',
@@ -74,7 +92,6 @@ export default function TabLayout() {
       />
       {/* Hidden tabs */}
       <Tabs.Screen name="sleep" options={{ href: null }} />
-      <Tabs.Screen name="beauty" options={{ href: null }} />
       <Tabs.Screen name="treatments" options={{ href: null }} />
       <Tabs.Screen name="doctors" options={{ href: null }} />
     </Tabs>

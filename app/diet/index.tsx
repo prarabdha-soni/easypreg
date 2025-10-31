@@ -85,55 +85,59 @@ export default function DietScreen() {
     await AsyncStorage.setItem('@meal_plans', JSON.stringify(updated));
   };
 
-  // Comprehensive Recipe database (phase-filtered)
+  // Comprehensive Indian Recipe database (phase-filtered)
   const recipeDatabase = {
     Menstrual: [
-      { id: 'm1', name: 'Iron-Rich Spinach & Bean Bowl', time: '25 min', calories: 320, ingredients: ['Spinach', 'Black beans', 'Sweet potato', 'Avocado', 'Lemon'], phase: 'Menstrual', description: 'Nutrient-dense bowl to replenish iron and support recovery' },
-      { id: 'm2', name: 'Hearty Lentil Stew', time: '35 min', calories: 280, ingredients: ['Lentils', 'Carrots', 'Tomatoes', 'Herbs', 'Garlic'], phase: 'Menstrual', description: 'Warming, iron-rich stew perfect for comfort' },
-      { id: 'm3', name: 'Quinoa & Chickpea Power Bowl', time: '20 min', calories: 350, ingredients: ['Quinoa', 'Chickpeas', 'Lemon', 'Greens', 'Tahini'], phase: 'Menstrual', description: 'Complete protein with fiber and minerals' },
-      { id: 'm4', name: 'Dark Chocolate & Berry Smoothie', time: '5 min', calories: 280, ingredients: ['Spinach', 'Berries', 'Cacao', 'Banana', 'Milk'], phase: 'Menstrual', description: 'Iron and antioxidants in a delicious blend' },
-      { id: 'm5', name: 'Red Lentil Curry Bowl', time: '30 min', calories: 380, ingredients: ['Red lentils', 'Coconut milk', 'Turmeric', 'Spinach', 'Rice'], phase: 'Menstrual', description: 'Anti-inflammatory curry with plant-based protein' },
+      { id: 'm1', name: 'Palak Paneer with Roti', time: '30 min', calories: 380, ingredients: ['Paneer', 'Spinach', 'Tomatoes', 'Onion', 'Garam Masala'], phase: 'Menstrual', description: 'Iron-rich comfort food - perfect for recovery' },
+      { id: 'm2', name: 'Moong Dal Khichdi', time: '25 min', calories: 320, ingredients: ['Moong Dal', 'Rice', 'Turmeric', 'Ghee', 'Jeera'], phase: 'Menstrual', description: 'Warming, easy-to-digest comfort meal' },
+      { id: 'm3', name: 'Dal Tadka with Rice', time: '20 min', calories: 350, ingredients: ['Yellow Dal', 'Tadka', 'Rice', 'Ghee', 'Coriander'], phase: 'Menstrual', description: 'Protein-rich and comforting' },
+      { id: 'm4', name: 'Methi Paratha with Dahi', time: '25 min', calories: 280, ingredients: ['Wheat Flour', 'Fenugreek', 'Ghee', 'Curd', 'Pickle'], phase: 'Menstrual', description: 'Iron-rich paratha with cooling yogurt' },
+      { id: 'm5', name: 'Gajar Halwa (Dessert)', time: '40 min', calories: 320, ingredients: ['Carrots', 'Milk', 'Ghee', 'Sugar', 'Nuts'], phase: 'Menstrual', description: 'Nutritious sweet treat for comfort' },
+      { id: 'm6', name: 'Rajma Chawal', time: '35 min', calories: 400, ingredients: ['Kidney Beans', 'Rice', 'Onions', 'Tomatoes', 'Spices'], phase: 'Menstrual', description: 'High iron and protein meal' },
     ],
     Follicular: [
-      { id: 'f1', name: 'Power Breakfast Bowl', time: '15 min', calories: 400, ingredients: ['Oats', 'Berries', 'Nuts', 'Honey', 'Greek yogurt'], phase: 'Follicular', description: 'High-protein start to fuel rising energy' },
-      { id: 'f2', name: 'Quinoa Salad with Grilled Chicken', time: '30 min', calories: 450, ingredients: ['Quinoa', 'Chicken', 'Veggies', 'Dressing', 'Feta'], phase: 'Follicular', description: 'Complete protein for muscle building' },
-      { id: 'f3', name: 'Salmon with Sweet Potato & Broccoli', time: '35 min', calories: 520, ingredients: ['Salmon', 'Sweet potato', 'Broccoli', 'Lemon', 'Olive oil'], phase: 'Follicular', description: 'Omega-3s and complex carbs for strength' },
-      { id: 'f4', name: 'Protein-Packed Veggie Stir Fry', time: '25 min', calories: 380, ingredients: ['Tofu', 'Mixed vegetables', 'Brown rice', 'Soy sauce', 'Sesame'], phase: 'Follicular', description: 'Plant-based protein with fiber' },
-      { id: 'f5', name: 'Lean Turkey & Veggie Bowl', time: '30 min', calories: 420, ingredients: ['Turkey', 'Quinoa', 'Bell peppers', 'Zucchini', 'Herbs'], phase: 'Follicular', description: 'High-protein meal for muscle recovery' },
+      { id: 'f1', name: 'Masala Oats with Nuts', time: '15 min', calories: 350, ingredients: ['Oats', 'Vegetables', 'Almonds', 'Ghee', 'Spices'], phase: 'Follicular', description: 'High-protein energizing breakfast' },
+      { id: 'f2', name: 'Paneer Tikka with Roti', time: '30 min', calories: 420, ingredients: ['Paneer', 'Bell Peppers', 'Onions', 'Spices', 'Roti'], phase: 'Follicular', description: 'Protein-packed for muscle building' },
+      { id: 'f3', name: 'Chicken Curry with Brown Rice', time: '35 min', calories: 480, ingredients: ['Chicken', 'Onions', 'Tomatoes', 'Spices', 'Brown Rice'], phase: 'Follicular', description: 'Complete protein for strength training' },
+      { id: 'f4', name: 'Sprout Salad with Poha', time: '20 min', calories: 320, ingredients: ['Mixed Sprouts', 'Poha', 'Onions', 'Lemon', 'Sev'], phase: 'Follicular', description: 'High-fiber protein boost' },
+      { id: 'f5', name: 'Moong Chilla (Protein Pancakes)', time: '15 min', calories: 180, ingredients: ['Moong Dal', 'Vegetables', 'Spices', 'Oil', 'Chutney'], phase: 'Follicular', description: 'High-protein breakfast or snack' },
+      { id: 'f6', name: 'Egg Bhurji with Roti', time: '20 min', calories: 350, ingredients: ['Eggs', 'Onions', 'Tomatoes', 'Spices', 'Roti'], phase: 'Follicular', description: 'Quick protein-packed meal' },
     ],
     Ovulation: [
-      { id: 'o1', name: 'Colorful Power Salad', time: '20 min', calories: 380, ingredients: ['Mixed greens', 'Nuts', 'Seeds', 'Vinaigrette', 'Avocado'], phase: 'Ovulation', description: 'Antioxidant-rich salad for peak energy' },
-      { id: 'o2', name: 'Mediterranean Bowl with Feta', time: '25 min', calories: 420, ingredients: ['Quinoa', 'Feta', 'Olives', 'Cucumber', 'Tomatoes'], phase: 'Ovulation', description: 'Balanced macros for optimal performance' },
-      { id: 'o3', name: 'Grilled Fish with Roasted Vegetables', time: '30 min', calories: 480, ingredients: ['White fish', 'Bell peppers', 'Zucchini', 'Herbs', 'Lemon'], phase: 'Ovulation', description: 'Light protein with zinc-rich veggies' },
-      { id: 'o4', name: 'Zinc-Rich Seafood Pasta', time: '25 min', calories: 450, ingredients: ['Shrimp', 'Whole wheat pasta', 'Spinach', 'Garlic', 'Parmesan'], phase: 'Ovulation', description: 'Zinc and protein for hormonal support' },
-      { id: 'o5', name: 'Berry & Nut Acai Bowl', time: '10 min', calories: 350, ingredients: ['Acai', 'Berries', 'Granola', 'Almonds', 'Honey'], phase: 'Ovulation', description: 'Antioxidant powerhouse breakfast' },
+      { id: 'o1', name: 'Ragi Dosa with Sambar', time: '30 min', calories: 280, ingredients: ['Ragi Flour', 'Rice', 'Sambar', 'Coconut Chutney', 'Oil'], phase: 'Ovulation', description: 'Zinc-rich, antioxidant powerhouse' },
+      { id: 'o2', name: 'Poha with Nuts & Seeds', time: '15 min', calories: 320, ingredients: ['Poha', 'Peanuts', 'Sesame Seeds', 'Lemon', 'Coriander'], phase: 'Ovulation', description: 'Light, zinc-rich breakfast' },
+      { id: 'o3', name: 'Fish Curry with Steamed Rice', time: '30 min', calories: 420, ingredients: ['Fish', 'Coconut', 'Spices', 'Rice', 'Curry Leaves'], phase: 'Ovulation', description: 'Omega-3s and zinc for peak performance' },
+      { id: 'o4', name: 'Dhokla with Green Chutney', time: '25 min', calories: 180, ingredients: ['Besan', 'Curd', 'Eno', 'Mustard Seeds', 'Green Chutney'], phase: 'Ovulation', description: 'Protein-rich, light snack' },
+      { id: 'o5', name: 'Mixed Sprout Salad', time: '10 min', calories: 250, ingredients: ['Sprouts', 'Cucumber', 'Tomatoes', 'Lemon', 'Seeds'], phase: 'Ovulation', description: 'Antioxidant-rich fresh meal' },
+      { id: 'o6', name: 'Quinoa Khichdi', time: '25 min', calories: 350, ingredients: ['Quinoa', 'Moong Dal', 'Vegetables', 'Ghee', 'Spices'], phase: 'Ovulation', description: 'Complete protein with zinc' },
     ],
     Luteal: [
-      { id: 'l1', name: 'Hearty Lentil Soup', time: '40 min', calories: 300, ingredients: ['Lentils', 'Onions', 'Garlic', 'Spices', 'Carrots'], phase: 'Luteal', description: 'Complex carbs for stable mood and energy' },
-      { id: 'l2', name: 'Baked Salmon & Sweet Potato', time: '35 min', calories: 500, ingredients: ['Salmon', 'Sweet potato', 'Asparagus', 'Olive oil', 'Herbs'], phase: 'Luteal', description: 'Magnesium-rich meal for relaxation' },
-      { id: 'l3', name: 'Oats with Berries & Nuts', time: '10 min', calories: 350, ingredients: ['Oats', 'Berries', 'Almonds', 'Cinnamon', 'Milk'], phase: 'Luteal', description: 'Slow-release carbs for sustained energy' },
-      { id: 'l4', name: 'Magnesium-Rich Dark Leafy Greens Bowl', time: '20 min', calories: 320, ingredients: ['Kale', 'Spinach', 'Chickpeas', 'Tahini', 'Lemon'], phase: 'Luteal', description: 'Magnesium and fiber for PMS support' },
-      { id: 'l5', name: 'Comforting Whole Grain Porridge', time: '15 min', calories: 280, ingredients: ['Quinoa', 'Coconut milk', 'Dates', 'Cinnamon', 'Nuts'], phase: 'Luteal', description: 'Warming, nutrient-dense comfort food' },
+      { id: 'l1', name: 'Moong Dal Khichdi (Comfort Meal)', time: '25 min', calories: 300, ingredients: ['Moong Dal', 'Rice', 'Ghee', 'Turmeric', 'Vegetables'], phase: 'Luteal', description: 'Easy digestible, mood-stabilizing' },
+      { id: 'l2', name: 'Dosa with Potato Sabzi', time: '30 min', calories: 320, ingredients: ['Dosa Batter', 'Potatoes', 'Onions', 'Sambar', 'Chutney'], phase: 'Luteal', description: 'Complex carbs for sustained energy' },
+      { id: 'l3', name: 'Vegetable Biryani', time: '40 min', calories: 450, ingredients: ['Basmati Rice', 'Vegetables', 'Spices', 'Ghee', 'Curd'], phase: 'Luteal', description: 'Magnesium-rich comfort food' },
+      { id: 'l4', name: 'Jowar Roti with Dal', time: '25 min', calories: 280, ingredients: ['Jowar Flour', 'Dal', 'Ghee', 'Vegetables', 'Pickle'], phase: 'Luteal', description: 'Slow-release carbs, mood support' },
+      { id: 'l5', name: 'Dalia (Broken Wheat) Upma', time: '20 min', calories: 320, ingredients: ['Dalia', 'Vegetables', 'Mustard Seeds', 'Ghee', 'Lemon'], phase: 'Luteal', description: 'Fiber-rich for stable energy' },
+      { id: 'l6', name: 'Ragi Roti with Aloo Curry', time: '30 min', calories: 350, ingredients: ['Ragi Flour', 'Potatoes', 'Spices', 'Ghee', 'Curd'], phase: 'Luteal', description: 'Magnesium and complex carbs' },
     ],
   };
 
-  // Meal prep programs by phase
+  // Indian Meal prep programs by phase
   const mealPrepPrograms = {
     Menstrual: [
-      { id: 'mp_m1', title: 'Iron-Rich Meal Prep', days: 3, meals: '9 meals', focus: 'Recovery Nutrition', description: 'Pre-made iron-rich meals for easy recovery' },
-      { id: 'mp_m2', title: 'Comfort Food Batch Cooking', days: 5, meals: '15 meals', focus: 'Warming Meals', description: 'Batch cook comforting, nutrient-dense meals' },
+      { id: 'mp_m1', title: 'Iron-Rich Dal & Sabzi Prep', days: 3, meals: '9 meals', focus: 'Recovery Nutrition', description: 'Pre-made dal, palak dishes for easy recovery' },
+      { id: 'mp_m2', title: 'Comfort Khichdi & Paratha Prep', days: 5, meals: '15 meals', focus: 'Warming Meals', description: 'Batch cook khichdi, parathas for comfort' },
     ],
     Follicular: [
-      { id: 'mp_f1', title: 'High-Protein Prep Week', days: 7, meals: '21 meals', focus: 'Muscle Building', description: 'Protein-packed meals for strength training' },
-      { id: 'mp_f2', title: 'Energy-Boosting Breakfast Prep', days: 5, meals: '5 breakfasts', focus: 'Morning Fuel', description: 'Grab-and-go high-energy breakfasts' },
+      { id: 'mp_f1', title: 'High-Protein Paneer & Egg Prep', days: 7, meals: '21 meals', focus: 'Muscle Building', description: 'Paneer dishes, egg bhurji prep for strength' },
+      { id: 'mp_f2', title: 'Energy Breakfast Prep (Oats, Chilla)', days: 5, meals: '5 breakfasts', focus: 'Morning Fuel', description: 'Masala oats, moong chilla prep' },
     ],
     Ovulation: [
-      { id: 'mp_o1', title: 'Peak Performance Meal Plan', days: 5, meals: '15 meals', focus: 'Optimal Nutrition', description: 'Balanced meals for peak performance' },
-      { id: 'mp_o2', title: 'Zinc & Antioxidant Prep', days: 4, meals: '12 meals', focus: 'Hormonal Support', description: 'Meals rich in zinc and antioxidants' },
+      { id: 'mp_o1', title: 'Peak Performance Meal Plan', days: 5, meals: '15 meals', focus: 'Optimal Nutrition', description: 'Ragi dosa, fish curry, sprout salads' },
+      { id: 'mp_o2', title: 'Zinc-Rich Snack Prep (Dhokla, Sprouts)', days: 4, meals: '12 meals', focus: 'Hormonal Support', description: 'Dhokla, sprout salad prep for zinc' },
     ],
     Luteal: [
-      { id: 'mp_l1', title: 'PMS-Support Meal Prep', days: 7, meals: '21 meals', focus: 'Mood & Energy', description: 'Magnesium and complex carbs for balance' },
-      { id: 'mp_l2', title: 'Comfort & Nutrition Batch', days: 5, meals: '15 meals', focus: 'Sustained Energy', description: 'Prepped meals for stable energy levels' },
+      { id: 'mp_l1', title: 'PMS-Support Comfort Prep', days: 7, meals: '21 meals', focus: 'Mood & Energy', description: 'Khichdi, biryani, jowar roti prep' },
+      { id: 'mp_l2', title: 'Sustained Energy Meal Prep', days: 5, meals: '15 meals', focus: 'Stable Energy', description: 'Dalia, dosa prep for stable energy' },
     ],
   };
 
@@ -178,16 +182,18 @@ export default function DietScreen() {
     }
   };
 
-  // Quick food items (mock database)
+  // Indian Quick food items (mock database)
   const quickFoods = [
-    { name: 'Apple', calories: 95, meal: 'Snack' },
-    { name: 'Banana', calories: 105, meal: 'Snack' },
-    { name: 'Greek Yogurt', calories: 100, meal: 'Breakfast' },
-    { name: 'Grilled Chicken', calories: 231, meal: 'Lunch' },
-    { name: 'Brown Rice', calories: 112, meal: 'Lunch' },
-    { name: 'Salmon', calories: 206, meal: 'Dinner' },
-    { name: 'Quinoa', calories: 120, meal: 'Dinner' },
-    { name: 'Almonds', calories: 164, meal: 'Snack' },
+    { name: 'Roti (1 piece)', calories: 70, meal: 'Lunch' },
+    { name: 'Dal (1 katori)', calories: 120, meal: 'Lunch' },
+    { name: 'Curd (1 katori)', calories: 60, meal: 'Snack' },
+    { name: 'Paneer (50g)', calories: 120, meal: 'Lunch' },
+    { name: 'Rice (1 katori)', calories: 130, meal: 'Lunch' },
+    { name: 'Banana (1)', calories: 90, meal: 'Snack' },
+    { name: 'Almonds (10)', calories: 70, meal: 'Snack' },
+    { name: 'Moong Chilla (1)', calories: 80, meal: 'Breakfast' },
+    { name: 'Poha (1 katori)', calories: 150, meal: 'Breakfast' },
+    { name: 'Dosa (1)', calories: 120, meal: 'Breakfast' },
   ];
 
   const filteredFoods = searchQuery 
@@ -208,8 +214,8 @@ export default function DietScreen() {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.pageTitle}>Nourish Your Cycle 🍎</Text>
-      <Text style={styles.pageSubtitle}>Today's Phase Focus</Text>
+      <Text style={styles.pageTitle}>Indian Diet & Nutrition 🇮🇳</Text>
+      <Text style={styles.pageSubtitle}>Phase-wise meal plans tailored for Indian cuisine</Text>
 
       {/* Phase Focus Card */}
       <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.phaseCard}>
