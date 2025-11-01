@@ -16,6 +16,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="sleep/index" />
         <Stack.Screen name="workout/index" />
+        <Stack.Screen name="yoga/index" />
+        <Stack.Screen name="dance/index" />
         <Stack.Screen name="beauty/index" />
         <Stack.Screen name="profile/index" />
         <Stack.Screen name="+not-found" />

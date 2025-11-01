@@ -20,8 +20,7 @@ export default function HomeScreen() {
   
   // Mood Tracker
   const [todayMood, setTodayMood] = useState<'😊' | '😐' | '😔' | null>(null);
-  const [showEducation, setShowEducation] = useState(true);
-  
+
   useEffect(() => {
     (async () => {
       const todayKey = new Date().toISOString().slice(0, 10);
@@ -36,36 +35,27 @@ export default function HomeScreen() {
     await AsyncStorage.setItem(`@mood:${todayKey}`, mood);
   };
 
-  // Comprehensive education insights by phase
-  const educationInsights = {
+  // Phase-specific weight loss benefits and why we use these techniques
+  const weightLossBenefits = {
     Menstrual: {
-      title: 'Menstrual Phase (Days 1-5)',
-      points: [
-        '🎯 Energy & Hormones: Estrogen and progesterone are at their lowest. Your body is focused on shedding and recovery.',
-        '💪 Fitness: Prioritize rest and gentle movement. Yoga, stretching, and light walking help maintain mobility without strain.'
-      ]
+      workout: null, // Not available in this phase
+      yoga: 'Yoga in Menstrual phase supports weight loss by reducing stress hormones (cortisol), which can prevent fat storage. Gentle movement maintains metabolism without causing stress or inflammation that can hinder weight loss.',
+      dance: null, // Not available in this phase
     },
     Follicular: {
-      title: 'Follicular Phase (Days 6-14)',
-      points: [
-        '🎯 Energy & Hormones: Estrogen is rising, boosting energy, strength, and endurance. Your body is preparing for ovulation.',
-        '💪 Fitness: Best time for high-intensity workouts! Try HIIT, strength training, cardio, and circuit training to build muscle.'
-      ]
+      workout: 'High-intensity workouts during Follicular phase maximize weight loss because rising estrogen boosts your metabolism and fat-burning capacity. This is when your body is most efficient at building muscle and burning fat.',
+      yoga: 'Moderate yoga during Follicular phase supports weight loss by maintaining flexibility and reducing stress, while your rising energy allows for more calorie-burning power yoga sessions.',
+      dance: 'Dance workouts in Follicular phase are excellent for weight loss because rising estrogen provides the energy for longer, more intense sessions that burn maximum calories and build lean muscle.',
     },
     Ovulation: {
-      title: 'Ovulation Phase (Days 15-17)',
-      points: [
-        '🎯 Energy & Hormones: Peak estrogen and LH surge provide maximum strength, speed, coordination, and mental clarity.',
-        '💪 Fitness: Peak performance phase! Ideal for high-intensity intervals, strength training, dance, and skill-based workouts.',
-        '💡 Peak Fertility: Your most fertile window. Hormones support confidence, social energy, and peak cognitive performance.'
-      ]
+      workout: 'Peak performance workouts during Ovulation maximize weight loss through maximum calorie burn. Your hormones are at peak levels, making this the best time for high-intensity training that accelerates fat loss.',
+      yoga: 'Power yoga during Ovulation supports weight loss by leveraging peak strength for more challenging poses that burn more calories while maintaining muscle mass.',
+      dance: 'Dance in Ovulation phase is ideal for weight loss because peak coordination and energy allow for maximum intensity, burning the most calories and boosting metabolism for days.',
     },
     Luteal: {
-      title: 'Luteal Phase (Days 18-28)',
-      points: [
-        '🎯 Energy & Hormones: Progesterone rises, leading to lower energy and increased fatigue. Body temperature may be elevated.',
-        '💪 Fitness: Focus on moderate, enjoyable workouts. Yoga, Pilates, light cardio, and walking support consistency without overexertion.'
-      ]
+      workout: null, // Not available in this phase
+      yoga: 'Restorative yoga in Luteal phase supports weight loss by managing stress and preventing cortisol-induced weight gain. Gentle movement maintains metabolism while supporting hormonal balance crucial for sustainable weight loss.',
+      dance: null, // Not available in this phase
     },
   };
 
@@ -75,6 +65,14 @@ export default function HomeScreen() {
   }, [profile.lastPeriodDate]);
 
   const theme = themes[phaseKey];
+
+  // Phase number mapping for UI
+  const phaseNumber = {
+    Menstrual: 'Phase 1',
+    Follicular: 'Phase 2',
+    Ovulation: 'Phase 3',
+    Luteal: 'Phase 4',
+  };
 
   function getNextOvulationDate(last: Date | null): Date | null {
     if (!last) return null;
@@ -194,6 +192,7 @@ export default function HomeScreen() {
             <Text style={styles.phaseIconText}>{theme.phaseIcon}</Text>
           </View>
         </View>
+        <Text style={styles.phaseNumber}>{phaseNumber[phaseKey]}</Text>
         <Text style={styles.phaseAffirm}>{theme.phaseText}</Text>
       </LinearGradient>
 
@@ -204,7 +203,7 @@ export default function HomeScreen() {
         <Text style={styles.moodTitle}>How do you feel today?</Text>
         <View style={styles.moodRow}>
           {(['😊', '😐', '😔'] as const).map((mood) => (
-            <TouchableOpacity
+          <TouchableOpacity 
               key={mood}
               style={[
                 styles.moodBtn,
@@ -214,32 +213,40 @@ export default function HomeScreen() {
               onPress={() => setMood(mood)}
             >
               <Text style={styles.moodEmoji}>{mood}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          </TouchableOpacity>
+        ))}
+      </View>
         {todayMood && <Text style={styles.moodNote}>Thanks for checking in! 💙</Text>}
       </View>
 
-      {/* Education Bubble */}
-      {showEducation && (
-        <View style={[styles.educationCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
-          <View style={styles.educationHeader}>
-            <Sparkles color={theme.accentColor} size={18} />
-            <Text style={styles.educationTitle}>Did you know?</Text>
-            <TouchableOpacity onPress={() => setShowEducation(false)}>
-              <Text style={[styles.educationClose, { color: theme.accentColor }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.educationPhaseTitle}>{educationInsights[phaseKey].title}</Text>
-          <View style={styles.educationPoints}>
-            {educationInsights[phaseKey].points.map((point, index) => (
-              <View key={index} style={styles.educationPoint}>
-                <Text style={styles.educationPointText}>{point}</Text>
-              </View>
-            ))}
-          </View>
+      {/* Why These Techniques Help Weight Loss */}
+      <View style={[styles.whyCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+        <View style={styles.whyHeader}>
+          <Sparkles color={theme.accentColor} size={18} />
+          <Text style={[styles.whyCardTitle, { color: theme.accentColor }]}>Why This Helps Weight Loss</Text>
         </View>
-      )}
+        <Text style={styles.whyPhaseTitle}>{phaseKey} Phase Benefits</Text>
+        <View style={styles.whyBenefits}>
+          {weightLossBenefits[phaseKey].workout && (
+            <View style={styles.whyBenefitItem}>
+              <Text style={styles.whyBenefitLabel}>💪 Workout:</Text>
+              <Text style={styles.whyBenefitText}>{weightLossBenefits[phaseKey].workout}</Text>
+            </View>
+          )}
+          {weightLossBenefits[phaseKey].yoga && (
+            <View style={styles.whyBenefitItem}>
+              <Text style={styles.whyBenefitLabel}>🧘 Yoga:</Text>
+              <Text style={styles.whyBenefitText}>{weightLossBenefits[phaseKey].yoga}</Text>
+            </View>
+          )}
+          {weightLossBenefits[phaseKey].dance && (
+            <View style={styles.whyBenefitItem}>
+              <Text style={styles.whyBenefitLabel}>💃 Dance:</Text>
+              <Text style={styles.whyBenefitText}>{weightLossBenefits[phaseKey].dance}</Text>
+            </View>
+          )}
+        </View>
+      </View>
 
 
       {/* Premium Upsell Card */}
@@ -272,7 +279,8 @@ const styles = StyleSheet.create({
   phaseName: { fontSize: 28, fontWeight: '700', color: '#FFF', letterSpacing: 1 },
   phaseIconWrapper: { marginLeft: 8, width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
   phaseIconText: { fontSize: 20 },
-  phaseAffirm: { fontSize: 15, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginTop: 4, lineHeight: 22 },
+  phaseNumber: { fontSize: 14, color: 'rgba(255,255,255,0.85)', textAlign: 'center', marginTop: 6, fontWeight: '600', letterSpacing: 0.5 },
+  phaseAffirm: { fontSize: 15, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginTop: 6, lineHeight: 22 },
 
   quickRow: { marginTop: 12 },
   quickChip: { borderWidth: 1, paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#FFFFFF' },
@@ -321,14 +329,14 @@ const styles = StyleSheet.create({
   moodBtn: { width: 60, height: 60, borderRadius: 30, borderWidth: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F9FAFB' },
   moodEmoji: { fontSize: 28 },
   moodNote: { textAlign: 'center', marginTop: 12, fontSize: 12, color: '#6B7280', fontStyle: 'italic' },
-  educationCard: { marginHorizontal: 20, marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 18, borderWidth: 1 },
-  educationHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
-  educationTitle: { fontSize: 15, fontWeight: '700', color: '#111827', flex: 1 },
-  educationClose: { fontSize: 18, fontWeight: '700' },
-  educationPhaseTitle: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 12 },
-  educationPoints: { gap: 10 },
-  educationPoint: { marginBottom: 4 },
-  educationPointText: { fontSize: 13, color: '#374151', lineHeight: 20 },
+  whyCard: { marginHorizontal: 20, marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, borderWidth: 1 },
+  whyHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
+  whyCardTitle: { fontSize: 16, fontWeight: '700', flex: 1 },
+  whyPhaseTitle: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 16 },
+  whyBenefits: { gap: 16 },
+  whyBenefitItem: { marginBottom: 8 },
+  whyBenefitLabel: { fontSize: 14, fontWeight: '700', color: '#111827', marginBottom: 6 },
+  whyBenefitText: { fontSize: 13, color: '#374151', lineHeight: 20 },
   premiumCard: { marginHorizontal: 20, marginTop: 16, borderRadius: 16, borderWidth: 1, overflow: 'hidden' },
   premiumGradient: { padding: 20, alignItems: 'center', gap: 8 },
   premiumTitle: { fontSize: 18, fontWeight: '700', color: '#FFFFFF', marginTop: 4 },

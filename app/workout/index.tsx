@@ -93,63 +93,6 @@ export default function WorkoutScreen() {
     })();
   }, [theme.workoutVideoURL]);
 
-  // Fetch Yoga video thumbnail
-  useEffect(() => {
-    if (!theme.yogaVideoURL) {
-      setLoadingYogaThumb(false);
-      return;
-    }
-    const videoId = extractVideoId(theme.yogaVideoURL);
-    if (!videoId) {
-      setLoadingYogaThumb(false);
-      return;
-    }
-    
-    setLoadingYogaThumb(true);
-    (async () => {
-      try {
-        const resp = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YT_API_KEY}`);
-        const data = await resp.json();
-        const s = data?.items?.[0]?.snippet;
-        if (s) {
-          setYogaThumb(s.thumbnails?.high?.url || s.thumbnails?.medium?.url || s.thumbnails?.default?.url);
-          setYogaTitle(s.title || 'Yoga Video');
-        }
-      } catch (err) {
-        console.log('Yoga thumbnail fetch error:', err);
-      }
-      finally { setLoadingYogaThumb(false); }
-    })();
-  }, [theme.yogaVideoURL]);
-
-  // Fetch Dance video thumbnail
-  useEffect(() => {
-    if (!theme.danceVideoURL) {
-      setLoadingDanceThumb(false);
-      return;
-    }
-    const videoId = extractVideoId(theme.danceVideoURL);
-    if (!videoId) {
-      setLoadingDanceThumb(false);
-      return;
-    }
-    
-    setLoadingDanceThumb(true);
-    (async () => {
-      try {
-        const resp = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YT_API_KEY}`);
-        const data = await resp.json();
-        const s = data?.items?.[0]?.snippet;
-        if (s) {
-          setDanceThumb(s.thumbnails?.high?.url || s.thumbnails?.medium?.url || s.thumbnails?.default?.url);
-          setDanceTitle(s.title || 'Dance Video');
-        }
-      } catch (err) {
-        console.log('Dance thumbnail fetch error:', err);
-      }
-      finally { setLoadingDanceThumb(false); }
-    })();
-  }, [theme.danceVideoURL]);
 
   // Filter chips
   const [activeFilter, setActiveFilter] = useState('Full Body');
@@ -163,50 +106,6 @@ export default function WorkoutScreen() {
   const [restSeconds, setRestSeconds] = useState(60);
   const [workoutHistory, setWorkoutHistory] = useState<{date: string; workout: string; duration: number}[]>([]);
   const [progressPhotos, setProgressPhotos] = useState<{id: string; date: string; notes?: string}[]>([]);
-  // Determine default section based on phase
-  const getDefaultSection = (phase: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal'): 'workout' | 'yoga' | 'dance' => {
-    switch (phase) {
-      case 'Menstrual':
-        return 'yoga'; // Only Yoga available
-      case 'Follicular':
-        return 'workout'; // Exercise and Dance available
-      case 'Ovulation':
-        return 'dance'; // Exercise and Dance available
-      case 'Luteal':
-        return 'yoga'; // Only Yoga available
-      default:
-        return 'workout';
-    }
-  };
-  
-  // Get available sections for current phase
-  const getAvailableSections = (phase: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal'): ('workout' | 'yoga' | 'dance')[] => {
-    switch (phase) {
-      case 'Menstrual':
-      case 'Luteal':
-        return ['yoga']; // Only Yoga
-      case 'Follicular':
-      case 'Ovulation':
-        return ['workout', 'dance']; // Exercise and Dance
-      default:
-        return ['workout', 'yoga', 'dance'];
-    }
-  };
-  
-  const [activeSection, setActiveSection] = useState<'workout' | 'yoga' | 'dance'>(() => getDefaultSection(phaseKey));
-  
-  // Update section when phase changes
-  useEffect(() => {
-    setActiveSection(getDefaultSection(phaseKey));
-  }, [phaseKey]);
-  
-  // Yoga and Dance video thumbnails
-  const [yogaThumb, setYogaThumb] = useState<string | null>(null);
-  const [yogaTitle, setYogaTitle] = useState<string>('');
-  const [danceThumb, setDanceThumb] = useState<string | null>(null);
-  const [danceTitle, setDanceTitle] = useState<string>('');
-  const [loadingYogaThumb, setLoadingYogaThumb] = useState(true);
-  const [loadingDanceThumb, setLoadingDanceThumb] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -302,25 +201,6 @@ export default function WorkoutScreen() {
 
   const [playerTitle, setPlayerTitle] = useState<string>('Exercise Video');
 
-  const handlePlayYoga = () => {
-    if (theme.yogaVideoURL) {
-      const videoId = extractVideoId(theme.yogaVideoURL);
-      if (videoId) {
-        setPlayerTitle(yogaTitle || 'Yoga Video');
-        setPlayer({ id: videoId, type: 'video' });
-      }
-    }
-  };
-
-  const handlePlayDance = () => {
-    if (theme.danceVideoURL) {
-      const videoId = extractVideoId(theme.danceVideoURL);
-      if (videoId) {
-        setPlayerTitle(danceTitle || 'Dance Video');
-        setPlayer({ id: videoId, type: 'video' });
-      }
-    }
-  };
 
   const markWorkoutDone = async () => {
     const d = new Date();
@@ -348,187 +228,64 @@ export default function WorkoutScreen() {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.pageTitle}>Exercise with your cycle 💪</Text>
+      <Text style={styles.pageTitle}>Workout with your cycle 💪</Text>
 
-      {/* Phase-based Section Recommendation */}
-      <View style={[styles.recommendationBanner, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-        <Text style={[styles.recommendationText, { color: theme.accentColor }]}>
-          {phaseKey === 'Menstrual' && '🧘 Most Demanding Activity: Gentle Yoga'}
-          {phaseKey === 'Follicular' && '💪 Most Demanding Activity: Workout (Strength + Cardio)'}
-          {phaseKey === 'Ovulation' && '💃 Most Demanding Activity: Dance + High-Intensity Workout'}
-          {phaseKey === 'Luteal' && '🧘 Most Demanding Activity: Yoga + Low-Impact Workouts'}
-        </Text>
-      </View>
-
-      {/* Section Tabs */}
-      {getAvailableSections(phaseKey).length > 1 && (
-        <View style={styles.sectionTabs}>
-          {getAvailableSections(phaseKey).includes('workout') && (
-            <TouchableOpacity
-              style={[styles.sectionTab, activeSection === 'workout' && { backgroundColor: theme.accentColor }]}
-              onPress={() => setActiveSection('workout')}
-            >
-              <Text style={[styles.sectionTabText, activeSection === 'workout' && styles.sectionTabTextActive]}>
-                Exercise
-              </Text>
-            </TouchableOpacity>
-          )}
-          {getAvailableSections(phaseKey).includes('yoga') && (
-            <TouchableOpacity
-              style={[styles.sectionTab, activeSection === 'yoga' && { backgroundColor: theme.accentColor }]}
-              onPress={() => setActiveSection('yoga')}
-            >
-              <Text style={[styles.sectionTabText, activeSection === 'yoga' && styles.sectionTabTextActive]}>
-                Yoga
-              </Text>
-            </TouchableOpacity>
-          )}
-          {getAvailableSections(phaseKey).includes('dance') && (
-            <TouchableOpacity
-              style={[styles.sectionTab, activeSection === 'dance' && { backgroundColor: theme.accentColor }]}
-              onPress={() => setActiveSection('dance')}
-            >
-              <Text style={[styles.sectionTabText, activeSection === 'dance' && styles.sectionTabTextActive]}>
-                Dance
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-
-      {/* Workout Section */}
-      {activeSection === 'workout' && (phaseKey === 'Follicular' || phaseKey === 'Ovulation') && (
-        <>
       {/* Why Section - Workout */}
       <View style={[styles.whyBanner, { backgroundColor: theme.surface, borderColor: theme.border }]}>
         <Text style={[styles.whyTitle, { color: theme.accentColor }]}>Why Exercise?</Text>
         <Text style={styles.whyText}>
-          {phaseKey === 'Follicular' && 'Rising estrogen boosts energy and muscle recovery, making this phase best for building strength and aerobic conditioning. Dance and yoga can be moderate.'}
-          {phaseKey === 'Ovulation' && 'Peak strength, coordination, and mood create ideal conditions for skill-based dance and intense interval training. Yoga can support with power and balance but is less dominant.'}
+          {phaseKey === 'Follicular' && 'Rising estrogen boosts energy and muscle recovery, making this phase best for building strength and aerobic conditioning.'}
+          {phaseKey === 'Ovulation' && 'Peak strength, coordination, and mood create ideal conditions for intense interval training and maximum performance.'}
+          {(phaseKey === 'Menstrual' || phaseKey === 'Luteal') && 'During this phase, prioritize gentle movement. Consider yoga for optimal support.'}
         </Text>
       </View>
 
-      {/* Hero Video Card */}
-      <View style={[styles.videoCard, { borderColor: theme.border }]}>
-        {loadingThumb ? (
-          <View style={styles.videoPlaceholder}>
-            <ActivityIndicator color={theme.accentColor} size="large" />
-          </View>
-        ) : videoThumb ? (
-          <Image source={{ uri: videoThumb }} style={styles.videoThumbnail} />
-        ) : (
-          <View style={styles.videoPlaceholder}>
-            <Text style={styles.placeholderText}>Exercise Video</Text>
-          </View>
-        )}
-        
-        {/* Phase Badge */}
-        <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
-          <Text style={styles.phaseBadgeText}>{phaseKey} Phase</Text>
-          <Text style={styles.phaseBadgeMeta}>{theme.workoutTime} | {theme.workoutLevel}</Text>
-        </View>
-
-        {/* Large Play Button */}
-        <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.accentColor }]} onPress={handlePlay}>
-          <Play color="#FFFFFF" size={32} fill="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Workout Details */}
-      <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-        <Text style={styles.workoutTitle}>{theme.workoutRecommendation}</Text>
-        <Text style={styles.workoutDesc}>{theme.workoutDetails}</Text>
-        {videoTitle && (
-          <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
-            <Text style={styles.videoInfoText}>📹 {videoTitle}</Text>
-          </View>
-        )}
-      </View>
-
-
-      </>
-      )}
-
-      {/* Yoga Section */}
-      {(activeSection === 'yoga' || phaseKey === 'Menstrual' || phaseKey === 'Luteal') && (
-        <View style={styles.videoOnlySection}>
-          {/* Why Section - Yoga */}
-          <View style={[styles.whyBanner, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-            <Text style={[styles.whyTitle, { color: theme.accentColor }]}>Why Yoga?</Text>
-            <Text style={styles.whyText}>
-              {phaseKey === 'Menstrual' && 'The body needs relaxation, pain relief, and grounding. Yoga\'s emphasis on breath and mindful movement supports this phase best. Workouts and dance should be minimal or restorative.'}
-              {phaseKey === 'Luteal' && 'Progesterone causes fatigue and higher body temperature, favoring calming, restorative yoga and gentle workouts with limited intensity. Dance demand is lighter here.'}
-            </Text>
-          </View>
-          {/* First Yoga Video */}
+      {/* Show workout video only for Follicular and Ovulation phases */}
+      {(phaseKey === 'Follicular' || phaseKey === 'Ovulation') ? (
+        <>
+          {/* Hero Video Card */}
           <View style={[styles.videoCard, { borderColor: theme.border }]}>
-            {loadingYogaThumb ? (
+            {loadingThumb ? (
               <View style={styles.videoPlaceholder}>
                 <ActivityIndicator color={theme.accentColor} size="large" />
               </View>
-            ) : yogaThumb ? (
-              <Image source={{ uri: yogaThumb }} style={styles.videoThumbnail} />
+            ) : videoThumb ? (
+              <Image source={{ uri: videoThumb }} style={styles.videoThumbnail} />
             ) : (
               <View style={styles.videoPlaceholder}>
-                <Text style={styles.placeholderText}>Yoga Video</Text>
+                <Text style={styles.placeholderText}>Workout Video</Text>
               </View>
             )}
             
+            {/* Phase Badge */}
             <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
-              <Text style={styles.phaseBadgeText}>{phaseKey} Phase • Yoga</Text>
+              <Text style={styles.phaseBadgeText}>{phaseKey} Phase</Text>
+              <Text style={styles.phaseBadgeMeta}>{theme.workoutTime} | {theme.workoutLevel}</Text>
             </View>
 
-            <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.accentColor }]} onPress={handlePlayYoga}>
+            {/* Large Play Button */}
+            <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.accentColor }]} onPress={handlePlay}>
               <Play color="#FFFFFF" size={32} fill="#FFFFFF" />
             </TouchableOpacity>
           </View>
-          
-          {yogaTitle && (
-            <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface, marginHorizontal: 20 }]}>
-              <Text style={styles.videoInfoText}>🧘 {yogaTitle}</Text>
-            </View>
-          )}
-        </View>
-      )}
 
-      {/* Dance Section */}
-      {activeSection === 'dance' && (phaseKey === 'Follicular' || phaseKey === 'Ovulation') && (
-        <View style={styles.videoOnlySection}>
-          {/* Why Section - Dance */}
-          <View style={[styles.whyBanner, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-            <Text style={[styles.whyTitle, { color: theme.accentColor }]}>Why Dance?</Text>
-            <Text style={styles.whyText}>
-              {phaseKey === 'Follicular' && 'Rising estrogen boosts energy and muscle recovery. Dance can be moderate during this phase, supporting strength building alongside workouts.'}
-              {phaseKey === 'Ovulation' && 'Peak strength, coordination, and mood create ideal conditions for skill-based dance and intense interval training. This is your peak performance phase.'}
-            </Text>
-          </View>
-          <View style={[styles.videoCard, { borderColor: theme.border }]}>
-            {loadingDanceThumb ? (
-              <View style={styles.videoPlaceholder}>
-                <ActivityIndicator color={theme.accentColor} size="large" />
-              </View>
-            ) : danceThumb ? (
-              <Image source={{ uri: danceThumb }} style={styles.videoThumbnail} />
-            ) : (
-              <View style={styles.videoPlaceholder}>
-                <Text style={styles.placeholderText}>Dance Video</Text>
+          {/* Workout Details */}
+          <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+            <Text style={styles.workoutTitle}>{theme.workoutRecommendation}</Text>
+            <Text style={styles.workoutDesc}>{theme.workoutDetails}</Text>
+            {videoTitle && (
+              <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+                <Text style={styles.videoInfoText}>📹 {videoTitle}</Text>
               </View>
             )}
-            
-            <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
-              <Text style={styles.phaseBadgeText}>{phaseKey} Phase • Dance</Text>
-            </View>
-
-            <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.accentColor }]} onPress={handlePlayDance}>
-              <Play color="#FFFFFF" size={32} fill="#FFFFFF" />
-            </TouchableOpacity>
           </View>
-          
-          {danceTitle && (
-            <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface, marginHorizontal: 20 }]}>
-              <Text style={styles.videoInfoText}>💃 {danceTitle}</Text>
-            </View>
-          )}
+        </>
+      ) : (
+        <View style={[styles.notAvailableCard, { borderColor: theme.border, backgroundColor: theme.surface, marginHorizontal: 20 }]}>
+          <Text style={styles.notAvailableText}>
+            High-intensity workouts are best suited for Follicular and Ovulation phases when your energy is highest. 
+            During {phaseKey} phase, consider gentle yoga or restorative movement instead.
+          </Text>
         </View>
       )}
 
@@ -849,4 +606,6 @@ const styles = StyleSheet.create({
   photoInfo: { flex: 1, justifyContent: 'center' },
   photoDate: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 4 },
   photoNotes: { fontSize: 12, color: '#6B7280' },
+  notAvailableCard: { padding: 20, borderRadius: 12, borderWidth: 1 },
+  notAvailableText: { fontSize: 14, color: '#6B7280', lineHeight: 20, textAlign: 'center' },
 });
