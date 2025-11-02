@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Dumbbell, User, Sparkles, Music } from 'lucide-react-native';
+import { Home, User, Sparkles, Music } from 'lucide-react-native';
 import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 
@@ -37,15 +37,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="workout"
-        options={{
-          title: 'Workout',
-          tabBarIcon: ({ size, color }) => (
-            <Dumbbell size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="yoga"
         options={{
           title: 'Yoga',
@@ -73,6 +64,7 @@ export default function TabLayout() {
         }}
       />
       {/* Hidden tabs */}
+      <Tabs.Screen name="workout" options={{ href: null }} />
       <Tabs.Screen name="diet" options={{ href: null }} />
       <Tabs.Screen name="beauty" options={{ href: null }} />
       <Tabs.Screen name="mind" options={{ href: null }} />

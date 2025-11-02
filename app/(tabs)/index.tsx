@@ -1,6 +1,8 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Animated, Platform, Image, ActivityIndicator } from 'react-native';
+// @ts-ignore: Only used on native
+import { WebView } from 'react-native-webview';
 import { useUser } from '@/contexts/UserContext';
-import { Sparkles, Crown } from 'lucide-react-native';
+import { Sparkles, Crown, Play, X } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,6 +10,8 @@ import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeSe
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // theming and phase helpers centralized in ThemeService
+
+const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
 
 export default function HomeScreen() {
   const { profile } = useUser();
@@ -20,14 +24,33 @@ export default function HomeScreen() {
   
   // Mood Tracker
   const [todayMood, setTodayMood] = useState<'😊' | '😐' | '😔' | null>(null);
+  
+  // Video Player
+  const [playingVideo, setPlayingVideo] = useState(false);
+  const videoId = 'WOi2Bwvp6hw'; // YouTube video ID
+  const [videoThumbnail, setVideoThumbnail] = useState<string | null>(null);
+  const [videoTitle, setVideoTitle] = useState('Cycle Syncing for Hormonal Balance');
+  const [videoLoading, setVideoLoading] = useState(false);
 
+  // Fetch video thumbnail and title
   useEffect(() => {
-    (async () => {
-      const todayKey = new Date().toISOString().slice(0, 10);
-      const mood = await AsyncStorage.getItem(`@mood:${todayKey}`);
-      if (mood) setTodayMood(mood as '😊' | '😐' | '😔');
-    })();
-  }, []);
+    const fetchVideoDetails = async () => {
+      try {
+        const resp = await fetch(
+          `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YT_API_KEY}`
+        );
+        const data = await resp.json();
+        if (data.items && data.items.length > 0) {
+          const snippet = data.items[0].snippet;
+          setVideoTitle(snippet.title || 'Cycle Syncing for Hormonal Balance');
+          setVideoThumbnail(snippet.thumbnails?.high?.url || snippet.thumbnails?.medium?.url || null);
+        }
+      } catch (error) {
+        console.error('Error fetching video details:', error);
+      }
+    };
+    fetchVideoDetails();
+  }, [videoId]);
 
   const setMood = async (mood: '😊' | '😐' | '😔') => {
     setTodayMood(mood);
@@ -61,7 +84,8 @@ export default function HomeScreen() {
 
   const phaseKey: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal' = useMemo(() => {
     if (!profile.lastPeriodDate) return 'Follicular';
-    return getCurrentHormonalPhase(getCycleDay(profile.lastPeriodDate));
+    const cycleDay = getCycleDay(profile.lastPeriodDate);
+    return getCurrentHormonalPhase(cycleDay);
   }, [profile.lastPeriodDate]);
 
   const theme = themes[phaseKey];
@@ -185,38 +209,94 @@ export default function HomeScreen() {
           ) : null}
         </View>
         <Text style={styles.title}>Your hormones change every week.</Text>
-        <Text style={styles.subtitle}>So should your sleep, fitness, and glow.</Text>
+        <Text style={styles.subtitle}>So should your <Text style={styles.exerciseText}>exercise</Text></Text>
         <View style={styles.phaseContainer}>
           <Text style={styles.phaseName}>{phaseKey.toUpperCase()}</Text>
           <View style={styles.phaseIconWrapper}>
             <Text style={styles.phaseIconText}>{theme.phaseIcon}</Text>
           </View>
         </View>
-        <Text style={styles.phaseNumber}>{phaseNumber[phaseKey]}</Text>
+        <Text style={styles.phaseNumber}>
+          {phaseNumber[phaseKey]} • {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+        </Text>
         <Text style={styles.phaseAffirm}>{theme.phaseText}</Text>
       </LinearGradient>
 
       {/* quick actions removed as requested */}
 
-      {/* Mood Tracker */}
-      <View style={[styles.moodCard, { borderColor: theme.border }]}>
-        <Text style={styles.moodTitle}>How do you feel today?</Text>
-        <View style={styles.moodRow}>
-          {(['😊', '😐', '😔'] as const).map((mood) => (
-          <TouchableOpacity 
-              key={mood}
-              style={[
-                styles.moodBtn,
-                todayMood === mood && { backgroundColor: theme.accentColor, borderColor: theme.accentColor },
-                todayMood !== mood && { borderColor: theme.border }
-              ]}
-              onPress={() => setMood(mood)}
+      {/* Video Section */}
+      <View style={[styles.videoCard, { borderColor: theme.border }]}>
+        <View style={styles.videoHeader}>
+          <Sparkles color={theme.accentColor} size={18} />
+          <Text style={[styles.videoSectionTitle, { color: theme.accentColor }]}>Featured Video</Text>
+        </View>
+        {playingVideo ? (
+          // Inline video player
+          <View style={styles.inlineVideoContainer}>
+            {Platform.OS === 'web' ? (
+              <View style={styles.inlineVideoWrapper}>
+                {/* @ts-ignore */}
+                <iframe
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1`}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </View>
+            ) : (
+              <WebView
+                source={{ uri: `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1` }}
+                style={styles.inlineVideoWebView}
+                allowsInlineMediaPlayback={true}
+                mediaPlaybackRequiresUserAction={false}
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+                startInLoadingState={true}
+                onShouldStartLoadWithRequest={(request) => {
+                  const allowed = request.url.includes('youtube.com/embed') || 
+                                 request.url.includes('youtube.com/iframe_api') ||
+                                 request.url.includes('googleapis.com');
+                  return allowed;
+                }}
+              />
+            )}
+            <TouchableOpacity 
+              style={[styles.closeInlineBtn, { backgroundColor: 'rgba(0,0,0,0.6)' }]}
+              onPress={() => setPlayingVideo(false)}
             >
-              <Text style={styles.moodEmoji}>{mood}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-        {todayMood && <Text style={styles.moodNote}>Thanks for checking in! 💙</Text>}
+              <X color="#FFFFFF" size={18} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          // Thumbnail view
+          <>
+            <TouchableOpacity 
+              style={styles.videoThumbnailContainer}
+              onPress={() => setPlayingVideo(true)}
+            >
+              {videoThumbnail ? (
+                <Image source={{ uri: videoThumbnail }} style={styles.videoThumbnail} />
+              ) : (
+                <View style={styles.videoPlaceholder}>
+                  {videoLoading ? (
+                    <ActivityIndicator color="#FFFFFF" size="large" />
+                  ) : (
+                    <Text style={styles.placeholderText}>Featured Video</Text>
+                  )}
+                </View>
+              )}
+              <View style={[styles.videoPlayButton, { backgroundColor: theme.accentColor }]}>
+                <Play color="#FFFFFF" size={32} fill="#FFFFFF" />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.videoCardTitle}>{videoTitle}</Text>
+            <Text style={styles.videoDescription}>
+              Discover how aligning your lifestyle with your hormonal cycle can transform your energy, mood, and overall well-being.
+            </Text>
+          </>
+        )}
       </View>
 
       {/* Why These Techniques Help Weight Loss */}
@@ -273,6 +353,7 @@ const styles = StyleSheet.create({
   brand: { fontSize: 18, color: 'rgba(255,255,255,0.95)', fontWeight: '700', letterSpacing: 3, fontFamily: 'System' },
   title: { fontSize: 26, fontWeight: '700', color: '#FFF', marginBottom: 8, textAlign: 'left', lineHeight: 34 },
   subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.88)', marginBottom: 20, lineHeight: 22 },
+  exerciseText: { fontSize: 22, fontWeight: '700' },
   fertilePill: { backgroundColor: 'rgba(255,255,255,0.95)', paddingVertical: 6, paddingHorizontal: 14, borderRadius: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 4, elevation: 3 },
   fertilePillText: { color: '#1F2937', fontWeight: '700', fontSize: 14, letterSpacing: 0.2 },
   phaseContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 4, marginBottom: 8 },
@@ -343,4 +424,18 @@ const styles = StyleSheet.create({
   premiumSubtitle: { fontSize: 13, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginBottom: 4 },
   premiumBtn: { marginTop: 8, backgroundColor: 'rgba(255,255,255,0.2)', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },
   premiumBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 14 },
+  videoCard: { marginHorizontal: 20, marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, borderWidth: 1 },
+  videoHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
+  videoSectionTitle: { fontSize: 16, fontWeight: '700', flex: 1 },
+  videoThumbnailContainer: { height: 200, backgroundColor: '#000', borderRadius: 12, overflow: 'hidden', position: 'relative', marginBottom: 16 },
+  videoThumbnail: { width: '100%', height: '100%', backgroundColor: '#000' },
+  videoPlaceholder: { width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' },
+  placeholderText: { color: '#FFFFFF', fontSize: 14 },
+  videoPlayButton: { position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -32 }, { translateY: -32 }], width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 },
+  videoCardTitle: { fontSize: 18, fontWeight: '700', color: '#111827', marginBottom: 8 },
+  videoDescription: { fontSize: 14, color: '#6B7280', lineHeight: 20 },
+  inlineVideoContainer: { height: 250, position: 'relative', backgroundColor: '#000', borderRadius: 12, overflow: 'hidden', marginBottom: 16 },
+  inlineVideoWrapper: { width: '100%', height: '100%' },
+  inlineVideoWebView: { width: '100%', height: '100%', backgroundColor: '#000' },
+  closeInlineBtn: { position: 'absolute', top: 12, right: 12, width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
 });

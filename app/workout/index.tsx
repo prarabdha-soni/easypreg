@@ -196,6 +196,7 @@ export default function WorkoutScreen() {
   };
 
   const handleFullscreen = (video: VideoInfo) => {
+    setPlayingVideoId(null); // Stop inline video first
     setPlayerTitle(video.title);
     setPlayer({ 
       id: video.id, 

@@ -1,60 +1,28 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ArrowRight } from 'lucide-react-native';
+import { ArrowRight, Zap } from 'lucide-react-native';
 
 export default function OnboardingWelcome() {
   const router = useRouter();
 
   return (
-    <LinearGradient
-      colors={["#E0F2FE", "#D1FAE5"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Easily Lose Weight</Text>
-        <Text style={styles.subtitle}>By Following Your Hormone Cycle</Text>
-
-        {/* Transformation Graphic */}
-        <View style={styles.transformationContainer}>
-          <View style={styles.figureContainer}>
-            {/* Before Figure */}
-            <View style={styles.figureWrapper}>
-              <View style={[styles.figure, styles.figureBefore]}>
-                <View style={styles.figureHead} />
-                <View style={[styles.figureBody, styles.figureBodyBefore]} />
-                <View style={styles.figureLegs}>
-                  <View style={[styles.leg, styles.legBefore]} />
-                  <View style={[styles.leg, styles.legBefore]} />
-                </View>
-              </View>
-            </View>
-
-            {/* Arrows */}
-            <View style={styles.arrowsContainer}>
-              <View style={[styles.arrowPath, styles.arrowPath1]} />
-              <View style={[styles.arrowPath, styles.arrowPath2]} />
-            </View>
-
-            {/* After Figure */}
-            <View style={styles.figureWrapper}>
-              <View style={[styles.figure, styles.figureAfter]}>
-                <View style={styles.figureHead} />
-                <View style={[styles.figureBody, styles.figureBodyAfter]} />
-                <View style={styles.figureLegs}>
-                  <View style={[styles.leg, styles.legAfter]} />
-                  <View style={[styles.leg, styles.legAfter]} />
-                </View>
-              </View>
-            </View>
-          </View>
+        <View style={styles.iconContainer}>
+          <Zap size={48} color="#e91e63" />
         </View>
-
-        <Text style={styles.resultsText}>
-          See results in just <Text style={styles.resultsHighlight}>2 months!</Text>
+        
+        <Text style={styles.title}>
+          Do you know Yoga, Dance is your best medicine for {' '}
+          <Text style={styles.highlight}>Weight Loss!</Text>
         </Text>
+        <Text style={styles.subtitle}>Personalize your fitness journey with cycle-based workouts</Text>
+
+        <View style={styles.benefitCard}>
+          <Text style={styles.benefitTitle}>See results in just</Text>
+          <Text style={styles.benefitHighlight}>2 months!</Text>
+        </View>
 
         <TouchableOpacity
           style={styles.cta}
@@ -80,150 +48,74 @@ export default function OnboardingWelcome() {
           <View style={styles.dot} />
         </View>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   content: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 24,
-    paddingTop: 80,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#1F2937',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#4B5563',
-    textAlign: 'center',
-    marginBottom: 40,
-  },
-  transformationContainer: {
-    width: '100%',
-    height: 280,
+    paddingTop: 60,
+    paddingBottom: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 30,
   },
-  figureContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-  },
-  figureWrapper: {
-    width: 120,
-    height: 240,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  figure: {
-    width: 100,
-    height: 200,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    position: 'relative',
-  },
-  figureBefore: {
-    borderWidth: 3,
-    borderColor: '#A855F7',
-    borderStyle: 'dashed',
-    borderRadius: 50,
-    padding: 10,
-  },
-  figureAfter: {
-    borderWidth: 3,
-    borderColor: '#22C55E',
-    borderStyle: 'dashed',
-    borderRadius: 50,
-    padding: 10,
-  },
-  figureHead: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: '#6B7280',
-    marginBottom: 8,
-  },
-  figureBody: {
-    width: 60,
-    borderRadius: 30,
-    marginBottom: 8,
-  },
-  figureBodyBefore: {
+  iconContainer: {
+    width: 80,
     height: 80,
-    backgroundColor: '#DDD6FE',
-  },
-  figureBodyAfter: {
-    height: 60,
-    backgroundColor: '#D1FAE5',
-  },
-  figureLegs: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  leg: {
-    width: 24,
-    borderRadius: 12,
-  },
-  legBefore: {
-    height: 50,
-    backgroundColor: '#DDD6FE',
-  },
-  legAfter: {
-    height: 45,
-    backgroundColor: '#D1FAE5',
-  },
-  arrowsContainer: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    borderRadius: 40,
+    backgroundColor: '#fff5f7',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  arrowPath: {
-    position: 'absolute',
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#A855F7',
-    width: 100,
-    height: 80,
-    borderRadius: 50,
-  },
-  arrowPath1: {
-    borderColor: '#A855F7',
-    transform: [{ rotate: '25deg' }],
-    top: 20,
-    right: 80,
-  },
-  arrowPath2: {
-    borderColor: '#22C55E',
-    transform: [{ rotate: '-25deg' }],
-    bottom: 20,
-    left: 80,
-  },
-  resultsText: {
-    fontSize: 18,
-    color: '#374151',
-    textAlign: 'center',
     marginBottom: 32,
   },
-  resultsHighlight: {
-    color: '#22C55E',
+  title: {
+    fontSize: 28,
     fontWeight: '700',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: 38,
+  },
+  highlight: {
+    color: '#F97316',
+    textDecorationLine: 'underline',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 48,
+    paddingHorizontal: 20,
+  },
+  benefitCard: {
+    width: '100%',
+    maxWidth: 300,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#e9ecef',
+    padding: 24,
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  benefitTitle: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  benefitHighlight: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#22C55E',
+    textAlign: 'center',
   },
   cta: {
     width: '100%',
@@ -261,4 +153,3 @@ const styles = StyleSheet.create({
     width: 24,
   },
 });
-

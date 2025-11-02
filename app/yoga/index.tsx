@@ -10,25 +10,27 @@ import { ArrowLeft, Play, X, Maximize2 } from 'lucide-react-native';
 
 const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
 
-// Menstrual Phase Yoga Videos
+// Yoga Workout Playlist ID (shared for all phases)
+const YOGA_PLAYLIST_ID = 'PLN99XDk2SYr4Yx4lJCSCCiMdwiD-bO7z1';
+
+// Menstrual Phase Yoga Videos - Using playlist
 const MENSTRUAL_YOGA_VIDEOS = [
-  'https://www.youtube.com/watch?v=4JaCcp39iVI',
-  'https://www.youtube.com/watch?v=MBzHxuw9XUw',
-  'https://www.youtube.com/watch?v=vCytq0eygo8',
-  'https://www.youtube.com/watch?v=GJDyEdRZLIU',
-  'https://www.youtube.com/watch?v=GKkha0fvIXk',
-  'https://www.youtube.com/watch?v=ZsnUB2oWIz8',
+  `https://www.youtube.com/playlist?list=${YOGA_PLAYLIST_ID}`,
 ];
 
-// Luteal Phase Yoga Videos
+// Follicular Phase Yoga Videos - Using playlist
+const FOLLICULAR_YOGA_VIDEOS = [
+  `https://www.youtube.com/playlist?list=${YOGA_PLAYLIST_ID}`,
+];
+
+// Ovulation Phase Yoga Videos - Using playlist
+const OVULATION_YOGA_VIDEOS = [
+  `https://www.youtube.com/playlist?list=${YOGA_PLAYLIST_ID}`,
+];
+
+// Luteal Phase Yoga Videos - Using playlist
 const LUTEAL_YOGA_VIDEOS = [
-  'https://www.youtube.com/watch?v=Gn3CXFJo3T4',
-  'https://www.youtube.com/watch?v=BR0HW1-Ci3w',
-  'https://www.youtube.com/watch?v=Df4XI5VEKFg',
-  'https://www.youtube.com/watch?v=m33Yvse6fEA',
-  'https://www.youtube.com/watch?v=WbuqNUoA8MM',
-  'https://www.youtube.com/watch?v=ZsnUB2oWIz8',
-  'https://www.youtube.com/watch?v=i7w0I8Xq0jo',
+  `https://www.youtube.com/playlist?list=${YOGA_PLAYLIST_ID}`,
 ];
 
 type VideoInfo = {
@@ -85,13 +87,12 @@ export default function YogaScreen() {
       
       if (phaseKey === 'Menstrual') {
         videoUrls = MENSTRUAL_YOGA_VIDEOS;
+      } else if (phaseKey === 'Follicular') {
+        videoUrls = FOLLICULAR_YOGA_VIDEOS;
+      } else if (phaseKey === 'Ovulation') {
+        videoUrls = OVULATION_YOGA_VIDEOS;
       } else if (phaseKey === 'Luteal') {
         videoUrls = LUTEAL_YOGA_VIDEOS;
-      } else {
-        // For Follicular and Ovulation, use the single video from theme
-        if (theme.yogaVideoURL) {
-          videoUrls = [theme.yogaVideoURL];
-        }
       }
 
       if (videoUrls.length === 0) {
@@ -107,14 +108,40 @@ export default function YogaScreen() {
         return extracted ? { url, ...extracted } : null;
       }).filter(Boolean) as Array<{ url: string; id: string; isPlaylist: boolean }>;
 
-      // For playlists, we'll show them but fetch differently
-      // For single videos, fetch metadata
       const singleVideoIds = videoData.filter(v => !v.isPlaylist).map(v => v.id);
-      
       const allVideos: VideoInfo[] = [];
 
+      // Fetch videos from playlist if we have playlists
+      const playlists = videoData.filter(v => v.isPlaylist);
+      if (playlists.length > 0) {
+        // Fetch all videos from the playlist
+        try {
+          const resp = await fetch(
+            `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlists[0].id}&maxResults=50&key=${YT_API_KEY}`
+          );
+          const data = await resp.json();
+          
+          if (data.items) {
+            data.items.forEach((item: any) => {
+              if (item.snippet?.resourceId?.videoId) {
+                allVideos.push({
+                  id: item.snippet.resourceId.videoId,
+                  url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+                  thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.medium?.url || null,
+                  title: item.snippet?.title || 'Yoga Video',
+                  loading: false,
+                  isPlaylist: false,
+                });
+              }
+            });
+          }
+        } catch (err) {
+          console.log('Error fetching playlist:', err);
+        }
+      }
+
+      // Fetch individual videos if we have any
       if (singleVideoIds.length > 0) {
-        // Fetch in batches
         const batchSize = 5;
         for (let i = 0; i < singleVideoIds.length; i += batchSize) {
           const batch = singleVideoIds.slice(i, i + batchSize);
@@ -150,26 +177,12 @@ export default function YogaScreen() {
         }
       }
 
-      // Add playlists (we'll use a generic thumbnail for playlists)
-      const playlists = videoData.filter(v => v.isPlaylist);
-      playlists.forEach(({ url, id }) => {
-        allVideos.push({
-          id,
-          url,
-          thumbnail: null, // Playlists will use a placeholder
-          title: 'Yoga Playlist',
-          loading: false,
-          isPlaylist: true,
-          playlistId: id,
-        });
-      });
-
       setVideos(allVideos);
       setLoading(false);
     };
 
     fetchVideos();
-  }, [phaseKey, theme.yogaVideoURL]);
+  }, [phaseKey]);
 
   const handlePlayVideo = (video: VideoInfo) => {
     // Play inline in the same section
@@ -177,6 +190,7 @@ export default function YogaScreen() {
   };
 
   const handleFullscreen = (video: VideoInfo) => {
+    setPlayingVideoId(null); // Stop inline video first
     setPlayerTitle(video.title);
     setPlayer({ 
       id: video.id, 

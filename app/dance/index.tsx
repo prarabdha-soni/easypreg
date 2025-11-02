@@ -10,17 +10,17 @@ import { ArrowLeft, Play, X, Maximize2 } from 'lucide-react-native';
 
 const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
 
-// Follicular Phase Dance Videos
+// Dance Workout Playlist ID (shared for both Follicular and Ovulation phases)
+const DANCE_PLAYLIST_ID = 'PLN99XDk2SYr7YFHIVmTffejyRZliMGGIM';
+
+// Follicular Phase Dance Videos - Using playlist
 const FOLLICULAR_DANCE_VIDEOS = [
-  'https://www.youtube.com/watch?v=GQd6yeQ4-sI', // Feminine Energy Dance Workout
-  'https://www.youtube.com/watch?v=1vRto-2MMZo', // Full Body Dance Party | No Equipment Needed (15 MIN DANCE PARTY WORKOUT)
+  `https://www.youtube.com/playlist?list=${DANCE_PLAYLIST_ID}`,
 ];
 
-// Ovulatory Phase Dance Videos
+// Ovulatory Phase Dance Videos - Using playlist
 const OVULATORY_DANCE_VIDEOS = [
-  'https://www.youtube.com/watch?v=GQd6yeQ4-sI', // Feminine Energy Dance Workout (Perfect for ovulation)
-  'https://www.youtube.com/watch?v=wGotyWkxvqw', // 30-Minute HIIT Dance Fusion
-  'https://www.youtube.com/watch?v=Cw-Wt4xKD2s', // 15 MIN DANCE CARDIO WORKOUT - 80s EDITION
+  `https://www.youtube.com/playlist?list=${DANCE_PLAYLIST_ID}`,
 ];
 
 type VideoInfo = {
@@ -96,6 +96,36 @@ export default function DanceScreen() {
       const singleVideoIds = videoData.filter(v => !v.isPlaylist).map(v => v.id);
       const allVideos: VideoInfo[] = [];
 
+      // Fetch videos from playlist if we have playlists
+      const playlists = videoData.filter(v => v.isPlaylist);
+      if (playlists.length > 0) {
+        // Fetch all videos from the playlist
+        try {
+          const resp = await fetch(
+            `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlists[0].id}&maxResults=50&key=${YT_API_KEY}`
+          );
+          const data = await resp.json();
+          
+          if (data.items) {
+            data.items.forEach((item: any) => {
+              if (item.snippet?.resourceId?.videoId) {
+                allVideos.push({
+                  id: item.snippet.resourceId.videoId,
+                  url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+                  thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.medium?.url || null,
+                  title: item.snippet?.title || 'Dance Video',
+                  loading: false,
+                  isPlaylist: false,
+                });
+              }
+            });
+          }
+        } catch (err) {
+          console.log('Error fetching playlist:', err);
+        }
+      }
+
+      // Fetch individual videos if we have any
       if (singleVideoIds.length > 0) {
         const batchSize = 5;
         for (let i = 0; i < singleVideoIds.length; i += batchSize) {
@@ -132,18 +162,6 @@ export default function DanceScreen() {
         }
       }
 
-      const playlists = videoData.filter(v => v.isPlaylist);
-      playlists.forEach(({ url, id }) => {
-        allVideos.push({
-          id,
-          url,
-          thumbnail: null,
-          title: 'Dance Playlist',
-          loading: false,
-          isPlaylist: true,
-        });
-      });
-
       setVideos(allVideos);
       setLoading(false);
     };
@@ -157,6 +175,7 @@ export default function DanceScreen() {
   };
 
   const handleFullscreen = (video: VideoInfo) => {
+    setPlayingVideoId(null); // Stop inline video first
     setPlayerTitle(video.title);
     setPlayer({ 
       id: video.id, 
