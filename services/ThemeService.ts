@@ -1,18 +1,41 @@
 export type HormonalPhase = 'Menstrual' | 'Follicular' | 'Ovulation' | 'Luteal';
 
+/**
+ * Calculates the current cycle day based on the last period date.
+ * Automatically progresses through the 28-day cycle in real-time.
+ * 
+ * @param lastPeriodDate - The date when the user's last period started
+ * @returns Cycle day (0-27), where 0 = Day 1 (Menstrual phase start)
+ * 
+ * Note: This function uses the current date, so the phase automatically
+ * changes each day without requiring user input. Users only need to update
+ * their period date once a month when their next period starts.
+ */
 export function getCycleDay(lastPeriodDate: Date): number {
   const now = new Date();
   const ms = now.getTime() - lastPeriodDate.getTime();
   const d = Math.floor(ms / (1000 * 60 * 60 * 24));
+  // Wrap around 28-day cycle: Day 28 becomes Day 0 (next cycle Day 1)
   return ((d % 28) + 28) % 28; // 0..27
 }
 
+/**
+ * Determines the current hormonal phase based on cycle day.
+ * Phase automatically progresses in real-time:
+ * - Days 1-7: Menstrual (Phase 1)
+ * - Days 8-14: Follicular (Phase 2)
+ * - Days 15-21: Ovulation (Phase 3)
+ * - Days 22-28: Luteal (Phase 4)
+ * 
+ * @param dayZeroIndexed - Cycle day (0-27 from getCycleDay)
+ * @returns Current hormonal phase
+ */
 export function getCurrentHormonalPhase(dayZeroIndexed: number): HormonalPhase {
-  const day = dayZeroIndexed + 1; // 1..28
-  if (day >= 1 && day <= 7) return 'Menstrual';
-  if (day >= 8 && day <= 14) return 'Follicular';
-  if (day >= 15 && day <= 21) return 'Ovulation';
-  return 'Luteal';
+  const day = dayZeroIndexed + 1; // Convert to 1-28 for easier logic
+  if (day >= 1 && day <= 7) return 'Menstrual';    // Phase 1
+  if (day >= 8 && day <= 14) return 'Follicular';  // Phase 2
+  if (day >= 15 && day <= 21) return 'Ovulation';  // Phase 3
+  return 'Luteal';                                  // Phase 4 (Days 22-28)
 }
 
 export type PhaseTheme = {

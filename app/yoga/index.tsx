@@ -6,9 +6,61 @@ import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Play, X } from 'lucide-react-native';
+import { ArrowLeft, Play, X, Maximize2 } from 'lucide-react-native';
 
 const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
+
+// Menstrual Phase Yoga Videos
+const MENSTRUAL_YOGA_VIDEOS = [
+  'https://www.youtube.com/watch?v=4JaCcp39iVI',
+  'https://www.youtube.com/watch?v=MBzHxuw9XUw',
+  'https://www.youtube.com/watch?v=vCytq0eygo8',
+  'https://www.youtube.com/watch?v=GJDyEdRZLIU',
+  'https://www.youtube.com/watch?v=GKkha0fvIXk',
+  'https://www.youtube.com/watch?v=ZsnUB2oWIz8',
+];
+
+// Luteal Phase Yoga Videos
+const LUTEAL_YOGA_VIDEOS = [
+  'https://www.youtube.com/watch?v=Gn3CXFJo3T4',
+  'https://www.youtube.com/watch?v=BR0HW1-Ci3w',
+  'https://www.youtube.com/watch?v=Df4XI5VEKFg',
+  'https://www.youtube.com/watch?v=m33Yvse6fEA',
+  'https://www.youtube.com/watch?v=WbuqNUoA8MM',
+  'https://www.youtube.com/watch?v=ZsnUB2oWIz8',
+  'https://www.youtube.com/watch?v=i7w0I8Xq0jo',
+];
+
+type VideoInfo = {
+  id: string;
+  url: string;
+  thumbnail: string | null;
+  title: string;
+  loading: boolean;
+  isPlaylist: boolean;
+  playlistId?: string;
+};
+
+function extractVideoId(url: string): { id: string; isPlaylist: boolean } | null {
+  try {
+    const urlObj = new URL(url);
+    // Check for playlist first
+    const listId = urlObj.searchParams.get('list');
+    if (listId) {
+      return { id: listId, isPlaylist: true };
+    }
+    // Check for regular video
+    const v = urlObj.searchParams.get('v');
+    if (v) {
+      return { id: v, isPlaylist: false };
+    }
+    // Check for youtu.be short URLs
+    if (urlObj.hostname.includes('youtu.be')) {
+      return { id: urlObj.pathname.replace('/', ''), isPlaylist: false };
+    }
+  } catch {}
+  return null;
+}
 
 export default function YogaScreen() {
   const { profile } = useUser();
@@ -21,60 +73,116 @@ export default function YogaScreen() {
 
   const theme = themes[phaseKey];
   
-  const [yogaThumb, setYogaThumb] = useState<string | null>(null);
-  const [yogaTitle, setYogaTitle] = useState<string>('');
-  const [loadingYogaThumb, setLoadingYogaThumb] = useState(true);
-  const [player, setPlayer] = useState<{ id: string; type: 'video' } | null>(null);
+  const [videos, setVideos] = useState<VideoInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null); // Track which video is playing inline
+  const [player, setPlayer] = useState<{ id: string; type: 'video' | 'playlist'; isPlaylist: boolean } | null>(null);
   const [playerTitle, setPlayerTitle] = useState<string>('Yoga Video');
 
-  function extractVideoId(u: string): string | null {
-    try {
-      const urlObj = new URL(u);
-      const v = urlObj.searchParams.get('v');
-      if (v) return v;
-      if (urlObj.hostname.includes('youtu.be')) {
-        return urlObj.pathname.replace('/', '');
-      }
-    } catch {}
-    return null;
-  }
-
   useEffect(() => {
-    if (!theme.yogaVideoURL) {
-      setLoadingYogaThumb(false);
-      return;
-    }
-    const videoId = extractVideoId(theme.yogaVideoURL);
-    if (!videoId) {
-      setLoadingYogaThumb(false);
-      return;
-    }
-    
-    setLoadingYogaThumb(true);
-    (async () => {
-      try {
-        const resp = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YT_API_KEY}`);
-        const data = await resp.json();
-        const s = data?.items?.[0]?.snippet;
-        if (s) {
-          setYogaThumb(s.thumbnails?.high?.url || s.thumbnails?.medium?.url || s.thumbnails?.default?.url);
-          setYogaTitle(s.title || 'Yoga Video');
+    const fetchVideos = async () => {
+      let videoUrls: string[] = [];
+      
+      if (phaseKey === 'Menstrual') {
+        videoUrls = MENSTRUAL_YOGA_VIDEOS;
+      } else if (phaseKey === 'Luteal') {
+        videoUrls = LUTEAL_YOGA_VIDEOS;
+      } else {
+        // For Follicular and Ovulation, use the single video from theme
+        if (theme.yogaVideoURL) {
+          videoUrls = [theme.yogaVideoURL];
         }
-      } catch (err) {
-        console.log('Yoga thumbnail fetch error:', err);
       }
-      finally { setLoadingYogaThumb(false); }
-    })();
-  }, [theme.yogaVideoURL]);
 
-  const handlePlayYoga = () => {
-    if (theme.yogaVideoURL) {
-      const videoId = extractVideoId(theme.yogaVideoURL);
-      if (videoId) {
-        setPlayerTitle(yogaTitle || 'Yoga Video');
-        setPlayer({ id: videoId, type: 'video' });
+      if (videoUrls.length === 0) {
+        setLoading(false);
+        return;
       }
-    }
+
+      setLoading(true);
+      
+      // Extract video/playlist IDs
+      const videoData = videoUrls.map(url => {
+        const extracted = extractVideoId(url);
+        return extracted ? { url, ...extracted } : null;
+      }).filter(Boolean) as Array<{ url: string; id: string; isPlaylist: boolean }>;
+
+      // For playlists, we'll show them but fetch differently
+      // For single videos, fetch metadata
+      const singleVideoIds = videoData.filter(v => !v.isPlaylist).map(v => v.id);
+      
+      const allVideos: VideoInfo[] = [];
+
+      if (singleVideoIds.length > 0) {
+        // Fetch in batches
+        const batchSize = 5;
+        for (let i = 0; i < singleVideoIds.length; i += batchSize) {
+          const batch = singleVideoIds.slice(i, i + batchSize);
+          try {
+            const resp = await fetch(
+              `https://www.googleapis.com/youtube/v3/videos?part=snippet,status&id=${batch.join(',')}&key=${YT_API_KEY}`
+            );
+            const data = await resp.json();
+            
+            if (data.items) {
+              data.items.forEach((item: any) => {
+                if (item.status?.privacyStatus === 'public' && item.snippet) {
+                  const originalUrl = videoUrls.find(url => {
+                    const extracted = extractVideoId(url);
+                    return extracted && !extracted.isPlaylist && extracted.id === item.id;
+                  });
+                  if (originalUrl) {
+                    allVideos.push({
+                      id: item.id,
+                      url: originalUrl,
+                      thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.medium?.url || null,
+                      title: item.snippet?.title || 'Yoga Video',
+                      loading: false,
+                      isPlaylist: false,
+                    });
+                  }
+                }
+              });
+            }
+          } catch (err) {
+            console.log('Error fetching video batch:', err);
+          }
+        }
+      }
+
+      // Add playlists (we'll use a generic thumbnail for playlists)
+      const playlists = videoData.filter(v => v.isPlaylist);
+      playlists.forEach(({ url, id }) => {
+        allVideos.push({
+          id,
+          url,
+          thumbnail: null, // Playlists will use a placeholder
+          title: 'Yoga Playlist',
+          loading: false,
+          isPlaylist: true,
+          playlistId: id,
+        });
+      });
+
+      setVideos(allVideos);
+      setLoading(false);
+    };
+
+    fetchVideos();
+  }, [phaseKey, theme.yogaVideoURL]);
+
+  const handlePlayVideo = (video: VideoInfo) => {
+    // Play inline in the same section
+    setPlayingVideoId(video.id);
+  };
+
+  const handleFullscreen = (video: VideoInfo) => {
+    setPlayerTitle(video.title);
+    setPlayer({ 
+      id: video.id, 
+      type: video.isPlaylist ? 'playlist' : 'video',
+      isPlaylist: video.isPlaylist 
+    });
   };
 
   return (
@@ -101,32 +209,98 @@ export default function YogaScreen() {
         </Text>
       </View>
 
-      {/* Yoga Video */}
-      <View style={[styles.videoCard, { borderColor: theme.border }]}>
-        {loadingYogaThumb ? (
-          <View style={styles.videoPlaceholder}>
-            <ActivityIndicator color={theme.accentColor} size="large" />
-          </View>
-        ) : yogaThumb ? (
-          <Image source={{ uri: yogaThumb }} style={styles.videoThumbnail} />
-        ) : (
-          <View style={styles.videoPlaceholder}>
-            <Text style={styles.placeholderText}>Yoga Video</Text>
-          </View>
-        )}
-        
-        <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
-          <Text style={styles.phaseBadgeText}>{phaseKey} Phase • Yoga</Text>
+      {/* Yoga Videos List */}
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator color={theme.accentColor} size="large" />
+          <Text style={styles.loadingText}>Loading yoga videos...</Text>
         </View>
+      ) : videos.length > 0 ? (
+        <View style={styles.videosList}>
+          {videos.map((video, index) => (
+            <View key={video.id} style={[styles.videoCard, { borderColor: theme.border }]}>
+              {playingVideoId === video.id ? (
+                // Inline video player
+                <View style={styles.inlineVideoContainer}>
+                  {Platform.OS === 'web' ? (
+                    <View style={styles.inlineVideoWrapper}>
+                      {/* @ts-ignore */}
+                      <iframe
+                        style={{ width: '100%', height: '100%', border: 'none' }}
+                        src={`https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1`}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </View>
+                  ) : (
+                    <WebView
+                      source={{ uri: `https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1` }}
+                      style={styles.inlineVideoWebView}
+                      allowsInlineMediaPlayback={true}
+                      mediaPlaybackRequiresUserAction={false}
+                      javaScriptEnabled={true}
+                      domStorageEnabled={true}
+                      startInLoadingState={true}
+                      onShouldStartLoadWithRequest={(request) => {
+                        const allowed = request.url.includes('youtube.com/embed') || 
+                                       request.url.includes('youtube.com/iframe_api') ||
+                                       request.url.includes('googleapis.com');
+                        return allowed;
+                      }}
+                    />
+                  )}
+                  <View style={styles.inlineVideoControls}>
+                    <TouchableOpacity 
+                      style={[styles.fullscreenBtn, { backgroundColor: theme.accentColor }]}
+                      onPress={() => handleFullscreen(video)}
+                    >
+                      <Maximize2 color="#FFFFFF" size={18} />
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={[styles.closeInlineBtn, { backgroundColor: 'rgba(0,0,0,0.6)' }]}
+                      onPress={() => setPlayingVideoId(null)}
+                    >
+                      <X color="#FFFFFF" size={18} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                // Thumbnail view
+                <TouchableOpacity 
+                  style={styles.thumbnailContainer}
+                  onPress={() => handlePlayVideo(video)}
+                >
+                  {video.thumbnail ? (
+                    <Image source={{ uri: video.thumbnail }} style={styles.videoThumbnail} />
+                  ) : (
+                    <View style={styles.videoPlaceholder}>
+                      <Text style={styles.placeholderText}>Yoga Video</Text>
+                    </View>
+                  )}
+                  
+                  <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
+                    <Text style={styles.phaseBadgeText}>
+                      {video.isPlaylist ? '📋 Playlist' : `${phaseKey} Phase`}
+                    </Text>
+                  </View>
 
-        <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.accentColor }]} onPress={handlePlayYoga}>
-          <Play color="#FFFFFF" size={32} fill="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
-      
-      {yogaTitle && (
-        <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface, marginHorizontal: 20 }]}>
-          <Text style={styles.videoInfoText}>🧘 {yogaTitle}</Text>
+                  <View style={[styles.playBtn, { backgroundColor: theme.accentColor }]}>
+                    <Play color="#FFFFFF" size={28} fill="#FFFFFF" />
+                  </View>
+                  
+                  <View style={styles.videoTitleOverlay}>
+                    <Text style={styles.videoTitleText} numberOfLines={2}>{video.title}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+          ))}
+        </View>
+      ) : (
+        <View style={styles.noVideosContainer}>
+          <Text style={styles.noVideosText}>No yoga videos available for this phase.</Text>
         </View>
       )}
 
@@ -151,7 +325,9 @@ export default function YogaScreen() {
                   {/* @ts-ignore */}
                   <iframe
                     style={{ width: '100%', height: '100%', border: 'none' }}
-                    src={`https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1`}
+                    src={player.isPlaylist 
+                      ? `https://www.youtube.com/embed/videoseries?list=${player.id}&autoplay=1&playsinline=1`
+                      : `https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1`}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -160,7 +336,11 @@ export default function YogaScreen() {
                 </View>
               ) : (
                 <WebView
-                  source={{ uri: `https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1` }}
+                  source={{ 
+                    uri: player.isPlaylist 
+                      ? `https://www.youtube.com/embed/videoseries?list=${player.id}&autoplay=1&playsinline=1`
+                      : `https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1`
+                  }}
                   style={styles.videoWebView}
                   allowsInlineMediaPlayback={true}
                   mediaPlaybackRequiresUserAction={false}
@@ -168,7 +348,13 @@ export default function YogaScreen() {
                   domStorageEnabled={true}
                   startInLoadingState={true}
                   onShouldStartLoadWithRequest={(request) => {
-                    return request.url.includes('youtube.com/embed');
+                    const allowed = request.url.includes('youtube.com/embed') || 
+                                   request.url.includes('youtube.com/iframe_api') ||
+                                   request.url.includes('googleapis.com');
+                    if (!allowed) {
+                      return false;
+                    }
+                    return true;
                   }}
                   onNavigationStateChange={(navState) => {
                     if (!navState.url.includes('youtube.com/embed')) {
@@ -194,15 +380,27 @@ const styles = StyleSheet.create({
   whyBanner: { marginHorizontal: 20, marginBottom: 20, padding: 16, borderRadius: 12, borderWidth: 1 },
   whyTitle: { fontSize: 16, fontWeight: '700', marginBottom: 8 },
   whyText: { fontSize: 13, color: '#374151', lineHeight: 20 },
-  videoCard: { marginHorizontal: 20, height: 220, borderRadius: 20, overflow: 'hidden', borderWidth: 1, marginBottom: 16, position: 'relative' },
+  loadingContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 60 },
+  loadingText: { marginTop: 12, color: '#6B7280', fontSize: 14 },
+  videosList: { paddingHorizontal: 20, paddingBottom: 40 },
+  videoCard: { borderRadius: 16, overflow: 'hidden', borderWidth: 1, marginBottom: 16, position: 'relative' },
+  thumbnailContainer: { height: 200, position: 'relative' },
+  inlineVideoContainer: { height: 220, position: 'relative', backgroundColor: '#000' },
+  inlineVideoWrapper: { width: '100%', height: '100%' },
+  inlineVideoWebView: { width: '100%', height: '100%', backgroundColor: '#000' },
+  inlineVideoControls: { position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 8 },
+  fullscreenBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  closeInlineBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   videoThumbnail: { width: '100%', height: '100%', backgroundColor: '#000' },
   videoPlaceholder: { width: '100%', height: '100%', backgroundColor: '#E5E7EB', alignItems: 'center', justifyContent: 'center' },
-  placeholderText: { color: '#6B7280', fontSize: 14 },
-  phaseBadge: { position: 'absolute', top: 12, left: 12, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 12 },
+  placeholderText: { color: '#6B7280', fontSize: 14, fontWeight: '600' },
+  phaseBadge: { position: 'absolute', top: 12, left: 12, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 12, zIndex: 2 },
   phaseBadgeText: { color: '#FFFFFF', fontWeight: '700', fontSize: 11 },
-  playBtn: { position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -28 }, { translateY: -28 }], width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
-  videoInfoCard: { padding: 16, borderRadius: 12, borderWidth: 1, marginTop: 8 },
-  videoInfoText: { fontSize: 15, fontWeight: '600', color: '#111827', lineHeight: 20 },
+  playBtn: { position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -14 }, { translateY: -14 }], width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', zIndex: 2 },
+  videoTitleOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.7)', padding: 12, zIndex: 2 },
+  videoTitleText: { color: '#FFFFFF', fontSize: 13, fontWeight: '600', lineHeight: 18 },
+  noVideosContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 60, paddingHorizontal: 20 },
+  noVideosText: { color: '#6B7280', fontSize: 14, textAlign: 'center' },
   videoModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
   videoModalCard: { width: '100%', height: '100%', backgroundColor: '#000', justifyContent: 'center' },
   videoHeader: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingTop: 56, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.5)' },

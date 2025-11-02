@@ -7,9 +7,59 @@ import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeSe
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Play, BookOpen, History, Timer, X, Camera, Image as ImageIcon } from 'lucide-react-native';
+import { ArrowLeft, Play, BookOpen, History, Timer, X, Camera, Image as ImageIcon, Maximize2 } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
+const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
+
+// Follicular Phase Workout Videos
+const FOLLICULAR_WORKOUT_VIDEOS = [
+  'https://www.youtube.com/watch?v=xxa8IdKd8M0',
+  'https://www.youtube.com/watch?v=AgQVChgXJV8',
+  'https://www.youtube.com/watch?v=CvMMPmXLrm0',
+  'https://www.youtube.com/watch?v=_9sMkE-1VBI',
+  'https://www.youtube.com/watch?v=3FAjB3B8A38',
+  'https://www.youtube.com/watch?v=P7gelSOQN4c',
+  'https://www.youtube.com/watch?v=1vRto-2MMZo',
+];
+
+// Ovulatory Phase Workout Videos
+const OVULATORY_WORKOUT_VIDEOS = [
+  'https://www.youtube.com/watch?v=2xNcUjKLZto',
+  'https://www.youtube.com/watch?v=j7enr_VeBOs',
+  'https://www.youtube.com/watch?v=9xx7BQVzuFs',
+  'https://www.youtube.com/watch?v=guE14YKcA6Q',
+  'https://www.youtube.com/watch?v=6tCFmMiPkFs',
+  'https://www.youtube.com/watch?v=wGotyWkxvqw',
+  'https://www.youtube.com/watch?v=Cw-Wt4xKD2s',
+];
+
+type VideoInfo = {
+  id: string;
+  url: string;
+  thumbnail: string | null;
+  title: string;
+  loading: boolean;
+  isPlaylist: boolean;
+};
+
+function extractVideoId(url: string): { id: string; isPlaylist: boolean } | null {
+  try {
+    const urlObj = new URL(url);
+    const listId = urlObj.searchParams.get('list');
+    if (listId) {
+      return { id: listId, isPlaylist: true };
+    }
+    const v = urlObj.searchParams.get('v');
+    if (v) {
+      return { id: v, isPlaylist: false };
+    }
+    if (urlObj.hostname.includes('youtu.be')) {
+      return { id: urlObj.pathname.replace('/', ''), isPlaylist: false };
+    }
+  } catch {}
+  return null;
+}
 
 export default function WorkoutScreen() {
   const { profile } = useUser();
@@ -26,6 +76,12 @@ export default function WorkoutScreen() {
   const [weeklyCount, setWeeklyCount] = useState(0);
   const [totalWorkouts, setTotalWorkouts] = useState(42); // Mock
   const [totalMinutes, setTotalMinutes] = useState(850); // Mock
+  
+  const [videos, setVideos] = useState<VideoInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null); // Track which video is playing inline
+  const [player, setPlayer] = useState<{ id: string; type: 'video' | 'playlist'; isPlaylist: boolean } | null>(null);
+  const [playerTitle, setPlayerTitle] = useState<string>('Workout Video');
   
   useEffect(() => {
     (async () => {
@@ -50,48 +106,103 @@ export default function WorkoutScreen() {
     })();
   }, []);
 
-  // Video thumbnail fetching
-  const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
-  const [videoThumb, setVideoThumb] = useState<string | null>(null);
-  const [videoTitle, setVideoTitle] = useState<string>('');
-  const [player, setPlayer] = useState<{ id: string; type: 'video'|'playlist' } | null>(null);
-  const [loadingThumb, setLoadingThumb] = useState(true);
-
-  function extractVideoId(u: string): string | null {
-    try {
-      const urlObj = new URL(u);
-      // Handle playlist URLs
-      const listId = urlObj.searchParams.get('list');
-      if (listId) return listId;
-      // Handle regular video URLs
-      const v = urlObj.searchParams.get('v');
-      if (v) return v;
-      // Handle youtu.be short URLs
-      if (urlObj.hostname.includes('youtu.be')) {
-        return urlObj.pathname.replace('/', '');
-      }
-    } catch {}
-    return null;
-  }
-
   useEffect(() => {
-    if (!theme.workoutVideoURL) return;
-    const videoId = extractVideoId(theme.workoutVideoURL);
-    if (!videoId) return;
-    
-    (async () => {
-      try {
-        const resp = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YT_API_KEY}`);
-        const data = await resp.json();
-        const s = data?.items?.[0]?.snippet;
-        if (s) {
-          setVideoThumb(s.thumbnails?.high?.url || s.thumbnails?.medium?.url);
-          setVideoTitle(s.title);
+    const fetchVideos = async () => {
+      let videoUrls: string[] = [];
+      
+      if (phaseKey === 'Follicular') {
+        videoUrls = FOLLICULAR_WORKOUT_VIDEOS;
+      } else if (phaseKey === 'Ovulation') {
+        videoUrls = OVULATORY_WORKOUT_VIDEOS;
+      } else {
+        // For Menstrual and Luteal, show message that workouts aren't recommended
+        setLoading(false);
+        return;
+      }
+
+      if (videoUrls.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      
+      const videoData = videoUrls.map(url => {
+        const extracted = extractVideoId(url);
+        return extracted ? { url, ...extracted } : null;
+      }).filter(Boolean) as Array<{ url: string; id: string; isPlaylist: boolean }>;
+
+      const singleVideoIds = videoData.filter(v => !v.isPlaylist).map(v => v.id);
+      const allVideos: VideoInfo[] = [];
+
+      if (singleVideoIds.length > 0) {
+        const batchSize = 5;
+        for (let i = 0; i < singleVideoIds.length; i += batchSize) {
+          const batch = singleVideoIds.slice(i, i + batchSize);
+          try {
+            const resp = await fetch(
+              `https://www.googleapis.com/youtube/v3/videos?part=snippet,status&id=${batch.join(',')}&key=${YT_API_KEY}`
+            );
+            const data = await resp.json();
+            
+            if (data.items) {
+              data.items.forEach((item: any) => {
+                if (item.status?.privacyStatus === 'public' && item.snippet) {
+                  const originalUrl = videoUrls.find(url => {
+                    const extracted = extractVideoId(url);
+                    return extracted && !extracted.isPlaylist && extracted.id === item.id;
+                  });
+                  if (originalUrl) {
+                    allVideos.push({
+                      id: item.id,
+                      url: originalUrl,
+                      thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.medium?.url || null,
+                      title: item.snippet?.title || 'Workout Video',
+                      loading: false,
+                      isPlaylist: false,
+                    });
+                  }
+                }
+              });
+            }
+          } catch (err) {
+            console.log('Error fetching video batch:', err);
+          }
         }
-      } catch {}
-      finally { setLoadingThumb(false); }
-    })();
-  }, [theme.workoutVideoURL]);
+      }
+
+      const playlists = videoData.filter(v => v.isPlaylist);
+      playlists.forEach(({ url, id }) => {
+        allVideos.push({
+          id,
+          url,
+          thumbnail: null,
+          title: 'Workout Playlist',
+          loading: false,
+          isPlaylist: true,
+        });
+      });
+
+      setVideos(allVideos);
+      setLoading(false);
+    };
+
+    fetchVideos();
+  }, [phaseKey]);
+
+  const handlePlayVideo = (video: VideoInfo) => {
+    // Play inline in the same section
+    setPlayingVideoId(video.id);
+  };
+
+  const handleFullscreen = (video: VideoInfo) => {
+    setPlayerTitle(video.title);
+    setPlayer({ 
+      id: video.id, 
+      type: video.isPlaylist ? 'playlist' : 'video',
+      isPlaylist: video.isPlaylist 
+    });
+  };
 
 
   // Filter chips
@@ -172,7 +283,7 @@ export default function WorkoutScreen() {
     Follicular: [
       { id: 'f1', title: 'Exercise At Each Stage of Cycle', duration: '14 days', focus: 'Muscle Building', workouts: 12, completed: 0, videoUrl: 'https://www.youtube.com/watch?v=YSJubcbzJmo' },
       { id: 'f2', title: 'Feminine Energy Dance Workout', duration: '7 days', focus: 'Cardio & Strength', workouts: 7, completed: 0, videoUrl: 'https://www.youtube.com/watch?v=GQd6yeQ4-sI' },
-      { id: 'f3', title: 'Workouts For Your Cycle: Day 1-14', duration: '7 days', focus: 'Energy Building', workouts: 7, completed: 0, videoUrl: 'https://www.youtube.com/playlist?list=PLG9XM5PzrT1ddTYRCBLiGcEpxfw-S-imv' },
+      // Removed playlist - f3 program
     ],
     Ovulation: [
       { id: 'o1', title: 'Workout & Eat According to Cycle', duration: '5 days', focus: 'Maximum Power', workouts: 5, completed: 0, videoUrl: 'https://www.youtube.com/watch?v=PBd2CZC-JIE' },
@@ -188,18 +299,6 @@ export default function WorkoutScreen() {
 
   const currentExercises = exerciseLibrary[phaseKey] || exerciseLibrary.Follicular;
 
-  const handlePlay = () => {
-    if (theme.workoutVideoURL) {
-      const videoId = extractVideoId(theme.workoutVideoURL);
-      if (videoId) {
-        const isPlaylist = theme.workoutVideoURL.includes('playlist?list=');
-        setPlayerTitle(videoTitle || 'Exercise Video');
-        setPlayer({ id: videoId, type: isPlaylist ? 'playlist' : 'video' });
-      }
-    }
-  };
-
-  const [playerTitle, setPlayerTitle] = useState<string>('Exercise Video');
 
 
   const markWorkoutDone = async () => {
@@ -240,46 +339,101 @@ export default function WorkoutScreen() {
         </Text>
       </View>
 
-      {/* Show workout video only for Follicular and Ovulation phases */}
+      {/* Show workout videos only for Follicular and Ovulation phases */}
       {(phaseKey === 'Follicular' || phaseKey === 'Ovulation') ? (
-        <>
-          {/* Hero Video Card */}
-          <View style={[styles.videoCard, { borderColor: theme.border }]}>
-            {loadingThumb ? (
-              <View style={styles.videoPlaceholder}>
-                <ActivityIndicator color={theme.accentColor} size="large" />
-              </View>
-            ) : videoThumb ? (
-              <Image source={{ uri: videoThumb }} style={styles.videoThumbnail} />
-            ) : (
-              <View style={styles.videoPlaceholder}>
-                <Text style={styles.placeholderText}>Workout Video</Text>
-              </View>
-            )}
-            
-            {/* Phase Badge */}
-            <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
-              <Text style={styles.phaseBadgeText}>{phaseKey} Phase</Text>
-              <Text style={styles.phaseBadgeMeta}>{theme.workoutTime} | {theme.workoutLevel}</Text>
-            </View>
-
-            {/* Large Play Button */}
-            <TouchableOpacity style={[styles.playBtn, { backgroundColor: theme.accentColor }]} onPress={handlePlay}>
-              <Play color="#FFFFFF" size={32} fill="#FFFFFF" />
-            </TouchableOpacity>
+        loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator color={theme.accentColor} size="large" />
+            <Text style={styles.loadingText}>Loading workout videos...</Text>
           </View>
+        ) : videos.length > 0 ? (
+          <View style={styles.videosList}>
+            {videos.map((video, index) => (
+              <View key={video.id} style={[styles.videoCard, { borderColor: theme.border }]}>
+                {playingVideoId === video.id ? (
+                  // Inline video player
+                  <View style={styles.inlineVideoContainer}>
+                    {Platform.OS === 'web' ? (
+                      <View style={styles.inlineVideoWrapper}>
+                        {/* @ts-ignore */}
+                        <iframe
+                          style={{ width: '100%', height: '100%', border: 'none' }}
+                          src={`https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1`}
+                          title="YouTube video player"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      </View>
+                    ) : (
+                      <WebView
+                        source={{ uri: `https://www.youtube.com/embed/${video.id}?autoplay=1&playsinline=1` }}
+                        style={styles.inlineVideoWebView}
+                        allowsInlineMediaPlayback={true}
+                        mediaPlaybackRequiresUserAction={false}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        startInLoadingState={true}
+                        onShouldStartLoadWithRequest={(request) => {
+                          const allowed = request.url.includes('youtube.com/embed') || 
+                                         request.url.includes('youtube.com/iframe_api') ||
+                                         request.url.includes('googleapis.com');
+                          return allowed;
+                        }}
+                      />
+                    )}
+                    <View style={styles.inlineVideoControls}>
+                      <TouchableOpacity 
+                        style={[styles.fullscreenBtn, { backgroundColor: theme.accentColor }]}
+                        onPress={() => handleFullscreen(video)}
+                      >
+                        <Maximize2 color="#FFFFFF" size={18} />
+                      </TouchableOpacity>
+                      <TouchableOpacity 
+                        style={[styles.closeInlineBtn, { backgroundColor: 'rgba(0,0,0,0.6)' }]}
+                        onPress={() => setPlayingVideoId(null)}
+                      >
+                        <X color="#FFFFFF" size={18} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ) : (
+                  // Thumbnail view
+                  <TouchableOpacity 
+                    style={styles.thumbnailContainer}
+                    onPress={() => handlePlayVideo(video)}
+                  >
+                    {video.thumbnail ? (
+                      <Image source={{ uri: video.thumbnail }} style={styles.videoThumbnail} />
+                    ) : (
+                      <View style={styles.videoPlaceholder}>
+                        <Text style={styles.placeholderText}>{video.isPlaylist ? '📋 Playlist' : 'Workout Video'}</Text>
+                      </View>
+                    )}
+                    
+                    <View style={[styles.phaseBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
+                      <Text style={styles.phaseBadgeText}>
+                        {video.isPlaylist ? '📋 Playlist' : `${phaseKey} Phase`}
+                      </Text>
+                    </View>
 
-          {/* Workout Details */}
-          <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-            <Text style={styles.workoutTitle}>{theme.workoutRecommendation}</Text>
-            <Text style={styles.workoutDesc}>{theme.workoutDetails}</Text>
-            {videoTitle && (
-              <View style={[styles.videoInfoCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
-                <Text style={styles.videoInfoText}>📹 {videoTitle}</Text>
+                    <View style={[styles.playBtn, { backgroundColor: theme.accentColor }]}>
+                      <Play color="#FFFFFF" size={28} fill="#FFFFFF" />
+                    </View>
+                    
+                    <View style={styles.videoTitleOverlay}>
+                      <Text style={styles.videoTitleText} numberOfLines={2}>{video.title}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
               </View>
-            )}
+            ))}
           </View>
-        </>
+        ) : (
+          <View style={styles.noVideosContainer}>
+            <Text style={styles.noVideosText}>No workout videos available for this phase.</Text>
+          </View>
+        )
       ) : (
         <View style={[styles.notAvailableCard, { borderColor: theme.border, backgroundColor: theme.surface, marginHorizontal: 20 }]}>
           <Text style={styles.notAvailableText}>
@@ -441,7 +595,7 @@ export default function WorkoutScreen() {
                   {/* @ts-ignore */}
                   <iframe
                     style={{ width: '100%', height: '100%', border: 'none' }}
-                    src={player.type === 'playlist' 
+                    src={player.isPlaylist 
                       ? `https://www.youtube.com/embed/videoseries?list=${player.id}&autoplay=1&playsinline=1`
                       : `https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1`
                     }
@@ -453,9 +607,10 @@ export default function WorkoutScreen() {
                 </View>
               ) : (
                 <WebView
-                  source={{ uri: player.type === 'playlist'
-                    ? `https://www.youtube.com/embed/videoseries?list=${player.id}&autoplay=1&playsinline=1`
-                    : `https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1`
+                  source={{ 
+                    uri: player.isPlaylist 
+                      ? `https://www.youtube.com/embed/videoseries?list=${player.id}&autoplay=1&playsinline=1`
+                      : `https://www.youtube.com/embed/${player.id}?autoplay=1&playsinline=1`
                   }}
                   style={styles.videoWebView}
                   allowsInlineMediaPlayback={true}
@@ -504,9 +659,23 @@ const styles = StyleSheet.create({
   sectionTabText: { fontSize: 14, fontWeight: '600', color: '#6B7280' },
   sectionTabTextActive: { color: '#FFFFFF', fontWeight: '700' },
   videoOnlySection: { paddingBottom: 20 },
-  videoCard: { marginHorizontal: 20, height: 220, borderRadius: 20, overflow: 'hidden', borderWidth: 1, marginBottom: 16, position: 'relative' },
+  loadingContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 60 },
+  loadingText: { marginTop: 12, color: '#6B7280', fontSize: 14 },
+  videosList: { paddingHorizontal: 20, paddingBottom: 40 },
+  videoCard: { borderRadius: 16, overflow: 'hidden', borderWidth: 1, marginBottom: 16, position: 'relative' },
+  thumbnailContainer: { height: 200, position: 'relative' },
+  inlineVideoContainer: { height: 220, position: 'relative', backgroundColor: '#000' },
+  inlineVideoWrapper: { width: '100%', height: '100%' },
+  inlineVideoWebView: { width: '100%', height: '100%', backgroundColor: '#000' },
+  inlineVideoControls: { position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 8 },
+  fullscreenBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  closeInlineBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   videoThumbnail: { width: '100%', height: '100%', backgroundColor: '#000' },
   videoPlaceholder: { width: '100%', height: '100%', backgroundColor: '#E5E7EB', alignItems: 'center', justifyContent: 'center' },
+  videoTitleOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.7)', padding: 12, zIndex: 2 },
+  videoTitleText: { color: '#FFFFFF', fontSize: 13, fontWeight: '600', lineHeight: 18 },
+  noVideosContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 60, paddingHorizontal: 20 },
+  noVideosText: { color: '#6B7280', fontSize: 14, textAlign: 'center' },
   placeholderText: { color: '#6B7280', fontSize: 14 },
   phaseBadge: { position: 'absolute', top: 12, left: 12, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 12 },
   phaseBadgeText: { color: '#FFFFFF', fontWeight: '700', fontSize: 11 },

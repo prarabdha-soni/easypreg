@@ -139,7 +139,7 @@ export default function DietScreen() {
       { id: 'mp_o2', title: 'Zinc-Rich Snack Prep (Dhokla, Sprouts)', days: 4, meals: '12 meals', focus: 'Hormonal Support', description: 'Dhokla, sprout salad prep for zinc', videoUrl: 'https://www.youtube.com/watch?v=YSJubcbzJmo' },
     ],
     Luteal: [
-      { id: 'mp_l1', title: 'PMS-Support Comfort Prep', days: 7, meals: '21 meals', focus: 'Mood & Energy', description: 'Khichdi, biryani, jowar roti prep', videoUrl: 'https://www.youtube.com/playlist?list=PL4SJd-G_GUh20CvrfTIwKrjCS998C1jWe' },
+      { id: 'mp_l1', title: 'PMS-Support Comfort Prep', days: 7, meals: '21 meals', focus: 'Mood & Energy', description: 'Khichdi, biryani, jowar roti prep', videoUrl: 'https://www.youtube.com/watch?v=mfG0p1sv9OI' },
       { id: 'mp_l2', title: 'Sustained Energy Meal Prep', days: 5, meals: '15 meals', focus: 'Stable Energy', description: 'Dalia, dosa prep for stable energy', videoUrl: 'https://www.youtube.com/watch?v=mfG0p1sv9OI' },
     ],
   };
