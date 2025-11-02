@@ -6,7 +6,7 @@ import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Play, X, Maximize2 } from 'lucide-react-native';
+import { Play, X, Maximize2 } from 'lucide-react-native';
 
 const YT_API_KEY = 'AIzaSyBvQcLcPhoGKqhh6bRKnGHQ4By7O6ZaMjw';
 
@@ -186,12 +186,6 @@ export default function DanceScreen() {
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.surface }]} showsVerticalScrollIndicator={false}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => { try { router.back(); } catch { router.replace('/(tabs)'); } }}>
-          <ArrowLeft color="#111827" size={24} />
-        </TouchableOpacity>
-      </View>
-
       <LinearGradient colors={theme.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
         <Text style={styles.pageTitle}>Dance 💃</Text>
         <Text style={styles.pageSubtitle}>Move with your cycle</Text>
@@ -380,16 +374,15 @@ export default function DanceScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  topBar: { paddingHorizontal: 16, paddingTop: 16 },
   hero: { paddingTop: 56, paddingBottom: 28, paddingHorizontal: 20, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, marginBottom: 20 },
   pageTitle: { fontSize: 28, fontWeight: '700', color: '#FFF', marginBottom: 6 },
   pageSubtitle: { fontSize: 15, color: 'rgba(255,255,255,0.9)' },
-  whyBanner: { marginHorizontal: 20, marginBottom: 20, padding: 16, borderRadius: 12, borderWidth: 1 },
+  whyBanner: { marginBottom: 20, padding: 16, borderRadius: 12, borderWidth: 1 },
   whyTitle: { fontSize: 16, fontWeight: '700', marginBottom: 8 },
   whyText: { fontSize: 13, color: '#374151', lineHeight: 20 },
   loadingContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 60 },
   loadingText: { marginTop: 12, color: '#6B7280', fontSize: 14 },
-  videosList: { paddingHorizontal: 20, paddingBottom: 40 },
+  videosList: { paddingBottom: 40 },
   videoCard: { borderRadius: 16, overflow: 'hidden', borderWidth: 1, marginBottom: 16, position: 'relative' },
   thumbnailContainer: { height: 200, position: 'relative' },
   inlineVideoContainer: { height: 220, position: 'relative', backgroundColor: '#000' },
@@ -408,7 +401,7 @@ const styles = StyleSheet.create({
   videoTitleText: { color: '#FFFFFF', fontSize: 13, fontWeight: '600', lineHeight: 18 },
   noVideosContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 60, paddingHorizontal: 20 },
   noVideosText: { color: '#6B7280', fontSize: 14, textAlign: 'center' },
-  notAvailableCard: { marginHorizontal: 20, padding: 20, borderRadius: 12, borderWidth: 1 },
+  notAvailableCard: { padding: 20, borderRadius: 12, borderWidth: 1 },
   notAvailableText: { fontSize: 14, color: '#6B7280', lineHeight: 20, textAlign: 'center' },
   videoModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
   videoModalCard: { width: '100%', height: '100%', backgroundColor: '#000', justifyContent: 'center' },

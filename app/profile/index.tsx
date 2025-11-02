@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   hero: { paddingTop: 56, paddingBottom: 28, paddingHorizontal: 20, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
   heroTitle: { color: '#FFFFFF', fontSize: 28, fontWeight: '700', marginBottom: 6 },
   heroSubtitle: { color: 'rgba(255,255,255,0.9)', fontSize: 15 },
-  sectionCard: { marginHorizontal: 20, marginTop: 20, borderRadius: 16, borderWidth: 1, padding: 20 },
+  sectionCard: { marginTop: 20, borderRadius: 16, borderWidth: 1, padding: 20 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 20 },
   sectionTitle: { fontSize: 18, fontWeight: '700' },
   infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12 },

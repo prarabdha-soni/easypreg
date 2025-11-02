@@ -332,6 +332,7 @@ export default function HomeScreen() {
       {/* Premium Upsell Card */}
       <View style={[styles.premiumCard, { borderColor: theme.border }]}>
         <LinearGradient colors={[theme.accentColor, theme.gradient[1]]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.premiumGradient}>
+          <Text style={styles.comingSoonText}>Coming Soon</Text>
           <Crown color="#FFFFFF" size={20} />
           <Text style={styles.premiumTitle}>Unlock Premium</Text>
           <Text style={styles.premiumSubtitle}>Cycle-based meal plans & advanced insights</Text>
@@ -410,7 +411,7 @@ const styles = StyleSheet.create({
   moodBtn: { width: 60, height: 60, borderRadius: 30, borderWidth: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F9FAFB' },
   moodEmoji: { fontSize: 28 },
   moodNote: { textAlign: 'center', marginTop: 12, fontSize: 12, color: '#6B7280', fontStyle: 'italic' },
-  whyCard: { marginHorizontal: 20, marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, borderWidth: 1 },
+  whyCard: { marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, borderWidth: 1 },
   whyHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   whyCardTitle: { fontSize: 16, fontWeight: '700', flex: 1 },
   whyPhaseTitle: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 16 },
@@ -418,13 +419,14 @@ const styles = StyleSheet.create({
   whyBenefitItem: { marginBottom: 8 },
   whyBenefitLabel: { fontSize: 14, fontWeight: '700', color: '#111827', marginBottom: 6 },
   whyBenefitText: { fontSize: 13, color: '#374151', lineHeight: 20 },
-  premiumCard: { marginHorizontal: 20, marginTop: 16, borderRadius: 16, borderWidth: 1, overflow: 'hidden' },
-  premiumGradient: { padding: 20, alignItems: 'center', gap: 8 },
+  premiumCard: { marginTop: 16, borderRadius: 16, borderWidth: 1, overflow: 'hidden' },
+  premiumGradient: { padding: 20, alignItems: 'center', gap: 8, position: 'relative' },
   premiumTitle: { fontSize: 18, fontWeight: '700', color: '#FFFFFF', marginTop: 4 },
   premiumSubtitle: { fontSize: 13, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginBottom: 4 },
+  comingSoonText: { position: 'absolute', top: 12, left: 16, fontSize: 12, color: 'rgba(255,255,255,0.9)', fontStyle: 'italic', fontWeight: '600' },
   premiumBtn: { marginTop: 8, backgroundColor: 'rgba(255,255,255,0.2)', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },
   premiumBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 14 },
-  videoCard: { marginHorizontal: 20, marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, borderWidth: 1 },
+  videoCard: { marginTop: 16, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, borderWidth: 1 },
   videoHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   videoSectionTitle: { fontSize: 16, fontWeight: '700', flex: 1 },
   videoThumbnailContainer: { height: 200, backgroundColor: '#000', borderRadius: 12, overflow: 'hidden', position: 'relative', marginBottom: 16 },
