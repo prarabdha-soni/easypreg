@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, User, Sparkles, Music } from 'lucide-react-native';
+import { Home, User, Sparkles, Music, Leaf } from 'lucide-react-native';
 import { useUser } from '@/contexts/UserContext';
 import { getCycleDay, getCurrentHormonalPhase, themes } from '@/services/ThemeService';
 
@@ -42,6 +42,15 @@ export default function TabLayout() {
           title: 'Yoga',
           tabBarIcon: ({ size, color }) => (
             <Sparkles size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="nutrition"
+        options={{
+          title: 'Nutrition',
+          tabBarIcon: ({ size, color }) => (
+            <Leaf size={size} color={color} />
           ),
         }}
       />
