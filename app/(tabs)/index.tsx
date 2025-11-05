@@ -58,30 +58,6 @@ export default function HomeScreen() {
     await AsyncStorage.setItem(`@mood:${todayKey}`, mood);
   };
 
-  // Phase-specific weight loss benefits and why we use these techniques
-  const weightLossBenefits = {
-    Menstrual: {
-      workout: null, // Not available in this phase
-      yoga: 'Yoga in Menstrual phase supports weight loss by reducing stress hormones (cortisol), which can prevent fat storage. Gentle movement maintains metabolism without causing stress or inflammation that can hinder weight loss.',
-      dance: null, // Not available in this phase
-    },
-    Follicular: {
-      workout: 'High-intensity workouts during Follicular phase maximize weight loss because rising estrogen boosts your metabolism and fat-burning capacity. This is when your body is most efficient at building muscle and burning fat.',
-      yoga: 'Moderate yoga during Follicular phase supports weight loss by maintaining flexibility and reducing stress, while your rising energy allows for more calorie-burning power yoga sessions.',
-      dance: 'Dance workouts in Follicular phase are excellent for weight loss because rising estrogen provides the energy for longer, more intense sessions that burn maximum calories and build lean muscle.',
-    },
-    Ovulation: {
-      workout: 'Peak performance workouts during Ovulation maximize weight loss through maximum calorie burn. Your hormones are at peak levels, making this the best time for high-intensity training that accelerates fat loss.',
-      yoga: 'Power yoga during Ovulation supports weight loss by leveraging peak strength for more challenging poses that burn more calories while maintaining muscle mass.',
-      dance: 'Dance in Ovulation phase is ideal for weight loss because peak coordination and energy allow for maximum intensity, burning the most calories and boosting metabolism for days.',
-    },
-    Luteal: {
-      workout: null, // Not available in this phase
-      yoga: 'Restorative yoga in Luteal phase supports weight loss by managing stress and preventing cortisol-induced weight gain. Gentle movement maintains metabolism while supporting hormonal balance crucial for sustainable weight loss.',
-      dance: null, // Not available in this phase
-    },
-  };
-
   const phaseKey: 'Menstrual'|'Follicular'|'Ovulation'|'Luteal' = useMemo(() => {
     if (!profile.lastPeriodDate) return 'Follicular';
     const cycleDay = getCycleDay(profile.lastPeriodDate);
@@ -132,6 +108,106 @@ export default function HomeScreen() {
 
   const peakFertile = useMemo(() => getNextOvulationDate(profile.lastPeriodDate ?? null), [profile.lastPeriodDate]);
   const peakLabel = peakFertile ? peakFertile.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : null;
+
+  // Calculate best days for activities based on last period date
+  const bestDays = useMemo(() => {
+    if (!profile.lastPeriodDate) return null;
+    
+    try {
+      const lastDate = profile.lastPeriodDate instanceof Date ? profile.lastPeriodDate : new Date(profile.lastPeriodDate);
+      if (isNaN(lastDate.getTime())) return null;
+      
+      const msDay = 24 * 60 * 60 * 1000;
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      lastDate.setHours(0, 0, 0, 0);
+      
+      // Calculate days since last period
+      const daysSince = Math.floor((now.getTime() - lastDate.getTime()) / msDay);
+      
+      // Find current cycle start (adjust to the beginning of the current cycle)
+      const currentCycleDay = daysSince % 28;
+      const currentCycleStart = new Date(lastDate.getTime() + (daysSince - currentCycleDay) * msDay);
+      
+      // Calculate dates for current and next cycle
+      const workoutDays: Date[] = []; // Follicular (8-14) + Ovulation (15-21)
+      const walkDays: Date[] = []; // Luteal (22-28)
+      const travelDays: Date[] = []; // Follicular (8-14)
+      const chillDays: Date[] = []; // Menstrual (1-7) + Luteal (22-28)
+      const creativityDays: Date[] = []; // Ovulation (15-21)
+      const selfCareDays: Date[] = []; // Early Luteal (22-24)
+      
+      // Helper function to add dates for a cycle
+      const addCycleDates = (cycleStart: Date) => {
+        for (let cycleDay = 0; cycleDay < 28; cycleDay++) {
+          const day = cycleDay + 1; // Convert to 1-28
+          const date = new Date(cycleStart);
+          date.setDate(date.getDate() + cycleDay);
+          
+          // Only include today or future dates
+          if (date.getTime() >= now.getTime()) {
+            if (day >= 8 && day <= 14) {
+              // Follicular phase
+              workoutDays.push(new Date(date));
+              travelDays.push(new Date(date));
+            }
+            if (day >= 15 && day <= 21) {
+              // Ovulation phase
+              workoutDays.push(new Date(date));
+              creativityDays.push(new Date(date));
+            }
+            if (day >= 22 && day <= 28) {
+              // Luteal phase
+              walkDays.push(new Date(date));
+              chillDays.push(new Date(date));
+              if (day >= 22 && day <= 24) {
+                // Early Luteal
+                selfCareDays.push(new Date(date));
+              }
+            }
+            if (day >= 1 && day <= 7) {
+              // Menstrual phase
+              chillDays.push(new Date(date));
+            }
+          }
+        }
+      };
+      
+      // Add dates from current cycle
+      addCycleDates(currentCycleStart);
+      
+      // Add dates from next cycle if we need more
+      if (workoutDays.length < 7 || walkDays.length < 3 || travelDays.length < 3 || creativityDays.length < 3) {
+        const nextCycleStart = new Date(currentCycleStart.getTime() + 28 * msDay);
+        addCycleDates(nextCycleStart);
+      }
+      
+      const formatDateRange = (dates: Date[]): string => {
+        if (dates.length === 0) return 'N/A';
+        const sorted = dates.sort((a, b) => a.getTime() - b.getTime());
+        const first = sorted[0];
+        const last = sorted[sorted.length - 1];
+        
+        if (sorted.length <= 3) {
+          return sorted.map(d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })).join(', ');
+        }
+        
+        return `${first.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${last.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+      };
+      
+      return {
+        workout: formatDateRange(workoutDays.slice(0, 14)),
+        walk: formatDateRange(walkDays.slice(0, 7)),
+        travel: formatDateRange(travelDays.slice(0, 7)),
+        chill: formatDateRange(chillDays.slice(0, 14)),
+        creativity: formatDateRange(creativityDays.slice(0, 7)),
+        selfCare: formatDateRange(selfCareDays.slice(0, 3)),
+      };
+    } catch (error) {
+      console.error('Error calculating best days:', error);
+      return null;
+    }
+  }, [profile.lastPeriodDate]);
 
 
   // Gloww Moment once per day (10s breath)
@@ -222,7 +298,12 @@ export default function HomeScreen() {
         <Text style={styles.phaseAffirm}>{theme.phaseText}</Text>
       </LinearGradient>
 
-      {/* quick actions removed as requested */}
+      {/* Welcome Section */}
+      <View style={[styles.welcomeCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+        <Text style={styles.welcomeEmoji}>🌸</Text>
+        <Text style={styles.welcomeTitle}>Find Your Best Days</Text>
+        <Text style={styles.welcomeText}>Work smarter. Glow longer.</Text>
+      </View>
 
       {/* Video Section */}
       <View style={[styles.videoCard, { borderColor: theme.border }]}>
@@ -299,35 +380,106 @@ export default function HomeScreen() {
         )}
       </View>
 
-      {/* Why These Techniques Help Weight Loss */}
-      <View style={[styles.whyCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
-        <View style={styles.whyHeader}>
-          <Sparkles color={theme.accentColor} size={18} />
-          <Text style={[styles.whyCardTitle, { color: theme.accentColor }]}>Why This Helps Weight Loss</Text>
+      {/* Best Days Section */}
+      {bestDays && (
+        <View style={styles.bestDaysContainer}>
+          <View style={styles.bestDaysHeader}>
+            <Sparkles color={theme.accentColor} size={20} />
+            <Text style={[styles.bestDaysTitle, { color: theme.accentColor }]}>Best Days for You</Text>
+          </View>
+          <View style={styles.bestDaysList}>
+            <View style={[styles.bestDayCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+              <View style={styles.bestDayCardHeader}>
+                <View style={styles.bestDayEmojiContainer}>
+                  <Text style={styles.bestDayEmoji}>🏋️‍♀️</Text>
+                </View>
+                <View style={styles.bestDayCardContent}>
+                  <Text style={styles.bestDayLabel}>Best Days to Work Out</Text>
+                  <Text style={styles.bestDaySubtext}>Follicular + Ovulation</Text>
+                </View>
+              </View>
+              <View style={[styles.bestDayDateBadge, { borderColor: theme.accentColor + '30' }]}>
+                <Text style={[styles.bestDayDates, { color: theme.accentColor }]}>{bestDays.workout}</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.bestDayCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+              <View style={styles.bestDayCardHeader}>
+                <View style={styles.bestDayEmojiContainer}>
+                  <Text style={styles.bestDayEmoji}>🚶‍♀️</Text>
+                </View>
+                <View style={styles.bestDayCardContent}>
+                  <Text style={styles.bestDayLabel}>Best Days to Walk</Text>
+                  <Text style={styles.bestDaySubtext}>Luteal (moderate movement, mood boost)</Text>
+                </View>
+              </View>
+              <View style={[styles.bestDayDateBadge, { borderColor: theme.accentColor + '30' }]}>
+                <Text style={[styles.bestDayDates, { color: theme.accentColor }]}>{bestDays.walk}</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.bestDayCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+              <View style={styles.bestDayCardHeader}>
+                <View style={styles.bestDayEmojiContainer}>
+                  <Text style={styles.bestDayEmoji}>🧳</Text>
+                </View>
+                <View style={styles.bestDayCardContent}>
+                  <Text style={styles.bestDayLabel}>Best Days to Travel</Text>
+                  <Text style={styles.bestDaySubtext}>Follicular (energy, stable hormones)</Text>
+                </View>
+              </View>
+              <View style={[styles.bestDayDateBadge, { borderColor: theme.accentColor + '30' }]}>
+                <Text style={[styles.bestDayDates, { color: theme.accentColor }]}>{bestDays.travel}</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.bestDayCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+              <View style={styles.bestDayCardHeader}>
+                <View style={styles.bestDayEmojiContainer}>
+                  <Text style={styles.bestDayEmoji}>🍿</Text>
+                </View>
+                <View style={styles.bestDayCardContent}>
+                  <Text style={styles.bestDayLabel}>Best Days to Netflix & Chill</Text>
+                  <Text style={styles.bestDaySubtext}>Menstrual or Luteal phase</Text>
+                </View>
+              </View>
+              <View style={[styles.bestDayDateBadge, { borderColor: theme.accentColor + '30' }]}>
+                <Text style={[styles.bestDayDates, { color: theme.accentColor }]}>{bestDays.chill}</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.bestDayCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+              <View style={styles.bestDayCardHeader}>
+                <View style={styles.bestDayEmojiContainer}>
+                  <Text style={styles.bestDayEmoji}>🎨</Text>
+                </View>
+                <View style={styles.bestDayCardContent}>
+                  <Text style={styles.bestDayLabel}>Best Days for Creativity</Text>
+                  <Text style={styles.bestDaySubtext}>Ovulatory phase</Text>
+                </View>
+              </View>
+              <View style={[styles.bestDayDateBadge, { borderColor: theme.accentColor + '30' }]}>
+                <Text style={[styles.bestDayDates, { color: theme.accentColor }]}>{bestDays.creativity}</Text>
+              </View>
+            </View>
+            
+            <View style={[styles.bestDayCard, { borderColor: theme.border, backgroundColor: theme.surface }]}>
+              <View style={styles.bestDayCardHeader}>
+                <View style={styles.bestDayEmojiContainer}>
+                  <Text style={styles.bestDayEmoji}>🛍️</Text>
+                </View>
+                <View style={styles.bestDayCardContent}>
+                  <Text style={styles.bestDayLabel}>Best Days for Self-Care or Shopping</Text>
+                  <Text style={styles.bestDaySubtext}>Early luteal (dopamine boost!)</Text>
+                </View>
+              </View>
+              <View style={[styles.bestDayDateBadge, { borderColor: theme.accentColor + '30' }]}>
+                <Text style={[styles.bestDayDates, { color: theme.accentColor }]}>{bestDays.selfCare}</Text>
+              </View>
+            </View>
+          </View>
         </View>
-        <Text style={styles.whyPhaseTitle}>{phaseKey} Phase Benefits</Text>
-        <View style={styles.whyBenefits}>
-          {weightLossBenefits[phaseKey].workout && (
-            <View style={styles.whyBenefitItem}>
-              <Text style={styles.whyBenefitLabel}>💪 Workout:</Text>
-              <Text style={styles.whyBenefitText}>{weightLossBenefits[phaseKey].workout}</Text>
-            </View>
-          )}
-          {weightLossBenefits[phaseKey].yoga && (
-            <View style={styles.whyBenefitItem}>
-              <Text style={styles.whyBenefitLabel}>🧘 Yoga:</Text>
-              <Text style={styles.whyBenefitText}>{weightLossBenefits[phaseKey].yoga}</Text>
-            </View>
-          )}
-          {weightLossBenefits[phaseKey].dance && (
-            <View style={styles.whyBenefitItem}>
-              <Text style={styles.whyBenefitLabel}>💃 Dance:</Text>
-              <Text style={styles.whyBenefitText}>{weightLossBenefits[phaseKey].dance}</Text>
-            </View>
-          )}
-        </View>
-      </View>
-
+      )}
 
       {/* Premium Upsell Card */}
       <View style={[styles.premiumCard, { borderColor: theme.border }]}>
@@ -363,6 +515,11 @@ const styles = StyleSheet.create({
   phaseIconText: { fontSize: 20 },
   phaseNumber: { fontSize: 14, color: 'rgba(255,255,255,0.85)', textAlign: 'center', marginTop: 6, fontWeight: '600', letterSpacing: 0.5 },
   phaseAffirm: { fontSize: 15, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginTop: 6, lineHeight: 22 },
+
+  welcomeCard: { marginTop: 16, marginHorizontal: 20, backgroundColor: '#FFFFFF', borderRadius: 16, padding: 24, borderWidth: 1, alignItems: 'center' },
+  welcomeEmoji: { fontSize: 48, marginBottom: 12 },
+  welcomeTitle: { fontSize: 24, fontWeight: '700', color: '#111827', marginBottom: 8, textAlign: 'center' },
+  welcomeText: { fontSize: 15, color: '#6B7280', textAlign: 'center', lineHeight: 22 },
 
   quickRow: { marginTop: 12 },
   quickChip: { borderWidth: 1, paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#FFFFFF' },
@@ -419,6 +576,46 @@ const styles = StyleSheet.create({
   whyBenefitItem: { marginBottom: 8 },
   whyBenefitLabel: { fontSize: 14, fontWeight: '700', color: '#111827', marginBottom: 6 },
   whyBenefitText: { fontSize: 13, color: '#374151', lineHeight: 20 },
+  bestDaysContainer: { marginTop: 24, marginHorizontal: 20 },
+  bestDaysHeader: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 },
+  bestDaysTitle: { fontSize: 20, fontWeight: '700', flex: 1, letterSpacing: 0.3 },
+  bestDaysList: { gap: 12 },
+  bestDayCard: { 
+    borderRadius: 16, 
+    padding: 18, 
+    borderWidth: 1, 
+    marginBottom: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  bestDayCardHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, marginBottom: 12 },
+  bestDayEmojiContainer: { 
+    width: 48, 
+    height: 48, 
+    borderRadius: 24, 
+    backgroundColor: '#F9FAFB',
+    alignItems: 'center', 
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  bestDayEmoji: { fontSize: 28 },
+  bestDayCardContent: { flex: 1, paddingTop: 2 },
+  bestDayLabel: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 6, lineHeight: 22 },
+  bestDaySubtext: { fontSize: 13, color: '#6B7280', lineHeight: 18 },
+  bestDayDateBadge: { 
+    marginTop: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1.5,
+  },
+  bestDayDates: { fontSize: 14, fontWeight: '700', letterSpacing: 0.2 },
   premiumCard: { marginTop: 16, borderRadius: 16, borderWidth: 1, overflow: 'hidden' },
   premiumGradient: { padding: 20, alignItems: 'center', gap: 8, position: 'relative' },
   premiumTitle: { fontSize: 18, fontWeight: '700', color: '#FFFFFF', marginTop: 4 },
