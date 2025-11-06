@@ -481,14 +481,54 @@ export default function HomeScreen() {
         </View>
       )}
 
+      {/* Quick Access Cards */}
+      <View style={styles.quickAccessContainer}>
+        <View style={styles.quickAccessHeader}>
+          <Sparkles color={theme.accentColor} size={20} />
+          <Text style={[styles.quickAccessTitle, { color: theme.accentColor }]}>Quick Access</Text>
+        </View>
+        <View style={styles.quickAccessGrid}>
+          <TouchableOpacity 
+            style={[styles.quickAccessCard, { borderColor: theme.border, backgroundColor: theme.surface }]}
+            onPress={() => router.push('/tracking')}
+          >
+            <Text style={styles.quickAccessEmoji}>📊</Text>
+            <Text style={styles.quickAccessLabel}>Track Symptoms</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.quickAccessCard, { borderColor: theme.border, backgroundColor: theme.surface }]}
+            onPress={() => router.push('/insights')}
+          >
+            <Text style={styles.quickAccessEmoji}>💡</Text>
+            <Text style={styles.quickAccessLabel}>Insights</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.quickAccessCard, { borderColor: theme.border, backgroundColor: theme.surface }]}
+            onPress={() => router.push('/community')}
+          >
+            <Text style={styles.quickAccessEmoji}>👥</Text>
+            <Text style={styles.quickAccessLabel}>Community</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.quickAccessCard, { borderColor: theme.border, backgroundColor: theme.surface }]}
+            onPress={() => router.push('/premium')}
+          >
+            <Text style={styles.quickAccessEmoji}>👑</Text>
+            <Text style={styles.quickAccessLabel}>Premium</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {/* Premium Upsell Card */}
       <View style={[styles.premiumCard, { borderColor: theme.border }]}>
         <LinearGradient colors={[theme.accentColor, theme.gradient[1]]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.premiumGradient}>
-          <Text style={styles.comingSoonText}>Coming Soon</Text>
           <Crown color="#FFFFFF" size={20} />
           <Text style={styles.premiumTitle}>Unlock Premium</Text>
-          <Text style={styles.premiumSubtitle}>Cycle-based meal plans & advanced insights</Text>
-          <TouchableOpacity style={styles.premiumBtn}>
+          <Text style={styles.premiumSubtitle}>Advanced insights, unlimited tracking & AI predictions</Text>
+          <TouchableOpacity 
+            style={styles.premiumBtn}
+            onPress={() => router.push('/premium')}
+          >
             <Text style={styles.premiumBtnText}>Explore Premium</Text>
           </TouchableOpacity>
         </LinearGradient>
@@ -637,4 +677,11 @@ const styles = StyleSheet.create({
   inlineVideoWrapper: { width: '100%', height: '100%' },
   inlineVideoWebView: { width: '100%', height: '100%', backgroundColor: '#000' },
   closeInlineBtn: { position: 'absolute', top: 12, right: 12, width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  quickAccessContainer: { marginTop: 24, marginHorizontal: 20 },
+  quickAccessHeader: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 },
+  quickAccessTitle: { fontSize: 20, fontWeight: '700', flex: 1 },
+  quickAccessGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  quickAccessCard: { width: '47%', padding: 20, borderRadius: 16, borderWidth: 1, alignItems: 'center', justifyContent: 'center', minHeight: 100 },
+  quickAccessEmoji: { fontSize: 32, marginBottom: 8 },
+  quickAccessLabel: { fontSize: 14, fontWeight: '700', color: '#111827', textAlign: 'center' },
 });

@@ -13,7 +13,7 @@ export default function IndexScreen() {
         if (profile.hasCompletedOnboarding) {
           router.replace('/(tabs)');
         } else {
-          router.replace('/onboarding/welcome');
+          router.replace('/onboarding/period-date');
         }
       }, 100);
 
